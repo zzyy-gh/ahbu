@@ -1,3 +1,5 @@
+> **Historical note (post-rubric-loosening, 2026-05-02):** This pass was written under the v1 admission rubric (real-pain + feasibility + quality-bar plan + defensibility, all gated at admission). The rubric has since been loosened to gate on real-pain only (see `layers/10-pain-point-validation/README.md`). Findings on feasibility / defensibility / scope are now advisory, not blocking. Kept as historical record + as input to layers 20 / 30.
+
 # Critic pass — selection-shortlist.md — 2026-05-02
 
 ## Verdict

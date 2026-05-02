@@ -1,6 +1,6 @@
 # Track layer 30 — Experiments / Implementation
 
-**Mandate.** Execute the methodology for this track. Produce honest results.
+**Mandate.** Execute the methodology for this track. Produce honest results. **May cancel-back to layer 20** if the locked protocol proves infeasible to execute as written (data turns out inaccessible, compute turns out insufficient at run-time, dependency unavailable) — re-design rather than paper over. May cancel-back to layer 10 (retire-cancelled) if no re-design recovers feasibility.
 
 **Knowledge.** Frozen protocol from this track's `20-methodology/protocol-lock.md`, code, compute environment, `shared/` substrate.
 
@@ -13,12 +13,16 @@
 
 ---
 
-## Discipline (per project quality bar)
+## Discipline (per project quality bar — applies to the headline only)
 
-- Held-out partition touched **once** for the headline number. Earlier debugging uses dev split only.
-- Every reported metric carries an uncertainty estimate (CI, std across seeds, or bootstrap).
+- Held-out partition touched **once** for the headline number. Earlier debugging + pilots use dev split only.
+- Every reported headline metric carries an uncertainty estimate (CI, std across seeds, or bootstrap).
 - Ablations cover the design choices most likely to be load-bearing.
 - Failure cases catalogued, not buried.
+
+## Pilots vs headline
+
+Pilots from `20-methodology/pilots/` may be re-run here at scale to inform design tweaks pre-protocol-lock. Once `protocol-lock.md` exists, only the locked headline runs against the held-out partition. Anything else stays on dev split.
 
 ## Promotion to shared/
 

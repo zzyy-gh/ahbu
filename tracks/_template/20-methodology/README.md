@@ -1,13 +1,16 @@
 # Track layer 20 — Methodology
 
-**Mandate.** Translate this track's admitted pain point into a concrete, feasible technical approach.
+**Mandate.** Translate this track's admitted pain point into a concrete, feasible technical approach. **Layer 20 owns the feasibility check** that layer 10 deliberately deferred — if no approach in the design space fits our compute / data / time envelope, retire-cancel the track with a documented reason. That is a valid outcome, not a failure.
+
+**Stance.** Try novel / creative / out-of-box approaches before defaulting to standard ones. Pilot probes (small, fast, unregistered) are encouraged to inform open design choices. Pre-register only the headline experiment in `protocol-lock.md`. Within-layer iteration is agile; the critic-pass gate to layer 30 is strict.
 
 **Knowledge.** Track's admission record (`layers/10-pain-point-validation/admission/<slug>.md`), public datasets, OSS biosignal stacks (MNE-Python, NeuroKit2, BioSPPy, sklearn, PyTorch, HuggingFace), recent literature, **`shared/` substrate**.
 
 **Output.**
-- `approach.md` — chosen approach: data, preprocessing, model family, evaluation protocol, ablations, uncertainty reporting plan, **shared-substrate dependencies + contributions**.
-- `risk-register.md` — known risks, mitigations, kill criteria.
-- `protocol-lock.md` — frozen evaluation protocol (held-out split, metrics) — locked **before** running experiments.
+- `approach.md` — chosen approach: data, preprocessing, model family, evaluation protocol, ablations, uncertainty reporting plan, **shared-substrate dependencies + contributions**, novelty/exploration notes.
+- `pilots/` *(optional)* — small fast probes that informed the approach. Not pre-registered. Quick scripts + brief notes. Captured for transparency, not held to headline rigour.
+- `risk-register.md` — known risks, mitigations, kill criteria, retire-cancel triggers.
+- `protocol-lock.md` — frozen evaluation protocol for the **headline experiment** (held-out split, metrics) — locked before headline runs. Pilots do NOT touch this protocol.
 
 **Help target.** Layer 10 admission record for this track.
 

@@ -12,12 +12,12 @@ The active state of the AHBU pain-point portfolio. Each candidate has a status; 
 
 ## Candidates under investigation
 
-| Slug | Status | Date | Critic verdict | Open issues |
-|------|--------|------|----------------|-------------|
-| `cross-subject-eeg` | candidate | 2026-05-02 | pending (critic-shortlist found premature deferral) | candidate's §6 evaluation-diagnostic program not yet checked against EEG-FM-Bench scope |
-| `ecg-ppg-realworld` | candidate | 2026-05-02 | shortlist promotes; critic flags skin-tone feasibility + abstention novelty unchecked | scope narrowing required (AFib abstention vs skin-tone), constituency outreach not yet attempted |
-| `sleep-staging` | candidate | 2026-05-02 | shortlist promotes; critic flags Dreem-DOD registration friction + clinician interviews missing | scope narrowing (clinical-population eval vs HRV-only EEG-less staging), DUA timeline for SHHS/MESA |
-| `affective-state` | candidate | 2026-05-02 | shortlist defers on redundancy; critic disputes — feature-reproducibility angle (2/164) is not redundant | scope = "honest evaluation tooling" or "arousal-only reframing"; construct-validity risk acknowledged |
+| Slug | Status | Date | Real-pain critic verdict | Notes (advisory, not gating) |
+|------|--------|------|--------------------------|------------------------------|
+| `cross-subject-eeg` | candidate | 2026-05-02 | pending — real-pain evidence strong (BCI illiteracy 15–30 %, MOABB punts on cross-subject, EEG-FM critical review) | Layer-20 input: EEG-FM-Bench delivers 0/5 of §6 program (gap-closing pass confirmed). Pre-reg recommended per defensibility critic. |
+| `ecg-ppg-realworld` | candidate | 2026-05-02 | pending — real-pain evidence strong (FDA flag, JAHA 2024 clinician burden, JMIR meta-analysis) | Layer-20 input: skin-tone-stratified scope blocked at Fitzpatrick granularity (BUT-PPG n=48, MIMIC-PERform-Ethnicity binary B/W n=100/group only); abstention scope still feasible if narrowed to PTB-XL + PPV-at-fixed-alert-rate or single-lead conformal. |
+| `sleep-staging` | candidate | 2026-05-02 | pending — real-pain evidence strong (sleep-tech burden, AASM v3, wearable misclassification) | Layer-20 input: OSA-stratified scope underpowered on DUA-free data (Dreem-DOD-O n=55); recoverable via NSRR DUA submitted day-one with 4-wk kill criterion. HRV-only scope independently feasible. |
+| `affective-state` | candidate | 2026-05-02 | pending — real-pain mixed (academic emotion contested, safety/clinical angle stronger) | Layer-20 input: feature-stability sub-scope (2/164 reproducibility per arXiv:2508.10561) is the strongest framing; pre-reg feature list + dataset + arousal operationalization. |
 
 ## Deferred
 

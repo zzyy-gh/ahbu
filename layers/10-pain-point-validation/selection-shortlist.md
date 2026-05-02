@@ -1,3 +1,5 @@
+> **Historical note (post-rubric-loosening, 2026-05-02):** Written under v1 rubric. Recommendations to defer based on feasibility / scope / redundancy are no longer blocking — admission gates on real-pain only. Use the comparison + reasoning here as advisory input to layer 20 methodology, not as portfolio-admission decisions.
+
 # Selection shortlist (post-broad-survey)
 
 Built 2026-05-02 by lead from `candidates/{cross-subject-eeg, ecg-ppg-realworld, sleep-staging, affective-state}.md`.

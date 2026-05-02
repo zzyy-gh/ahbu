@@ -1,3 +1,5 @@
+> **Historical note (post-rubric-loosening, 2026-05-02):** Written under v1 rubric where defensibility gated admission. Rubric now loosened — defensibility is advisory; layer 40 decides what is publishable. Findings here are still useful as risk-register input for the affected tracks at layer 20.
+
 # Critic pass -- negative-result defensibility -- 2026-05-02
 
 **Scope of this pass.** Pressure-test whether each proposed scope can yield a publishable, actionable, or informative result if the headline finding is null. Addresses selection-shortlist.md Admission debate must bullet 4, which raised the question but did not answer it. Power estimates use a two-sample proportion test (alpha=0.05, power=0.80, two-sided; z_alpha=1.96, z_beta=0.842) unless otherwise noted.

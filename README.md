@@ -16,13 +16,20 @@ The portfolio is bounded by the quality bar, not by count. Better to carry one r
 
 ## Hard constraints (per pain point)
 
-Every pain point admitted to the portfolio must meet these — no exceptions, no "we'll fix it later":
+Three constraints, each enforced at the layer that can actually verify it. No "fix it later" within a layer's responsibility, but layers may cancel-back to the portfolio when their constraint fails — that is a normal outcome, not a failure of discipline.
 
-- **Pain point must be real.** Validate that some constituency (researchers, clinicians, BCI users, wearable developers, end users, model developers, and so on) actually feels the pain. Explore broadly before anchoring. No invented problems, no future-work-section hypotheticals. Document the validation. If you can't validate, drop the candidate or escalate.
-- **Solution must be feasible.** Public data only, open-source tooling, compute you have access to, time horizon scoped at the start. If a candidate solution requires resources you don't have, it's out of scope.
-- **Quality bar is non-negotiable.** Honest held-out testing, ablations where they matter, failure modes characterized, uncertainty reported. No metric gaming, no cherry-picking, no hand-waving.
+- **Pain point must be real.** *Enforced at layer 10 (admission gate).* Validate that some constituency genuinely feels the pain. No invented problems, no future-work-section hypotheticals. Document the validation. If you can't validate, drop the candidate or escalate.
+- **Solution must be feasible.** *Enforced at layer 20 (methodology).* Public data, OSS tooling, available compute, scoped time horizon. Layer 20 may cancel a track that turns out infeasible at our envelope — *not pre-judged at admission time*, because pre-judging filters out creative or novel framings before they get a real look.
+- **Quality bar is non-negotiable.** *Enforced at layers 20 / 30 / 40.* Honest held-out testing, ablations where they matter, failure modes characterized, uncertainty reported. No metric gaming, no cherry-picking, no hand-waving.
 
-A candidate that fails any of the three is dropped or deferred — not downgraded into the portfolio with caveats.
+A track exits the portfolio either by completing its analysis layer (`retire-completed`) or by being cancelled from a downstream layer with a documented reason (`retire-cancelled`). Both are valid; both produce lessons.
+
+## Stance
+
+- **Novelty welcome.** Creative, out-of-box, or unconventional framings are first-class. The admission gate does not pre-filter on "we don't know how to build this" — that is precisely what layer 20 explores.
+- **Pilot vs headline.** Within a track, fast exploratory pilots inform methodology without pre-registration. Only the headline experiment is pre-registered and protocol-locked.
+- **Cancel-back is healthy.** A clean cancel from layer 20 / 30 / 40 with documented reason is a portfolio update, not a project failure. Lessons captured either way.
+- **Within-layer agile, cross-layer gated.** Each layer iterates fast internally; layer boundaries hold a critic-pass + human-checkpoint gate. Goal: maximise (new output − risk).
 
 ## Reuse principle
 
