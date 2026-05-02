@@ -1,4 +1,4 @@
-> **Spec:** `20-plan/sleep-staging/approach.md`
+> **Spec:** `10-pain-point/sleep-staging/admission.md`
 
 # Pilot probes — sleep-staging
 

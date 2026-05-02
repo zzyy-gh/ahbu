@@ -1,0 +1,16 @@
+# Pinned upper bounds; resolver picks compatible lowers.
+# Most of this track is CPU-bound (HRV + RF). U-Sleep needs GPU torch.
+torch>=2.4,<3
+numpy>=1.26,<3
+scipy>=1.13,<2
+scikit-learn>=1.5,<2
+pandas>=2.2,<3
+mne>=1.8,<2
+neurokit2>=0.2.10,<1
+matplotlib>=3.9,<4
+seaborn>=0.13,<1
+h5py>=3.10,<4
+pyyaml>=6,<7
+# U-Sleep is fetched separately from https://github.com/perslev/U-Sleep
+# (its requirements may conflict with the above; install in a separate
+# sub-venv if needed)
