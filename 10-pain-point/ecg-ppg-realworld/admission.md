@@ -58,6 +58,6 @@ Wearable users (consumer + patient), GPs, cardiac techs, athletes, dark-skin use
 ## Human checkpoint
 
 - [x] Lead reviewed critic verdict and evidence — 2026-05-02
-- [ ] Human approval to instantiate `20-plan/ecg-ppg-realworld/`
+- [x] Human approval to instantiate `20-plan/ecg-ppg-realworld/` — 2026-05-02 (m-3 fix per methodology-critic; checkbox checked once layer 20 was instantiated)
 
 When human approves, instantiate `20-plan/ecg-ppg-realworld/`, update `10-pain-point/shared/portfolio.md`, tag `v2-ecg-ppg-realworld-admitted`.
