@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "device": "NVIDIA GeForce GTX 1650 with Max-Q Design",
+  "dtype": "float32",
+  "input_shape": [
+    1,
+    22,
+    1,
+    200
+  ],
+  "output_shape": [
+    1,
+    200
+  ],
+  "n_params_M": 6.02,
+  "peak_vram_gb": 0.097,
+  "threshold_gb": 3.0,
+  "forward_time_s": 6.976,
+  "pilot": "P-1",
+  "spec": "20-plan/cross-subject-eeg/pilots-README.md#P-1"
+}
