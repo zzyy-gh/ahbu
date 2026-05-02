@@ -1,0 +1,6 @@
+{
+  "status": "fail",
+  "reason": "labram package not importable. See code/README.md.",
+  "pilot": "P-3",
+  "spec": "20-plan/cross-subject-eeg/pilots-README.md#P-3"
+}

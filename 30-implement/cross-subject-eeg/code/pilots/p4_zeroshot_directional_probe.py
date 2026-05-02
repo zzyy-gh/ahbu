@@ -18,15 +18,22 @@ import time
 from pathlib import Path
 
 
-def labram_zeroshot(model, device, X_train, y_train, X_test):
+def _to_labram_input(X_batch, n_channels, n_patches, device):
+    import torch
+
+    x_np = X_batch.reshape(X_batch.shape[0], n_channels, n_patches, 200)
+    return torch.tensor(x_np, device=device, dtype=torch.float32)
+
+
+def labram_zeroshot(model, device, X_train, y_train, X_test, n_channels, n_patches, input_chans):
     import numpy as np
     import torch
 
     with torch.no_grad():
         emb_train = []
         for i in range(X_train.shape[0]):
-            x = torch.tensor(X_train[i : i + 1], device=device, dtype=torch.float32)
-            emb_train.append(model(x).detach().cpu().numpy().flatten())
+            x = _to_labram_input(X_train[i : i + 1], n_channels, n_patches, device)
+            emb_train.append(model.forward_features(x, input_chans=input_chans).detach().cpu().numpy().flatten())
         emb_train = np.array(emb_train)
 
         classes = np.unique(y_train)
@@ -34,8 +41,8 @@ def labram_zeroshot(model, device, X_train, y_train, X_test):
 
         preds = []
         for i in range(X_test.shape[0]):
-            x = torch.tensor(X_test[i : i + 1], device=device, dtype=torch.float32)
-            emb = model(x).detach().cpu().numpy().flatten()
+            x = _to_labram_input(X_test[i : i + 1], n_channels, n_patches, device)
+            emb = model.forward_features(x, input_chans=input_chans).detach().cpu().numpy().flatten()
             dists = np.linalg.norm(centroids - emb, axis=1)
             preds.append(classes[int(np.argmin(dists))])
     return np.array(preds)
@@ -58,10 +65,16 @@ def probe(checkpoint_path: Path, n_subjects: int) -> dict:
     if not torch.cuda.is_available():
         return {"status": "fail", "reason": "CUDA not available"}
 
+    here = Path(__file__).resolve().parents[1]
+    labram_root = here / "external" / "LaBraM"
+    if not labram_root.exists():
+        return {"status": "fail", "reason": "external/LaBraM not found."}
+    sys.path.insert(0, str(labram_root))
+
     try:
-        from labram import LaBraMBase  # type: ignore
-    except ImportError:
-        return {"status": "fail", "reason": "labram package not importable."}
+        from modeling_finetune import labram_base_patch200_200  # type: ignore
+    except ImportError as e:
+        return {"status": "fail", "reason": f"LaBraM import failed: {e}"}
 
     device = torch.device("cuda")
 
@@ -71,8 +84,16 @@ def probe(checkpoint_path: Path, n_subjects: int) -> dict:
     X, y, meta = paradigm.get_data(dataset=dataset, subjects=subjects)
     cov = Covariances(estimator="oas").transform(X)
 
+    n_channels = int(X.shape[1])
+    n_patches = max(int(X.shape[2]) // 200, 1)
+    truncated_samples = n_patches * 200
+    X = X[:, :, :truncated_samples]
+    input_chans = list(range(n_channels + 1))
+
+    model = labram_base_patch200_200(EEG_size=truncated_samples, init_values=0.1)
     state = torch.load(checkpoint_path, map_location=device)
-    model = LaBraMBase()
+    if isinstance(state, dict) and "model" in state:
+        state = state["model"]
     model.load_state_dict(state, strict=False)
     model.to(device).eval()
 
@@ -85,7 +106,10 @@ def probe(checkpoint_path: Path, n_subjects: int) -> dict:
         mdm.fit(cov[train_mask], y[train_mask])
         acc_mdm = float(np.mean(mdm.predict(cov[test_mask]) == y[test_mask]))
 
-        preds_fm = labram_zeroshot(model, device, X[train_mask], y[train_mask], X[test_mask])
+        preds_fm = labram_zeroshot(
+            model, device, X[train_mask], y[train_mask], X[test_mask],
+            n_channels, n_patches, input_chans,
+        )
         acc_fm = float(np.mean(preds_fm == y[test_mask]))
 
         per_subject.append(

@@ -32,13 +32,20 @@ def probe(checkpoint_path: Path, n_subjects: int) -> dict:
     if not torch.cuda.is_available():
         return {"status": "fail", "reason": "CUDA not available"}
 
-    try:
-        from labram import LaBraMBase  # type: ignore
-    except ImportError:
+    here = Path(__file__).resolve().parents[1]
+    labram_root = here / "external" / "LaBraM"
+    if labram_root.exists():
+        sys.path.insert(0, str(labram_root))
+    else:
         return {
             "status": "fail",
-            "reason": "labram package not importable. See code/README.md.",
+            "reason": "external/LaBraM not found. Run: git clone https://github.com/935963004/LaBraM external/LaBraM",
         }
+
+    try:
+        from modeling_finetune import labram_base_patch200_200  # type: ignore
+    except ImportError as e:
+        return {"status": "fail", "reason": f"LaBraM import failed: {e}"}
 
     device = torch.device("cuda")
 
@@ -47,10 +54,19 @@ def probe(checkpoint_path: Path, n_subjects: int) -> dict:
     subjects = dataset.subject_list[:n_subjects]
     X, y, meta = paradigm.get_data(dataset=dataset, subjects=subjects)
 
+    n_channels = int(X.shape[1])
+    n_patches = max(int(X.shape[2]) // 200, 1)
+    truncated_samples = n_patches * 200
+    X = X[:, :, :truncated_samples]
+
+    model = labram_base_patch200_200(EEG_size=truncated_samples, init_values=0.1)
     state = torch.load(checkpoint_path, map_location=device)
-    model = LaBraMBase()
+    if isinstance(state, dict) and "model" in state:
+        state = state["model"]
     model.load_state_dict(state, strict=False)
     model.to(device).eval()
+
+    input_chans = list(range(n_channels + 1))
 
     n_total = X.shape[0]
     n_nondegenerate = 0
@@ -58,9 +74,10 @@ def probe(checkpoint_path: Path, n_subjects: int) -> dict:
 
     with torch.no_grad():
         for i in range(n_total):
-            x = torch.tensor(X[i : i + 1], device=device, dtype=torch.float32)
+            x_np = X[i : i + 1].reshape(1, n_channels, n_patches, 200)
+            x = torch.tensor(x_np, device=device, dtype=torch.float32)
             try:
-                out = model(x)
+                out = model.forward_features(x, input_chans=input_chans)
                 emb = out.detach().cpu().numpy().flatten()
                 if np.any(np.isnan(emb)):
                     failure_modes["nan"] += 1

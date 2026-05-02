@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "n_subjects": 5,
+  "n_epochs_total": 2880,
+  "n_nondegenerate": 2880,
+  "fraction_nondegenerate": 1.0,
+  "threshold": 0.9,
+  "failure_modes": {
+    "nan": 0,
+    "all_zero": 0,
+    "constant": 0
+  },
+  "n_channels": 22,
+  "n_samples": 1000,
+  "pilot": "P-3",
+  "spec": "20-plan/cross-subject-eeg/pilots-README.md#P-3"
+}
