@@ -1,10 +1,8 @@
-# AHBU project — agent operating notes
+# AHBU — agent operating notes
 
-This is the AI-Assisted Heart-Brain Understanding endeavor. See `README.md` for the charter and `00-vision/README.md` for the vision and hard constraints.
+How this project is structured and operated. For the WHY, read `00-vision/README.md`. For 30-second orientation, read `README.md`.
 
-The project is a **portfolio**, not single-shot. Multiple pain points may run sequentially or in parallel. Reuse across them is first-class.
-
-## Architecture at a glance
+## Architecture
 
 ```mermaid
 graph BT
@@ -37,7 +35,7 @@ Solid arrows = help relations (Layered Endeavor Framework). A pain point exists 
 
 ```
 00-vision/
-  README.md                              # vision charter
+  README.md                              # vision, hard constraints, stance
 
 10-pain-point/                           # discover + validate pain
   README.md
@@ -70,33 +68,25 @@ Solid arrows = help relations (Layered Endeavor Framework). A pain point exists 
   README.md
   compute.md                             # binding compute envelope + opt-in fallbacks
   datasets.md                            # public dataset registry
-  <slug>/                                # one folder per running track
+  <slug>/                                # one folder per running track (lazy)
     code/                                # reproducible scripts
     runs/                                # logs, metrics, configs
     results.md                           # primary metrics, ablations, uncertainty
-  shared/
+  shared/                                # lazy materialize
     data/                                # loaders, partition utilities, leakage detectors
     eval/                                # metrics, calibration, abstention, uncertainty wrappers
     models/                              # baselines (Riemannian, 1D-ResNet, classical pipelines)
 
-bin/                                     # repo tooling
+bin/                                     # repo tooling (transcript sync, hooks)
 transcripts/                             # raw sub-agent JSONL (auto-synced pre-commit)
 .claude/agents/                          # agent personas
 ```
 
 Each layer's `README.md` declares **layer expertise, mandate, knowledge, output, help target, layout, stance**. Don't reach across layers — flow goes through help relations.
 
-## Operating discipline
+## Hard-constraint enforcement (layer routing)
 
-- **Critic pass** required at each help-boundary milestone (admission, protocol-lock, results sign-off, analysis sign-off). Use `.claude/agents/critic.md` persona via Agent tool or as a teammate.
-- **Human checkpoint** at end of each meaningful chunk. Don't barrel through admission → planning → implementation without check-in.
-- **Pain-point validation = required artifact** for every admission. No `20-plan/<slug>/` exists without `10-pain-point/<slug>/admission.md`.
-- **Reuse first.** Methodology designers must scan `30-implement/shared/` before drafting `approach.md`. Promote eagerly to `shared/` once ≥1 plausible second consumer exists.
-- **Use git.** Commit as you go. Tag milestones: `v0-vision`, `v1-shortlisted`, `v2-<slug>-admitted`, `v3-<slug>-protocol-locked`, `v4-<slug>-results`, `v5-<slug>-retired`. Branches encouraged for parallel tracks.
-
-### Hard-constraint enforcement (layer routing)
-
-Three hard constraints from `README.md`, each enforced where it can actually be verified:
+The three hard constraints declared in `00-vision/README.md` are not all enforced at the same layer. Each is enforced where it can actually be verified:
 
 | Constraint | Enforced at | Mechanism |
 |---|---|---|
@@ -106,43 +96,27 @@ Three hard constraints from `README.md`, each enforced where it can actually be 
 
 Both `retire-completed` and `retire-cancelled` are valid portfolio exits. Both produce lessons.
 
+## Operating discipline
+
+- **Critic pass** required at each help-boundary milestone (admission, protocol-lock, results sign-off, analysis sign-off). Use `.claude/agents/critic.md` persona via Agent tool or as a teammate.
+- **Human checkpoint** at end of each meaningful chunk. Don't barrel through admission → planning → implementation without check-in.
+- **Pain-point validation = required artifact** for every admission. No `20-plan/<slug>/` exists without `10-pain-point/<slug>/admission.md`.
+- **Reuse first.** Methodology designers must scan `30-implement/shared/` before drafting `approach.md`. Promote eagerly to `shared/` once ≥1 plausible second consumer exists.
+- **Use git.** Commit as you go. Tag milestones: `v0-vision`, `v1-shortlisted`, `v2-<slug>-admitted`, `v3-<slug>-protocol-locked`, `v4-<slug>-results`, `v5-<slug>-retired`. Branches encouraged for parallel tracks.
+
 ### Within-layer agile, cross-layer gated
 
 - Within a layer, iterate fast: cheap drafts, pilots, probes, scratch experiments. The cost of wrong inside a layer is low.
 - At layer boundaries, gate strictly: critic pass + human checkpoint. The cost of advancing wrong work to the next layer is high.
 
-This is the operational form of the README's "efficiency over ceremony" stance.
+This is the operational form of the vision's "efficiency over ceremony" stance.
 
 ### Pilot vs headline (per track, layer 20 + 30)
 
-- **Pilots:** small, fast, exploratory. Live as a list in `20-plan/<slug>/pilots-README.md`; executed by `30-implement/<slug>/code/` against the dev split. Not pre-registered.
+- **Pilots:** small, fast, exploratory. Listed in `20-plan/<slug>/pilots-README.md`; executed by `30-implement/<slug>/code/` against the dev split. Not pre-registered.
 - **Headline:** the experiment that supports the track's primary claim. Pre-registered in `20-plan/<slug>/protocol-lock.md` before it runs. Touches the held-out partition exactly once, in `30-implement/<slug>/`.
 
 Pilots feed methodology; headline feeds analysis. Don't conflate them.
-
-## Agent team
-
-`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` enabled in `.claude/settings.local.json`. Use **agent teams** (peer-to-peer + shared task list) for phases that benefit from cross-challenge / parallel exploration — admission gap-closing, methodology debate, parallel-track work, ablation runs. Use plain subagents (Agent tool) for one-shot lookups.
-
-Defined personas in `.claude/agents/`:
-
-- `pain-point-researcher` — surveys constituencies + literature for evidence of real pain.
-- `critic` — adversarial review at help boundaries.
-- `methodologist` — designs the approach in layer 20; reuse-scan against `30-implement/shared/` first.
-
-Spawn additional teammates (data-plumber, baseline-builder, ablation-runner, writer, shared-promoter) when work calls for it.
-
-Env-var changes take effect on **next session**. Restart before agent-team commands become available.
-
-## Kickoff for fresh session
-
-1. Read `00-vision/README.md` and the four layer READMEs.
-2. Read `10-pain-point/shared/portfolio.md` for active state.
-3. Pick up the next chunk per the active track's layer:
-   - At layer 10 → real-pain-researcher closes any open gaps in `<slug>/candidate.md`; critic does real-pain pass; admission record drafted.
-   - At layer 20 → methodologist drafts `approach.md` + `risk-register.md` + `protocol-lock.md`; critic at 20→30 boundary; pilots designed.
-   - At layer 30 → execute pilots first (dev-only); execute headline once locked; results to `<slug>/results.md`.
-   - Back at layer 20 → interpret in `findings.md` + `limitations.md` + `lessons.md`; critic on analysis sign-off.
 
 ## Quality bar (cross-cutting, applies to every track)
 
@@ -153,3 +127,36 @@ Env-var changes take effect on **next session**. Restart before agent-team comma
 - No metric gaming, no cherry-picking, no hand-waving.
 
 If meeting the quality bar with the chosen approach is impossible, that is itself a finding — surface it, don't paper over.
+
+## Resources
+
+`30-implement/compute.md` — binding compute envelope (currently GTX 1650 4 GB) + track-specific opt-in fallbacks (e.g., Kaggle T4 for FM feature extraction).
+`30-implement/datasets.md` — public dataset registry.
+
+## Agent team
+
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` enabled in `.claude/settings.local.json`. Use **agent teams** (peer-to-peer + shared task list) for phases that benefit from cross-challenge / parallel exploration — admission gap-closing, methodology debate, parallel-track work, ablation runs. Use plain subagents (Agent tool) for one-shot lookups.
+
+Defined personas in `.claude/agents/`:
+
+- `pain-point-researcher` — surveys constituencies + literature for evidence of real pain. Operates in layer 10.
+- `critic` — adversarial review at help boundaries.
+- `methodologist` — designs the approach in layer 20; reuse-scan against `30-implement/shared/` first.
+
+Spawn additional teammates (data-plumber, baseline-builder, ablation-runner, writer, shared-promoter) when work calls for it.
+
+Env-var changes take effect on **next session**. Restart before agent-team commands become available.
+
+## Transcripts
+
+Every sub-agent JSONL transcript is auto-synced from `~/.claude/projects/<project>/<session>/subagents/` into `transcripts/` via the `bin/sync-transcripts.ps1` script, wired as a git pre-commit hook by `bin/install-hooks.ps1`. Manifest at `transcripts/MANIFEST.md` maps agentId → persona/task.
+
+## Kickoff for fresh session
+
+1. Read `00-vision/README.md` and the four layer READMEs.
+2. Read `10-pain-point/shared/portfolio.md` for active state.
+3. Pick up the next chunk per the active track's layer:
+   - At layer 10 → real-pain-researcher closes any open gaps in `<slug>/candidate.md`; critic does real-pain pass; admission record drafted.
+   - At layer 20 → methodologist drafts `approach.md` + `risk-register.md` + `protocol-lock.md`; critic at 20→30 boundary; pilots designed.
+   - At layer 30 → execute pilots first (dev-only); execute headline once locked; results to `<slug>/results.md`.
+   - Back at layer 20 → interpret in `findings.md` + `limitations.md` + `lessons.md`; critic on analysis sign-off.
