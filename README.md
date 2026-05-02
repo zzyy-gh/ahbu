@@ -6,6 +6,34 @@ https://raw.githubusercontent.com/zzyy-gh/alibrary/main/inbox/layered-endeavor-f
 
 This README adds only what's specific to this project; the framework covers the rest.
 
+## Architecture at a glance
+
+```mermaid
+graph BT
+    subgraph TR["tracks/  (one per admitted pain point)"]
+        T1["Track A<br/>20-methodology · 30-experiments · 40-analysis"]
+        T2["Track B<br/>20-methodology · 30-experiments · 40-analysis"]
+        T3["Track …"]
+    end
+    SH["shared/<br/>data · eval · models<br/>(reusable substrate)"]
+    PP["layers/10-pain-point-validation/<br/>portfolio registry + admission gate"]
+    V["layers/00-vision/<br/>vision · hard constraints · reuse principle"]
+
+    T1 -- helps --> PP
+    T2 -- helps --> PP
+    T3 -- helps --> PP
+    PP -- helps --> V
+
+    T1 <-. consume / promote .-> SH
+    T2 <-. consume / promote .-> SH
+    T3 <-. consume / promote .-> SH
+
+    style V fill:#fef3c7,stroke:#f59e0b
+    style SH fill:#e0f2fe,stroke:#0284c7
+```
+
+Solid arrows = help relations (Layered Endeavor Framework). Dashed lines = sharing channel (no responsibility, just artifact flow). Vision is root; everything aligns transitively.
+
 ## Vision
 
 Resolve real pain points in AI-assisted heart-brain understanding — the use of physiological signals (heart and brain) to infer body state, mental state, or intent.

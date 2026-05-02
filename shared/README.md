@@ -6,6 +6,28 @@ Cross-track reusable artifacts. Tracks consume from here and contribute back her
 
 The portfolio model expects reuse to be first-class. Without a shared layer, each track reinvents data loaders, eval harnesses, calibration tools, leakage diagnostics, and baselines. With a shared layer, the second track is faster than the first, the third faster than the second, and the project accumulates engineering leverage.
 
+## Promotion flow
+
+```mermaid
+flowchart LR
+    TA["Track A<br/>builds artifact<br/>in 30-experiments/code/"]
+    TB["Track B<br/>plausible<br/>second consumer"]
+    P{"Promotion gate<br/>≥1 plausible<br/>2nd consumer<br/>+ spec + test"}
+    SH["shared/&lt;area&gt;/&lt;artifact&gt;/<br/>spec · code · test"]
+    TC["Track C<br/>future consumer"]
+
+    TA -- builds --> P
+    TB -. signals reuse .-> P
+    P -- yes --> SH
+    P -- not yet --> TA
+    SH -- imported by --> TA
+    SH -- imported by --> TB
+    SH -- imported by --> TC
+
+    style SH fill:#e0f2fe,stroke:#0284c7
+    style P fill:#fef3c7,stroke:#f59e0b
+```
+
 ## Promotion rule
 
 - An artifact lives in a track until it has ≥1 plausible second consumer. Then promote.

@@ -8,6 +8,41 @@ A track is the concrete pursuit of one admitted pain point, organized through th
 
 The pain-point validation layer (10) and the vision (00) are project-level, not per-track. They sit one level up.
 
+## Track lifecycle (diagram)
+
+```mermaid
+flowchart TB
+    A["Admission record<br/>layers/10-…/admission/&lt;slug&gt;.md"]
+    RS["Reuse scan<br/>(survey shared/)"]
+    M["20-methodology/<br/>approach.md · risks · protocol-lock"]
+    C1{"Critic pass"}
+    E["30-experiments/<br/>code · runs · results"]
+    C2{"Critic pass"}
+    AN["40-analysis/<br/>findings · limitations · lessons"]
+    C3{"Critic pass"}
+    R["Retired<br/>(portfolio.md updated)"]
+    SH[("shared/<br/>data · eval · models")]
+
+    A --> RS
+    RS <-. survey .-> SH
+    RS --> M
+    M -. promote candidates .-> SH
+    M --> C1
+    C1 -- pass --> E
+    C1 -- block --> M
+    E <-. imports .-> SH
+    E --> C2
+    C2 -- pass --> AN
+    AN --> C3
+    C3 -- pass --> R
+    R -. lessons / promotions .-> SH
+
+    style R fill:#dcfce7,stroke:#16a34a
+    style SH fill:#e0f2fe,stroke:#0284c7
+```
+
+Each critic gate is a help-boundary milestone. Reuse-scan happens before methodology drafts; promotion happens any time an artifact gains a plausible second consumer.
+
 ## Track lifecycle
 
 1. **Instantiation.** Copy `tracks/_template/` to `tracks/<slug>/`. Set the slug from `layers/10-pain-point-validation/admission/<slug>.md`.

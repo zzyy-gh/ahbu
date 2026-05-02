@@ -10,6 +10,26 @@
 
 ---
 
+## Endeavor tree (Layered Endeavor Framework view)
+
+```mermaid
+graph BT
+    T1[Track A]
+    T2[Track B]
+    Tn[Track …]
+    PP["Pain-Point Validation<br/>+ Portfolio (layer 10)"]
+    V["Vision (layer 00)<br/>root"]
+
+    T1 -- helps --> PP
+    T2 -- helps --> PP
+    Tn -- helps --> PP
+    PP -- helps --> V
+
+    style V fill:#fef3c7,stroke:#f59e0b
+```
+
+Vision is the root of alignment. Every track inherits its alignment to vision transitively through the portfolio layer (one-help rule). Cross-track sharing happens via `shared/` and is **not** a help relation — it is a sharing channel that does not carry responsibility.
+
 ## Why this endeavor exists
 
 Resolve **real pain points** in AI-assisted heart-brain understanding — the use of physiological signals (heart and brain) to infer body state, mental state, or intent.

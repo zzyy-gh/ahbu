@@ -14,6 +14,36 @@
 
 ---
 
+## Admission flow
+
+```mermaid
+flowchart LR
+    C["Candidate<br/>candidates/&lt;slug&gt;.md"]
+    G{"Admission gate<br/>real · feasible<br/>quality-bar plan<br/>reuse expectations"}
+    CR["Critic pass<br/>(.claude/agents/critic.md)"]
+    HC["Human checkpoint"]
+    A["Admission record<br/>admission/&lt;slug&gt;.md"]
+    T["Track instantiated<br/>tracks/&lt;slug&gt;/"]
+    D["Deferred<br/>(reason + re-eval conditions)"]
+    DR["Dropped"]
+
+    C --> G
+    G -- pass --> CR
+    G -- gap closeable --> C
+    G -- fails hard constraint --> DR
+    CR -- pass / pass-with-fixes --> HC
+    CR -- block --> D
+    HC -- approve --> A
+    HC -- send back --> CR
+    A --> T
+
+    style A fill:#dcfce7,stroke:#16a34a
+    style D fill:#fee2e2,stroke:#dc2626
+    style DR fill:#fee2e2,stroke:#dc2626
+```
+
+Admission is per-candidate. Multiple admissions over time = portfolio.
+
 ## Candidate spec (template)
 
 Each candidate file must contain:
