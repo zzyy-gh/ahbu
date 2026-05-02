@@ -14,7 +14,7 @@ The active state of the AHBU pain-point portfolio. Each candidate has a status; 
 
 | Slug | Status | Date | Real-pain critic verdict | Notes (advisory, not gating) |
 |------|--------|------|--------------------------|------------------------------|
-| `affective-state` | candidate | 2026-05-02 | pending — real-pain mixed (academic emotion contested, safety/clinical angle stronger) | Layer-20 input: feature-stability sub-scope (2/164 reproducibility per arXiv:2508.10561) is the strongest framing; pre-reg feature list + dataset + arousal operationalization. |
+| `affective-state` | admitted | `20-plan/affective-state/` (pending) | 2026-05-02 | Critic `pass-with-fixes` (DEAP-label inversion + WESAD figures fixed). Operative constituency = academic EEG / wearable-stress communities. Layer-20 advisory: feature-stability audit sub-scope (2/164 reproducibility per arXiv:2508.10561) is the strongest framing; pre-reg feature list + dataset + arousal operationalization. |
 
 ## Deferred
 
