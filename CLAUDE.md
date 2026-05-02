@@ -4,6 +4,34 @@ This is the AI-Assisted Heart-Brain Understanding endeavor. See `README.md` for 
 
 The project is a **portfolio**, not single-shot. Multiple pain points may run sequentially or in parallel. Reuse across them is first-class.
 
+## Architecture at a glance
+
+```mermaid
+graph BT
+    subgraph TR["tracks/  (one per admitted pain point)"]
+        T1["Track A<br/>20-methodology · 30-experiments · 40-analysis"]
+        T2["Track B<br/>20-methodology · 30-experiments · 40-analysis"]
+        T3["Track …"]
+    end
+    SH["shared/<br/>data · eval · models<br/>(reusable substrate)"]
+    PP["layers/10-pain-point-validation/<br/>portfolio registry + admission gate"]
+    V["layers/00-vision/<br/>vision · hard constraints · reuse principle"]
+
+    T1 -- helps --> PP
+    T2 -- helps --> PP
+    T3 -- helps --> PP
+    PP -- helps --> V
+
+    T1 <-. consume / promote .-> SH
+    T2 <-. consume / promote .-> SH
+    T3 <-. consume / promote .-> SH
+
+    style V fill:#fef3c7,stroke:#f59e0b
+    style SH fill:#e0f2fe,stroke:#0284c7
+```
+
+Solid arrows = help relations (Layered Endeavor Framework). Dashed lines = sharing channel (no responsibility, just artifact flow). Vision is root; everything aligns transitively.
+
 ## How this repo is structured
 
 ```

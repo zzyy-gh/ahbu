@@ -6,34 +6,6 @@ https://raw.githubusercontent.com/zzyy-gh/alibrary/main/inbox/layered-endeavor-f
 
 This README adds only what's specific to this project; the framework covers the rest.
 
-## Architecture at a glance
-
-```mermaid
-graph BT
-    subgraph TR["tracks/  (one per admitted pain point)"]
-        T1["Track A<br/>20-methodology · 30-experiments · 40-analysis"]
-        T2["Track B<br/>20-methodology · 30-experiments · 40-analysis"]
-        T3["Track …"]
-    end
-    SH["shared/<br/>data · eval · models<br/>(reusable substrate)"]
-    PP["layers/10-pain-point-validation/<br/>portfolio registry + admission gate"]
-    V["layers/00-vision/<br/>vision · hard constraints · reuse principle"]
-
-    T1 -- helps --> PP
-    T2 -- helps --> PP
-    T3 -- helps --> PP
-    PP -- helps --> V
-
-    T1 <-. consume / promote .-> SH
-    T2 <-. consume / promote .-> SH
-    T3 <-. consume / promote .-> SH
-
-    style V fill:#fef3c7,stroke:#f59e0b
-    style SH fill:#e0f2fe,stroke:#0284c7
-```
-
-Solid arrows = help relations (Layered Endeavor Framework). Dashed lines = sharing channel (no responsibility, just artifact flow). Vision is root; everything aligns transitively.
-
 ## Vision
 
 Resolve real pain points in AI-assisted heart-brain understanding — the use of physiological signals (heart and brain) to infer body state, mental state, or intent.
@@ -54,7 +26,7 @@ A candidate that fails any of the three is dropped or deferred — not downgrade
 
 ## Reuse principle
 
-Anything produced inside one track that could plausibly serve another track gets surfaced as a **shared artifact** (in `shared/`) with its own small spec. Examples: a leakage-clean evaluation harness, a domain-shift diagnostic, a calibrated-abstention wrapper, a per-cohort stratifier, a baseline implementation. Tracks consume from `shared/`; tracks contribute back to `shared/`. The shared layer earns its keep when ≥2 tracks use the same artifact — promote eagerly but not prematurely.
+Anything produced for one pain point that could plausibly serve another gets surfaced as a shared artifact with its own small spec. Examples: a leakage-clean evaluation harness, a domain-shift diagnostic, a calibrated-abstention wrapper, a per-cohort stratifier, a baseline implementation. Tracks consume from the shared layer and contribute back to it. The shared layer earns its keep when at least two tracks use the same artifact — promote eagerly but not prematurely.
 
 ## Project operations
 
@@ -63,9 +35,11 @@ The framework leaves operations to the project. For this one:
 - **Critic at help boundaries.** Before declaring a milestone complete, run a critic pass — a separate agent invocation or structured self-review — against the spec the layer received. Looks for spec drift, unjustified shortcuts, missing validation, premature claims.
 - **Human checkpoint at the end of each meaningful complete chunk.** Self-assess; when the chunk is right, hand over for review. Escalate sooner only when a hard constraint conflicts with the vision, a discovered fact changes the project's premise, or the chunk as scoped cannot meet the quality bar.
 - **Pain-point validation is a required artifact** for every portfolio admission.
-- **Portfolio discipline.** A registry (`layers/10-pain-point-validation/portfolio.md`) tracks candidate · admitted · deferred · completed pain points with reasons. Admission requires critic-pass + human checkpoint.
+- **Portfolio discipline.** A registry of candidate · admitted · deferred · retired pain points is maintained, with reasons. Admission requires critic-pass + human checkpoint.
 - **Use git.** Commit as you go. Tag milestones. Branches encouraged for parallel track work.
 
 ## Start
 
-Read the framework. Establish your resource picture. Validate candidate pain points (broad before deep). Admit one or more to the portfolio. For each admitted pain point, instantiate a track from `tracks/_template/` and proceed through methodology → experiments → analysis. Surface reusable artifacts to `shared/` as they emerge.
+Read the framework. Establish your resource picture. Validate candidate pain points (broad before deep). Admit one or more to the portfolio. For each admitted pain point, run methodology → experiments → analysis under the quality bar. Surface reusable artifacts as they emerge.
+
+Implementation details (repo layout, agent personas, kickoff sequence, milestone tags) live in `CLAUDE.md`.
