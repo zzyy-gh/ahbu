@@ -1,6 +1,6 @@
 # AHBU project — agent operating notes
 
-This is the AI-Assisted Heart-Brain Understanding endeavor. See `README.md` for the charter and `layers/00-vision/README.md` for the vision and hard constraints.
+This is the AI-Assisted Heart-Brain Understanding endeavor. See `README.md` for the charter and `00-vision/README.md` for the vision and hard constraints.
 
 The project is a **portfolio**, not single-shot. Multiple pain points may run sequentially or in parallel. Reuse across them is first-class.
 
@@ -8,77 +8,101 @@ The project is a **portfolio**, not single-shot. Multiple pain points may run se
 
 ```mermaid
 graph BT
-    subgraph TR["tracks/  (one per admitted pain point)"]
-        T1["Track A<br/>20-methodology · 30-experiments · 40-analysis"]
-        T2["Track B<br/>20-methodology · 30-experiments · 40-analysis"]
-        T3["Track …"]
-    end
-    SH["shared/<br/>data · eval · models<br/>(reusable substrate)"]
-    PP["layers/10-pain-point-validation/<br/>portfolio registry + admission gate"]
-    V["layers/00-vision/<br/>vision · hard constraints · reuse principle"]
+    PT1["Pain point A"]
+    PT2["Pain point B"]
+    PTn["Pain point …"]
+    IM["30 Implement<br/>code · runs · shared substrate · compute · datasets"]
+    PL["20 Plan<br/>design + interpret<br/>(per admitted track)"]
+    PP["10 Pain-Point<br/>discover + admission<br/>(per candidate)"]
+    V["00 Vision<br/>root: why + hard constraints"]
 
-    T1 -- helps --> PP
-    T2 -- helps --> PP
-    T3 -- helps --> PP
+    IM -- helps --> PL
+    PL -- helps --> PP
     PP -- helps --> V
 
-    T1 <-. consume / promote .-> SH
-    T2 <-. consume / promote .-> SH
-    T3 <-. consume / promote .-> SH
+    PT1 -. instance .-> PP
+    PT1 -. instance .-> PL
+    PT1 -. instance .-> IM
+    PT2 -. instance .-> PP
+    PT2 -. instance .-> PL
+    PTn -. instance .-> PP
 
     style V fill:#fef3c7,stroke:#f59e0b
-    style SH fill:#e0f2fe,stroke:#0284c7
+    style IM fill:#e0f2fe,stroke:#0284c7
 ```
 
-Solid arrows = help relations (Layered Endeavor Framework). Dashed lines = sharing channel (no responsibility, just artifact flow). Vision is root; everything aligns transitively.
+Solid arrows = help relations (Layered Endeavor Framework). A pain point exists as a folder inside whichever layers it has reached. Each layer also owns a `shared/` subfolder for layer-scoped substrate that doesn't belong to any single pain point.
 
-## How this repo is structured
+## Repo layout
 
 ```
-layers/                   # project-level (apply across all tracks)
-  00-vision/              # root. vision, hard constraints, reuse principle.
-  10-pain-point-validation/   # portfolio mgmt: candidates, validation, admission.
-    candidates/           # one .md per investigated candidate
-    portfolio.md          # registry: candidate / admitted / deferred / retired
-    admission/<slug>.md   # admission record (critic + human checkpoint)
-    validation-log.md
-    critic-shortlist.md   # current critic pass on shortlist
-    selection-shortlist.md  # comparison across candidates
+00-vision/
+  README.md                              # vision charter
 
-shared/                   # cross-track reusable substrate
-  data/  eval/  models/   # promoted artifacts; ≥1 plausible 2nd consumer required
+10-pain-point/                           # discover + validate pain
+  README.md
+  <slug>/                                # one folder per investigated candidate
+    candidate.md                         # pain statement, evidence, gap-closing notes
+    admission.md                         # admission record (only once admitted)
+    real-pain-critic.md                  # critic pass on real-pain claim
+  shared/
+    portfolio.md                         # registry: candidate / admitted / deferred / retired
+    validation-log.md                    # chronological log
+    selection-shortlist.md               # historical (v1 rubric)
+    critic-shortlist.md                  # historical (v1 rubric)
+    critic-defensibility.md              # historical (v1 rubric, now advisory)
 
-tracks/                   # one dir per admitted pain point
-  _template/              # copy this to instantiate a new track
-  <slug>/
-    README.md             # track summary + status
-    20-methodology/       # approach.md, risk-register.md, protocol-lock.md
-    30-experiments/       # code/, runs/, results.md
-    40-analysis/          # findings.md, limitations.md, next.md, lessons.md
+20-plan/                                 # pain → technical: design + interpret
+  README.md
+  <slug>/                                # one folder per admitted track
+    approach.md                          # data, model, eval, ablations, uncertainty, novelty
+    risk-register.md                     # risks, mitigations, kill criteria, retire-cancel triggers
+    protocol-lock.md                     # pre-registered headline (frozen)
+    methodology-critic.md                # critic at 20→30 boundary
+    pilots-README.md                     # pilot probes (dev-only, not pre-registered)
+    findings.md                          # post-headline interpretation
+    limitations.md                       # post-headline honest limitations
+    lessons.md                           # post-headline; promotion candidates for shared/
+  shared/
+    reuse-sketches/                      # per-candidate cross-track-leverage sketches
 
-resources/                # compute.md, datasets.md (project-level)
-.claude/agents/           # personas: pain-point-researcher, critic, methodologist
+30-implement/                            # technical execution
+  README.md
+  compute.md                             # binding compute envelope + opt-in fallbacks
+  datasets.md                            # public dataset registry
+  <slug>/                                # one folder per running track
+    code/                                # reproducible scripts
+    runs/                                # logs, metrics, configs
+    results.md                           # primary metrics, ablations, uncertainty
+  shared/
+    data/                                # loaders, partition utilities, leakage detectors
+    eval/                                # metrics, calibration, abstention, uncertainty wrappers
+    models/                              # baselines (Riemannian, 1D-ResNet, classical pipelines)
+
+bin/                                     # repo tooling
+transcripts/                             # raw sub-agent JSONL (auto-synced pre-commit)
+.claude/agents/                          # agent personas
 ```
 
-Each layer / track-layer `README.md` declares **mandate, knowledge, output, help target**. Don't reach across layers — flow goes through help relations.
+Each layer's `README.md` declares **layer expertise, mandate, knowledge, output, help target, layout, stance**. Don't reach across layers — flow goes through help relations.
 
 ## Operating discipline
 
-- **Critic pass** required at each help-boundary milestone (admission, protocol-lock, experiments sign-off, analysis sign-off). Use `.claude/agents/critic.md` persona via Agent tool or as a teammate.
-- **Human checkpoint** at end of each meaningful chunk. Don't barrel through admission → methodology → experiments without check-in.
-- **Pain-point validation = required artifact** for every admission. No track instantiates without admission record.
-- **Reuse first.** Methodology designers must scan `shared/` before drafting `approach.md`. Promote eagerly to `shared/` once ≥1 plausible second consumer exists.
+- **Critic pass** required at each help-boundary milestone (admission, protocol-lock, results sign-off, analysis sign-off). Use `.claude/agents/critic.md` persona via Agent tool or as a teammate.
+- **Human checkpoint** at end of each meaningful chunk. Don't barrel through admission → planning → implementation without check-in.
+- **Pain-point validation = required artifact** for every admission. No `20-plan/<slug>/` exists without `10-pain-point/<slug>/admission.md`.
+- **Reuse first.** Methodology designers must scan `30-implement/shared/` before drafting `approach.md`. Promote eagerly to `shared/` once ≥1 plausible second consumer exists.
 - **Use git.** Commit as you go. Tag milestones: `v0-vision`, `v1-shortlisted`, `v2-<slug>-admitted`, `v3-<slug>-protocol-locked`, `v4-<slug>-results`, `v5-<slug>-retired`. Branches encouraged for parallel tracks.
 
 ### Hard-constraint enforcement (layer routing)
 
-The three hard constraints declared in `README.md` are not all enforced at the same layer. Each is enforced where it can actually be verified:
+Three hard constraints from `README.md`, each enforced where it can actually be verified:
 
 | Constraint | Enforced at | Mechanism |
 |---|---|---|
 | Pain point real | Layer 10 (admission gate) | Real-pain critic pass + human checkpoint. Failing → don't admit. |
-| Solution feasible | Layer 20 (methodology) | Methodology design must fit our envelope. Failing → retire-cancel back to layer 10. NOT pre-judged at admission — pre-judging filters out creative framings before they get a real look. |
-| Quality bar | Layers 20 / 30 / 40 | Layer 20 designs the protocol that meets it; layer 30 executes; layer 40 signs off honestly. Failing at any → retire-cancel back to layer 10. |
+| Solution feasible | Layer 20 (plan) | Methodology design must fit our envelope. Failing → retire-cancel back to layer 10. NOT pre-judged at admission — pre-judging filters out creative framings before they get a real look. |
+| Quality bar | Layer 20 (protocol pre-reg + analysis sign-off) + Layer 30 (execution) | Layer 20 designs the protocol that meets it; layer 30 executes; layer 20 interprets honestly post-headline. Failing at any → retire-cancel back to layer 10. |
 
 Both `retire-completed` and `retire-cancelled` are valid portfolio exits. Both produce lessons.
 
@@ -89,10 +113,10 @@ Both `retire-completed` and `retire-cancelled` are valid portfolio exits. Both p
 
 This is the operational form of the README's "efficiency over ceremony" stance.
 
-### Pilot vs headline (per track, layers 20 + 30)
+### Pilot vs headline (per track, layer 20 + 30)
 
-- **Pilots:** small, fast, exploratory experiments inside layer 20 to inform methodology choices. Not pre-registered. May touch dev split. Live under `tracks/<slug>/20-methodology/pilots/`.
-- **Headline:** the experiment that supports the track's primary claim. Pre-registered in `tracks/<slug>/20-methodology/protocol-lock.md` before it runs. Touches the held-out partition exactly once.
+- **Pilots:** small, fast, exploratory. Live as a list in `20-plan/<slug>/pilots-README.md`; executed by `30-implement/<slug>/code/` against the dev split. Not pre-registered.
+- **Headline:** the experiment that supports the track's primary claim. Pre-registered in `20-plan/<slug>/protocol-lock.md` before it runs. Touches the held-out partition exactly once, in `30-implement/<slug>/`.
 
 Pilots feed methodology; headline feeds analysis. Don't conflate them.
 
@@ -104,30 +128,21 @@ Defined personas in `.claude/agents/`:
 
 - `pain-point-researcher` — surveys constituencies + literature for evidence of real pain.
 - `critic` — adversarial review at help boundaries.
-- `methodologist` — designs concrete approach after admission; reuse-scan first.
+- `methodologist` — designs the approach in layer 20; reuse-scan against `30-implement/shared/` first.
 
 Spawn additional teammates (data-plumber, baseline-builder, ablation-runner, writer, shared-promoter) when work calls for it.
 
 Env-var changes take effect on **next session**. Restart before agent-team commands become available.
 
-## Kickoff for fresh session (admission gap-closing)
+## Kickoff for fresh session
 
-After session restart with agent teams active:
-
-1. Read `layers/10-pain-point-validation/{portfolio.md, selection-shortlist.md, critic-shortlist.md}` and all `candidates/*.md`.
-2. Spawn team:
-   - `pain-point-researcher` × 1 — close verification gaps for top candidates (constituency outreach attempts, dataset license/skin-tone-label verification, selective-classification literature check, EEG-FM-Bench scope re-examination).
-   - `critic` × 1 — pressure-test each candidate's negative-result defensibility.
-   - `methodologist` × 1 — sketch reuse-aware approach per top candidate (what enters `shared/`).
-   - Lead = orchestrator.
-3. Shared task list: per top candidate × {close-gaps, defensibility, reuse-sketch}. Teammates self-claim.
-4. Converge on first admission. Write `layers/10-pain-point-validation/admission/<slug>.md`. Update `portfolio.md`.
-5. Human checkpoint before instantiating `tracks/<slug>/`.
-6. After admission: copy `tracks/_template/` → `tracks/<slug>/`, methodology phase begins. Reuse-scan against `shared/` (empty on first track — promotion candidates surface here).
-
-## Resource picture
-
-`resources/compute.md`. Binding constraint: 4 GB VRAM. Plan accordingly.
+1. Read `00-vision/README.md` and the four layer READMEs.
+2. Read `10-pain-point/shared/portfolio.md` for active state.
+3. Pick up the next chunk per the active track's layer:
+   - At layer 10 → real-pain-researcher closes any open gaps in `<slug>/candidate.md`; critic does real-pain pass; admission record drafted.
+   - At layer 20 → methodologist drafts `approach.md` + `risk-register.md` + `protocol-lock.md`; critic at 20→30 boundary; pilots designed.
+   - At layer 30 → execute pilots first (dev-only); execute headline once locked; results to `<slug>/results.md`.
+   - Back at layer 20 → interpret in `findings.md` + `limitations.md` + `lessons.md`; critic on analysis sign-off.
 
 ## Quality bar (cross-cutting, applies to every track)
 

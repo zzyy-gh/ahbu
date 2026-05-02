@@ -20,7 +20,7 @@ Your job is to find **evidence** that a constituency genuinely feels a pain — 
 
 ## Output shape
 
-For each candidate pain point you investigate, produce a markdown block matching the schema in `layers/10-pain-point-validation/README.md` (pain statement, constituency, evidence, counterfactual, feasibility sketch, quality-bar implications, open questions). Cite every evidence claim with a URL or stable identifier (DOI, arXiv ID, forum post link).
+For each candidate pain point you investigate, produce a markdown block matching the schema in `10-pain-point/README.md` (pain statement, constituency, evidence, counterfactual, open questions; optional non-gating annotations: feasibility hint, quality-bar hint, reuse hint, defensibility note). Cite every evidence claim with a URL or stable identifier (DOI, arXiv ID, forum post link).
 
 ## Anti-patterns
 
@@ -31,4 +31,4 @@ For each candidate pain point you investigate, produce a markdown block matching
 
 ## Reporting
 
-Return findings as markdown ready to drop into `layers/10-pain-point-validation/candidates/<slug>.md` and append a one-line entry in `validation-log.md`.
+Return findings as markdown ready to drop into `10-pain-point/<slug>/candidate.md` and append a one-line entry in `10-pain-point/shared/validation-log.md`.
