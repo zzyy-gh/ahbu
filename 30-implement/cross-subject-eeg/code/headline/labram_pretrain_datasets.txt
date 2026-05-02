@@ -1,0 +1,27 @@
+# LaBraM pre-training corpus per arXiv:2405.18765 §3.1.
+# One dataset name per line. Used by leakage_audit.py to flag overlap
+# with cross-subject-eeg evaluation datasets.
+# This list is reproduced from the paper as best-effort; if the published
+# corpus differs (e.g., LaBraM authors update it), update this file BEFORE
+# running the headline (and re-run the audit). Note in protocol-lock that
+# the audit result is a LOWER BOUND if the corpus list is incomplete.
+TUAB
+TUEV
+SEED
+SEED-IV
+SEED-V
+FACED
+BCICIV_2a
+BCICIV_2b
+DEAP
+MAHNOB
+HCI
+SHHS
+ISRUC-Sleep
+HMC-PSG
+M3CV
+SPIS-Resting-State
+EEGEyeNet
+Mental-Arithmetic
+PhysioNet-Motor-Movement
+SpisRsvp

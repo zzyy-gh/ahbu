@@ -1,0 +1,29 @@
+{
+  "status": "pass",
+  "n_cases_passed": 3,
+  "n_cases_total": 3,
+  "cases": [
+    {
+      "case": "all reproducible (rho=0.5, n=1500/dataset, 5 features)",
+      "n_reproducible": 5,
+      "expected_min": 5,
+      "ok": true
+    },
+    {
+      "case": "no reproducible (rho=0.0)",
+      "n_reproducible": 0,
+      "expected_max": 0,
+      "ok": true
+    },
+    {
+      "case": "sign-inconsistent (f0 +/+/- across datasets)",
+      "feature_0_reproducible": false,
+      "n_reproducible": 4,
+      "expected_f0_reproducible": false,
+      "expected_n": 4,
+      "ok": true
+    }
+  ],
+  "pilot": "P-6",
+  "spec": "20-plan/affective-state/pilots-README.md#P-6"
+}
