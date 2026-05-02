@@ -1,0 +1,48 @@
+# Layer 00 — Vision (root)
+
+**Mandate.** Define why this endeavor exists and what counts as success.
+
+**Knowledge.** Founder intent (project README), the Layered Endeavor Framework, the broad domain of physiological-signal understanding (cardiac + neural).
+
+**Output.** This document.
+
+**Help target.** None (root).
+
+---
+
+## Why this endeavor exists
+
+Resolve **real pain points** in AI-assisted heart-brain understanding — the use of physiological signals (heart and brain) to infer body state, mental state, or intent.
+
+Domain spans (non-exhaustive): ECG / PPG / HRV; EEG / MEG / fNIRS; sleep staging; affective state inference; cognitive load; intent decoding (BCI); arrhythmia detection; biomarker discovery; cross-subject generalization; cross-dataset robustness; multimodal heart-brain fusion.
+
+## Who we serve (candidate constituencies)
+
+Researchers · clinicians · BCI users · wearable developers · end users (patients, consumers) · ML model developers working on biosignals.
+
+The vision does not pre-commit to a constituency. The pain-point validation layer (10) chooses one based on evidence.
+
+## Hard constraints (non-negotiable)
+
+1. **Pain-point real and validated.** Some constituency genuinely feels it; we have evidence.
+2. **Solution feasible.** Public data, OSS tooling, available compute, scoped time horizon.
+3. **Quality bar:** honest held-out testing · ablations where they matter · failure modes characterized · uncertainty reported. No metric gaming, no cherry-picking, no hand-waving.
+
+If any constraint conflicts irreconcilably with progress: escalate, don't paper over.
+
+## Resource picture (initial)
+
+See `resources/compute.md`. Summary: GTX 1650 4 GB VRAM, Python 3.11, modest local compute. No large-scale training. Feasible regimes: classical ML, small DL models, fine-tuning small heads on pretrained features, careful evaluation.
+
+## Project ops (delegated from README)
+
+- Critic pass at every help boundary before milestone declared complete.
+- Human checkpoint at end of each meaningful chunk (e.g., pain-point selection, methodology lock, first results).
+- Pain-point validation = required artifact (layer 10).
+- Git: commit as we go, tag milestones, branches for parallel exploration.
+
+## Cross-cutting concerns entering at vision
+
+- **Honesty / quality bar** (above) — propagates to every layer.
+- **Reproducibility** — public data, deterministic seeds where possible, documented environment.
+- **Scope discipline** — feasible > ambitious. Drop scope before dropping rigor.
