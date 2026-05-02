@@ -19,8 +19,28 @@ import sys
 from pathlib import Path
 
 
+DATASET_ALIASES = {
+    "bnci2014001": "bciciv2a",
+    "bnci2014_001": "bciciv2a",
+    "bnci2014002": "bciciv2b",
+    "bnci2014_002": "bciciv2b",
+    "bcicompetitionivdataset2a": "bciciv2a",
+    "bcicompetitionivdataset2b": "bciciv2b",
+    "physionetmotormovement": "physionetmotormovement",
+    "physionetmi": "physionetmotormovement",
+    "hbn": "hbn",
+    "hbnr9": "hbn",
+    "hbnr10": "hbn",
+    "hbnr11": "hbn",
+    "healthybrainnetwork": "hbn",
+    "hmcpsg": "hmcpsg",
+    "hmcsleepstaging": "hmcpsg",
+}
+
+
 def normalize(name: str) -> str:
-    return name.lower().replace("_", "").replace("-", "").replace(" ", "")
+    base = name.lower().replace("_", "").replace("-", "").replace(" ", "")
+    return DATASET_ALIASES.get(base, base)
 
 
 def check_dataset_overlap(pretrain_list, eval_list):

@@ -1,0 +1,24 @@
+{
+  "fm_name": "LaBraM-Base",
+  "eval_set_name": "headline-eval",
+  "test_audit": {
+    "overlap_datasets": [
+      "PhysionetMI"
+    ],
+    "clean": false,
+    "n_pretrain": 20,
+    "n_eval": 2
+  },
+  "dev_audit": {
+    "overlap_datasets": [
+      "BNCI2014_001"
+    ],
+    "clean": false,
+    "n_pretrain": 20,
+    "n_eval": 3
+  },
+  "test_clean": false,
+  "dev_clean": false,
+  "ablation_2_will_trigger": true,
+  "headline_can_proceed": false
+}
