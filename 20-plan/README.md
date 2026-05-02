@@ -80,11 +80,3 @@ Document these decisions in `approach.md` under a **Shared substrate** section.
 - After `protocol-lock.md` is drafted, before headline runs: critic pass at the 20 → 30 boundary. Locked protocol must not be modified silently — changes require an explicit unlock note + critic re-pass.
 - After `findings.md` is drafted, before retirement: critic pass on analysis sign-off (interpretation, limitations, what is and isn't claimed).
 
-## Spec convention
-
-Every work artifact in this layer must start with a one-line `> **Spec:** <path>` quote naming the upstream artifact whose mandate it serves. Per-file recommended specs:
-
-- `<slug>/{approach,risk-register,protocol-lock}.md` → `10-pain-point/<slug>/admission.md`
-- `<slug>/pilots-README.md` → `<slug>/approach.md`
-- `<slug>/methodology-critic.md` → `<slug>/{approach,risk-register,protocol-lock}.md` (artifacts under review) + `10-pain-point/<slug>/admission.md` (the spec the layer received)
-- `<slug>/{findings,limitations,lessons}.md` (post-headline) → `30-implement/<slug>/results.md` + `<slug>/protocol-lock.md`

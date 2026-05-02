@@ -89,10 +89,3 @@ This is a deliberate loosening: we want the portfolio open to creative / novel /
 
 A separate agent invocation reviews each admission against the candidate spec on the **real-pain dimension only**. The critic does NOT block on feasibility, solution shape, defensibility, or reuse leverage; those are advisory notes only. Critic report saved as `<slug>/real-pain-critic.md`.
 
-## Spec convention
-
-Every work artifact in this layer must start with a one-line `> **Spec:** <path>` quote naming the upstream artifact whose mandate it serves. This makes the help relation traceable at file granularity (not only at layer-README granularity). Per-file recommended specs:
-
-- `<slug>/candidate.md` → `10-pain-point/README.md` (candidate spec section)
-- `<slug>/admission.md` → `00-vision/README.md` (hard constraint #1: pain real and validated) + `10-pain-point/README.md` (validation rubric)
-- `<slug>/real-pain-critic.md` → `<slug>/candidate.md` (the artifact under review) + `10-pain-point/README.md` (rubric the critic is applying)

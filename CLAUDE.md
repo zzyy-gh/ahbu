@@ -111,6 +111,25 @@ Both `retire-completed` and `retire-cancelled` are valid portfolio exits. Both p
 
 This is the operational form of the vision's "efficiency over ceremony" stance.
 
+### Spec convention
+
+Every work artifact in every layer starts with a one-line `> **Spec:** <path>` quote naming the upstream artifact whose mandate it serves. Makes the help relation traceable at file granularity (not only at layer-README granularity). Per-file mapping:
+
+| File | Spec |
+|---|---|
+| `10-pain-point/<slug>/candidate.md` | `10-pain-point/README.md` (candidate spec section) |
+| `10-pain-point/<slug>/admission.md` | `00-vision/README.md` (hard constraint #1: pain real and validated) + `10-pain-point/README.md` (validation rubric) |
+| `10-pain-point/<slug>/real-pain-critic.md` | `<slug>/candidate.md` (under review) + `10-pain-point/README.md` (rubric the critic applies) |
+| `20-plan/<slug>/{approach,risk-register,protocol-lock}.md` | `10-pain-point/<slug>/admission.md` |
+| `20-plan/<slug>/pilots-README.md` | `<slug>/approach.md` |
+| `20-plan/<slug>/methodology-critic.md` | `<slug>/{approach,risk-register,protocol-lock}.md` (under review) + `10-pain-point/<slug>/admission.md` (the spec layer 20 received) |
+| `20-plan/<slug>/{findings,limitations,lessons}.md` *(post-headline)* | `30-implement/<slug>/results.md` + `<slug>/protocol-lock.md` |
+| `30-implement/<slug>/code/README.md` | `20-plan/<slug>/approach.md` |
+| `30-implement/<slug>/code/pilots/p*.py` | `20-plan/<slug>/pilots-README.md#P-N` (in module docstring; also surfaced in JSON `spec` field) |
+| `30-implement/<slug>/code/headline/*.py` | `20-plan/<slug>/protocol-lock.md` |
+| `30-implement/<slug>/results.md` | `20-plan/<slug>/protocol-lock.md` |
+| `30-implement/shared/<area>/<artifact>/README.md` | the originating-track promotion event + the second-consumer that triggered promotion |
+
 ### Pilot vs headline (per track, layer 20 + 30)
 
 - **Pilots:** small, fast, exploratory. Listed in `20-plan/<slug>/pilots-README.md`; executed by `30-implement/<slug>/code/` against the dev split. Not pre-registered.
