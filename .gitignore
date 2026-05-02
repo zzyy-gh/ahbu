@@ -39,3 +39,6 @@ Thumbs.db
 .env
 scratch/
 tmp/
+
+# Windows / shell crash artifacts
+*.stackdump
