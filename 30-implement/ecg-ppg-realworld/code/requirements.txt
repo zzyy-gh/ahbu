@@ -1,0 +1,12 @@
+# Pinned upper bounds; resolver picks compatible lowers.
+torch>=2.4,<3
+numpy>=1.26,<3
+scipy>=1.13,<2
+scikit-learn>=1.5,<2
+pandas>=2.2,<3
+wfdb>=4.1,<5            # PTB-XL native loader
+neurokit2>=0.2.10,<1    # for the 12-feature classical baseline
+matplotlib>=3.9,<4
+seaborn>=0.13,<1
+h5py>=3.10,<4
+fastai>=2.7,<3          # xresnet1d50 lives here

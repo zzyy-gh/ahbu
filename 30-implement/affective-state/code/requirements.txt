@@ -1,0 +1,11 @@
+# CPU-only stack. cvxpy installed separately per pilots-README P-2 smoke test.
+numpy>=1.26,<3
+scipy>=1.13,<2
+scikit-learn>=1.5,<2
+pandas>=2.2,<3
+neurokit2>=0.2.10,<1
+matplotlib>=3.9,<4
+seaborn>=0.13,<1
+statsmodels>=0.14,<1   # for FDR correction
+pyyaml>=6,<7           # for feature_schema_v1.yaml
+h5py>=3.10,<4          # MAHNOB-HCI is HDF5
