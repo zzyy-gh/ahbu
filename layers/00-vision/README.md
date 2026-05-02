@@ -16,13 +16,21 @@ Resolve **real pain points** in AI-assisted heart-brain understanding — the us
 
 Domain spans (non-exhaustive): ECG / PPG / HRV; EEG / MEG / fNIRS; sleep staging; affective state inference; cognitive load; intent decoding (BCI); arrhythmia detection; biomarker discovery; cross-subject generalization; cross-dataset robustness; multimodal heart-brain fusion.
 
+## Portfolio, not single-shot
+
+The endeavor maintains a **portfolio** of pain points — explored sequentially or in parallel as resources permit. Every admission to the portfolio must independently pass the hard constraints below; the portfolio is gated by quality, not capped by count.
+
+**Reuse is first-class.** Datasets, eval harnesses, baselines, calibration tools, leakage diagnostics, domain-shift probes — anything plausibly useful across tracks gets promoted into `shared/` with a small spec. Tracks consume from and contribute back to the shared layer. The reuse principle is one of the reasons the portfolio model is preferred over single-shot.
+
 ## Who we serve (candidate constituencies)
 
 Researchers · clinicians · BCI users · wearable developers · end users (patients, consumers) · ML model developers working on biosignals.
 
-The vision does not pre-commit to a constituency. The pain-point validation layer (10) chooses one based on evidence.
+The vision does not pre-commit to a constituency. The pain-point validation layer (10) admits constituencies into the portfolio one at a time, evidence-gated.
 
-## Hard constraints (non-negotiable)
+## Hard constraints (non-negotiable, per pain point)
+
+Apply independently to every pain point admitted to the portfolio. Failing any → drop or defer; never downgrade with caveats.
 
 1. **Pain-point real and validated.** Some constituency genuinely feels it; we have evidence.
 2. **Solution feasible.** Public data, OSS tooling, available compute, scoped time horizon.

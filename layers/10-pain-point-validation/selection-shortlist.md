@@ -31,26 +31,29 @@ This shapes how each candidate is realistically scoped at our resources.
 
 **EEG cross-subject generalization** and **affective-state inference** share the same root pain (subject transfer + leakage). They differ on whether the labels are clinically grounded (sleep stages, motor imagery class) vs construct-contested (discrete emotions). For the AHBU quality bar, label-grounded variants are stronger.
 
-## Recommendation for selection debate
+## Recommendation for portfolio admission debate
 
-Top two for selection-phase scrutiny:
+Project model: portfolio. Each candidate that passes the admission gate (real · feasible · honest evaluation, plus reuse expectations) enters the portfolio as its own track. Sequencing — which is admitted first, which run in parallel — is a downstream operational call, not a selection.
 
-1. **`ecg-ppg-realworld`, narrowed.** Strongest external constituency (clinicians + consumers) with a quantified deployment cost, lowest data-access friction, and a distinctive contribution angle (calibrated abstention + stratified eval) that fits compute. Risk: pain is broad, must narrow before methodology — likely to **AFib alert PPV / abstention on PTB-XL + a PPG corpus** OR **skin-tone-stratified PPG eval** specifically.
-2. **`sleep-staging`, narrowed.** Strong constituency (sleep techs, pediatric/geriatric clinicians), label is clinically grounded, well-instrumented field with N1 / clinical-degradation gaps the field has already named. Risk: NSRR DUA admin lag; mitigation = start with Sleep-EDF + Dreem-DOD + HMC PSG (no DUA) and pursue SHHS/MESA in parallel.
+Initial admission ordering, ranked by gap-closing cost + reuse leverage:
 
-`cross-subject-eeg` deferred: feasible but most crowded; unique angle is "evaluation diagnostic on foundation models" which is valuable but narrow and already partly addressed by EEG-FM-Bench (arXiv:2508.17742).
+1. **`ecg-ppg-realworld`, narrowed.** Strongest external constituency (clinicians + consumers) with quantified deployment cost, lowest data-access friction. Distinctive contribution angle (calibrated abstention + stratified eval) fits compute. Reuse leverage: abstention/calibration utilities promote naturally to `shared/eval/`. Risk: pain is broad, must narrow before methodology — likely **AFib alert PPV / abstention on PTB-XL + a PPG corpus** OR **skin-tone-stratified PPG eval** specifically. Critic flagged: skin-tone framing feasibility-blocked unless operative dataset has Fitzpatrick-or-equivalent labels.
+2. **`sleep-staging`, narrowed.** Strong constituency (sleep techs, pediatric/geriatric clinicians), clinically-grounded labels, well-instrumented field. Reuse leverage: cohort-stratified eval + uncertainty wrappers promote to `shared/eval/`; HRV-only EEG-less staging shares feature/loader code with cardiac tracks. Risk: NSRR DUA admin lag; mitigation = start with Sleep-EDF + Dreem-DOD + HMC PSG (no DUA, modulo Dreem registration friction) and pursue SHHS/MESA in parallel.
+3. **`cross-subject-eeg`, undeferred per critic.** Critic showed deferral was premature — candidate's §6 evaluation-diagnostic program (subject + dataset + hardware-disjoint splits, 0/1/5/20-shot curves, pre-training-overlap audit) is not what EEG-FM-Bench delivered. Reuse leverage: leakage-clean splits + few-shot calibration curves promote to `shared/eval/` and are likely the highest cross-track payoff of any candidate.
+4. **`affective-state`, sub-scope only.** Discrete-emotion classification is construct-contested (Barrett) and redundant on leakage-only framings. The 2/164 feature-reproducibility finding (arXiv:2508.10561) supports a **feature-stability audit** sub-scope that is *not* redundant with Brookshire/Apicella. Admit only if scoped this way; otherwise defer.
 
-`affective-state` deferred: redundancy risk is real (Brookshire 2024 + Apicella 2024) and construct validity (Barrett) makes any positive claim fragile.
+Each ranked candidate must independently pass the admission gate. Ranking is preference, not entitlement.
 
-Selection debate must:
+## Admission debate must (per candidate)
 
-- Ask each top candidate: what would this look like as a **2-page approach.md** that the methodologist could lock?
-- Run **critic pass** against shortlist before committing.
-- Verify the constituency is **reachable for feedback** (not just citable).
-- Check the chosen scope is **defensible if results are negative** — a negative skin-tone-disparity result, or a negative abstention-improvement result, still has to be a valuable contribution.
+- Sketch what `tracks/<slug>/20-methodology/approach.md` would say as a 2-page draft, including the **Shared substrate** section (what consumes from / promotes to `shared/`).
+- Run a critic pass on the candidate's admission against the layer-10 rubric.
+- Verify constituency is **reachable for feedback** (not just citable). Log at least one outreach attempt.
+- Show the scope is **defensible if results are negative** — a null skin-tone disparity, a null abstention improvement, a null feature-reproducibility finding all need to be valid contributions.
 
-## What this shortlist deliberately does not yet do
+## What this shortlist deliberately does not do
 
-- Pick. Selection is a separate step (`selection.md`) gated by critic pass + human checkpoint.
-- Resolve verification gaps. Each candidate has open items; selection-phase deep-dive should close gaps for the top 1–2 only, not all four.
-- Commit to a methodology. That's layer 20.
+- Admit. Admission is a separate step per candidate (`admission/<slug>.md`) gated by critic-pass + human checkpoint.
+- Pick a single winner. Portfolio model — multiple admissions are expected.
+- Resolve verification gaps for all four. Gap-closing is per-candidate at admission time.
+- Commit to a methodology. That's the track's `20-methodology/` layer.
