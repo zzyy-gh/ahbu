@@ -1,0 +1,35 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "case": "known overlap",
+      "expected_overlap": [
+        "bnci2014_001"
+      ],
+      "expected_clean": false,
+      "got": {
+        "overlap_datasets": [
+          "bnci2014_001"
+        ],
+        "clean": false,
+        "n_pretrain": 2,
+        "n_eval": 2
+      },
+      "ok": true
+    },
+    {
+      "case": "no overlap",
+      "expected_overlap": [],
+      "expected_clean": true,
+      "got": {
+        "overlap_datasets": [],
+        "clean": true,
+        "n_pretrain": 2,
+        "n_eval": 2
+      },
+      "ok": true
+    }
+  ],
+  "pilot": "P-6",
+  "spec": "20-plan/cross-subject-eeg/pilots-README.md#P-6"
+}

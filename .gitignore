@@ -42,3 +42,4 @@ tmp/
 
 # Windows / shell crash artifacts
 *.stackdump
+30-implement/cross-subject-eeg/code/.venv/
