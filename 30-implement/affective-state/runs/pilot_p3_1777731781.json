@@ -1,0 +1,106 @@
+{
+  "status": "pass",
+  "wesad": {
+    "n_subjects": 15,
+    "n_passing_window_threshold": 15,
+    "per_subject": [
+      {
+        "subject": "S10",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 12,
+        "ok": true
+      },
+      {
+        "subject": "S11",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 11,
+        "ok": true
+      },
+      {
+        "subject": "S13",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 11,
+        "ok": true
+      },
+      {
+        "subject": "S14",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 11,
+        "ok": true
+      },
+      {
+        "subject": "S15",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 11,
+        "ok": true
+      },
+      {
+        "subject": "S16",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 11,
+        "ok": true
+      },
+      {
+        "subject": "S17",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 12,
+        "ok": true
+      },
+      {
+        "subject": "S2",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 10,
+        "ok": true
+      },
+      {
+        "subject": "S3",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 10,
+        "ok": true
+      },
+      {
+        "subject": "S4",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 10,
+        "ok": true
+      },
+      {
+        "subject": "S5",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 10,
+        "ok": true
+      },
+      {
+        "subject": "S6",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 10,
+        "ok": true
+      },
+      {
+        "subject": "S7",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 10,
+        "ok": true
+      },
+      {
+        "subject": "S8",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 11,
+        "ok": true
+      },
+      {
+        "subject": "S9",
+        "n_baseline_windows": 19,
+        "n_stress_windows": 10,
+        "ok": true
+      }
+    ],
+    "all_subjects_pass": true
+  },
+  "deap": {
+    "status": "skipped",
+    "reason": "DEAP dir not found at C:\\Users\\zzyy\\physionet_data\\DEAP\\data_preprocessed_python (likely not yet authorized)"
+  },
+  "pilot": "P-3",
+  "spec": "20-plan/affective-state/pilots-README.md#P-3"
+}
