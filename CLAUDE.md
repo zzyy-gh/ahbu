@@ -36,6 +36,16 @@ Spawn additional teammates (data-plumber, baseline-builder, ablation-runner, wri
 
 Note: env-var changes to `.claude/settings.local.json` take effect on the **next session**. The currently-running session must be restarted before agent-team commands become available.
 
+## Kickoff for fresh session (validation → selection → methodology)
+
+After session restart, with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` active:
+
+1. Read `layers/10-pain-point-validation/candidates/*.md` and `selection-shortlist.md`.
+2. Spawn team: `pain-point-researcher` (deep-dive verification of weak-evidence claims), `critic` (adversarial pressure on shortlist), `methodologist` (sketch feasibility per shortlisted candidate against `resources/compute.md`). Lead = orchestrator.
+3. Shared task list: one task per shortlisted candidate × {verify weak claims, critic pass, feasibility sketch}. Teammates self-claim.
+4. Converge → write `layers/10-pain-point-validation/selection.md` with chosen pain point + critic notes.
+5. Human checkpoint before methodology layer 20 begins.
+
 ## Resource picture
 
 `resources/compute.md`. Binding constraint: 4 GB VRAM. Plan accordingly.
