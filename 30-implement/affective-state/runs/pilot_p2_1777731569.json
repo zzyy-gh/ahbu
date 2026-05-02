@@ -1,0 +1,19 @@
+{
+  "status": "fail",
+  "cvxpy": {
+    "installed": false,
+    "import_ok": false,
+    "fallback": "highpass"
+  },
+  "ecg_window_n_peaks_nk": 81,
+  "ecg_pass_50_to_100": true,
+  "ecg_window_n_peaks_biosppy": null,
+  "biosppy_diff_pct_vs_nk": null,
+  "biosppy_within_10pct_check": null,
+  "eda_method_used": "highpass",
+  "eda_scl_mean": null,
+  "eda_pass_positive_finite": false,
+  "n_features_hrv_only": 86,
+  "pilot": "P-2",
+  "spec": "20-plan/affective-state/pilots-README.md#P-2"
+}
