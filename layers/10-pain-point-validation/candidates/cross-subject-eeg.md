@@ -120,3 +120,93 @@ What matters to the constituency: throughput (labs), deployability (clinicians a
 - OpenBCI forum: https://openbci.com/forum/
 - r/BCI subreddit
 - Neurable / Emotiv support / FAQ teams (consumer-side perspective)
+
+---
+
+## Gap-closing 2026-05-02
+
+*Authored by `pain-point-researcher`. Addresses the two verification gaps flagged in `critic-shortlist.md` (critical finding: premature deferral on "redundancy" grounds).*
+
+---
+
+### Gap 1 — EEG-FM-Bench scope vs candidate §6
+
+**Research method.** Read the full HTML rendering of arXiv:2508.17742v1 and v2, the GitHub repository (xw1216/EEG-FM-Bench), and a third-party literature review of the paper. Also examined a separate benchmark (Dingkun0817/EEG-FM-Benchmark) that appeared in the same search space. Findings below use v2 as the authoritative version (same conclusions confirmed in v1).
+
+**What EEG-FM-Bench (arXiv:2508.17742) actually does.**
+
+EEG-FM-Bench integrates 14 datasets across 10 paradigms and evaluates 7 EEG foundation models (BIOT, BENDR, LaBraM, EEGPT, CBraMod, plus 2 general time-series models) under standardized fine-tuning protocols. It enforces subject-independent train/validation/test splits for most datasets and reports mean ± standard deviation across 5 independent random-seed runs. It explicitly flags that subject-dependent splits "lead to artificially inflated metrics that do not reflect generalizability." Its main positive finding is that "compact architectures with domain-specific inductive biases consistently outperform significantly larger models."
+
+**Sub-question verdicts.**
+
+**(a) Subject-disjoint AND dataset-disjoint AND hardware-disjoint splits simultaneously?**
+
+OPEN. EEG-FM-Bench enforces subject-independent splits within each dataset. It does not evaluate across datasets in a disjoint manner (each of the 14 datasets is a separate evaluation task, not a hold-out from a cross-dataset pool). Hardware heterogeneity is not mentioned; the dataset table reports paradigm, channels, and epoch duration but not hardware manufacturer or EEG amplifier model. The candidate's §6 requirement — held-out partition simultaneously subject-disjoint AND dataset-disjoint AND hardware-disjoint — is not delivered. Exact paper text: "Datasets are partitioned into three splits using a subject-independent strategy while preserving label distribution. For emotion recognition, a subject-dependent strategy aligns with common protocols." (arXiv:2508.17742v2, Section on data processing.) Note: for SEED, SEED-V, and SEED-VII, a subject-*dependent* strategy is used, which the candidate's §6 specifically warns against.
+
+**(b) 0/1/5/20-shot calibration curves per subject?**
+
+OPEN. No few-shot or k-shot experiments appear anywhere in the paper. The benchmark implements three fine-tuning strategies (frozen backbone, full-parameter single-task, full-parameter multi-task) applied at the level of entire datasets, not per-subject shot counts. The TCPL calibration curve cited in §3b (1-shot 65.3 % → 20-shot 83.1 %) is from an entirely different paper. The candidate's §6 requirement to "report both zero-shot and 1/5/10/20-shot cross-subject numbers" is unaddressed by EEG-FM-Bench.
+
+**(c) Per-subject performance distributions (not averages)?**
+
+OPEN. The paper reports only aggregate mean ± SD across 5 random seeds — not per-subject distributions, not boxplots over subjects, not the tail-end performance of "BCI illiterate" subjects. The candidate's §6 requirement to "report per-subject distributions, not just means" is unaddressed. This matters because (per §3a) 15–30 % of subjects may be at chance, and aggregate averages hide that bimodal structure entirely.
+
+**(d) Pre-training-overlap audit?**
+
+OPEN. EEG-FM-Bench makes no attempt to determine whether any of the 7 evaluated foundation models pre-trained on the downstream datasets. This is precisely the leakage problem that arXiv:2507.11783 (the Critical Review) found in 4 of 10 surveyed models. EEG-FM-Bench inherited this gap rather than closing it. The candidate's §6 requirement for a "pre-training-data-overlap audit" is entirely unaddressed.
+
+**(e) Riemannian / classical-ML baselines under the same splits?**
+
+OPEN. EEG-FM-Bench compares only neural foundation models and general time-series neural models. No classical baselines (SVM, LDA, MDM, FgMDM, TSLDA, or any Riemannian geometry method) are included. The candidate's §6 requirement to "compare against strong within-subject and Riemannian baselines" is unaddressed.
+
+**Note on a second benchmark.** A separate repository (Dingkun0817/EEG-FM-Benchmark, arXiv not identified) evaluates 12 open-source EEG foundation models across 13 datasets / 9 BCI paradigms and does implement within-subject few-shot evaluation ("fine-tuning data volume approximately 1/20 ~ 1/100 of that typically used in LOSO protocols") alongside LOSO cross-subject evaluation. It also claims to include "traditional machine learning, CNN-based, and Transformer-based models trained from scratch" as baselines, but it is unclear whether "traditional ML" includes Riemannian methods specifically. It does not appear to include a pre-training-overlap audit or per-subject distributions. This benchmark partially addresses sub-questions (b) and (e), but is not what the shortlist cited (the shortlist cited arXiv:2508.17742 = xw1216/EEG-FM-Bench), and its classical-ML baseline scope remains ambiguous. Even if it addresses (b) and (e) partially, it does not close (a), (c), or (d).
+
+**Overall verdict — Gap 1: OPEN.**
+
+Of the five sub-requirements in candidate §6 that the critic's deferral assumed "EEG-FM-Bench already partly addressed," the primary cited benchmark (arXiv:2508.17742) addresses zero of them. The benchmark correctly names the subject-dependent-split inflation problem and enforces subject-independent splits — but that is the starting-line requirement the candidate already took as given, not the candidate's distinctive contribution. The shortlist's deferral rested on a conflation of "field has named the gap" with "field has filled the gap." The critic was correct. All five sub-requirements remain open research contributions as of May 2026.
+
+Sources: arXiv:2508.17742v1 https://arxiv.org/html/2508.17742v1 ; arXiv:2508.17742v2 https://arxiv.org/html/2508.17742v2 ; GitHub xw1216/EEG-FM-Bench https://github.com/xw1216/EEG-FM-Bench ; GitHub Dingkun0817/EEG-FM-Benchmark https://github.com/Dingkun0817/EEG-FM-Benchmark ; moonlight.io review https://www.themoonlight.io/en/review/eeg-fm-bench-a-comprehensive-benchmark-for-the-systematic-evaluation-of-eeg-foundation-models
+
+---
+
+### Gap 2 — EEG Foundation Challenge 2025 dataset access
+
+**Clarification on naming.** The candidate file (§2, §3c, §5, §7) refers to the "EEG Foundation Challenge 2025" (arXiv:2506.19141). There is no separate entity named "BCI Foundation Challenge 2025" discoverable via web search; no hits returned for that exact phrase pointing to a distinct competition. The candidate's naming is a minor imprecision; it refers to the NeurIPS 2025 EEG Foundation Challenge.
+
+**What was found.**
+
+*Competition status (as of May 2026).* The competition concluded November 2, 2025, with a workshop session at NeurIPS December 6–7, 2025. The challenge website confirms: "The final results are out!" Winners were the Computational Neuroscience Lab, KU Leuven. 1,183 teams participated with more than 8,000 submissions. Sources: https://eeg2025.github.io/eeg2025.github.io/ ; https://neurips.cc/virtual/2025/competition/127719 ; https://neurips.cc/virtual/2025/136311
+
+*Training and validation data (HBN Releases 1–11, excluding Release 5; validation = Release 5).* Freely available under CC-BY-SA-4.0 license via NEMAR (nemar.org) and Amazon S3 without a formal Data Use Agreement or registration. S3 path: `s3://nmdatasets/NeurIPS2025/`. Direct ZIP download from SCCN download server also available without sign-in. As of the search conducted in May 2026, Releases 1–11 are confirmed on NEMAR with no DUA requirement. Source: https://eeg2025.github.io/data/ ; arXiv:2506.19141v1 §Data ; https://sccn.ucsd.edu/pipermail/eeglablist/2025/018512.html
+
+*Test data (HBN Release 12).* Was not publicly available during the competition phase. The challenge paper states: "will be released publicly in the foreseeable future after the competition." No specific post-competition release date was provided. As of the web search conducted May 2026, NEMAR search results show Releases 1–11 indexed (the most recent indexed release is ds005516 = Release 11, updated March 2025); no Release 12 listing was found. A separate "Not for Commercial Use" variant (nm000103) was published January 2026 but is distinct from Release 12. Release 12 public availability as of May 2026 is unconfirmed and cannot be verified from available sources. Status: PARTIAL — training/validation data open, test set status uncertain.
+
+*Registration friction.* To access the data directly (outside competition), no registration is required — it is openly downloadable. To participate in the Codabench competition phase (now closed), teams needed a Codabench account. For post-competition use of HBN data, no DUA is required for CC-BY-SA-4.0 releases. Friction level: LOW for training/validation data. Source: https://nemar.org ; https://eeg2025.github.io/data/
+
+*License.* CC-BY-SA-4.0 for HBN Releases 1–11. The Not-for-Commercial-Use variant (nm000103) carries a non-commercial restriction. Competition participants were responsible for handling the CC-BY-SA-4.0 terms (attribution, share-alike). For research and non-commercial use, no practical barrier. Source: arXiv:2506.19141v1 ; NEMAR dataset pages.
+
+*Dataset scale and scope relevance.* 3,000+ subjects, ages 5–21, 128-channel EEG, 6 tasks (Resting State, Surround Suppression, Movie Watching, Contrast Change Detection, Sequence Learning, Symbol Search). This is a pediatric / adolescent population (atypical for canonical MI/BCI literature which skews adult) with psychopathology labels rather than motor-imagery labels. Challenge 1 = zero-shot cross-task and cross-subject transfer; Challenge 2 = psychopathology factor prediction. The dataset is relevant to cross-subject generalization but is not a drop-in replacement for MOABB/BCI Competition IV-2a MI benchmarks — it tests a different generalization axis (cross-task transfer of passive/active paradigms rather than cross-subject calibration-free MI decoding).
+
+**Overall verdict — Gap 2: PARTIAL.**
+
+Training and validation data (HBN Releases 1–11) are freely accessible under CC-BY-SA-4.0 with no registration or DUA requirement, via NEMAR and AWS S3 — no friction barrier. Test data (Release 12) was not publicly released as of May 2026; its release is described as forthcoming but no date is confirmed. The candidate can proceed using Releases 1–11 (approximately 2,600 subjects across 11 releases). Whether Release 12 is required depends on whether the AHBU contribution needs the held-out test set specifically. For evaluation-diagnostic work (which is the candidate's proposed scope in §6), Releases 1–11 provide sufficient data; Release 12 would add subjects but is not load-bearing for the research framing. The naming discrepancy ("BCI Foundation Challenge" vs "EEG Foundation Challenge") is a minor cosmetic issue in the candidate file and does not affect the substance.
+
+Sources: arXiv:2506.19141v1 https://arxiv.org/html/2506.19141v1 ; challenge data page https://eeg2025.github.io/data/ ; challenge timeline https://eeg2025.github.io/timeline/ ; NeurIPS competition page https://neurips.cc/virtual/2025/competition/127719 ; NEMAR HBN-EEG listings https://nemar.org ; EEGLABLIST announcement https://sccn.ucsd.edu/pipermail/eeglablist/2025/018512.html
+
+---
+
+### Summary table
+
+| Sub-question | EEG-FM-Bench delivered? | Verdict |
+|---|---|---|
+| (a) Subject + dataset + hardware disjoint splits simultaneously | No. Subject-independent within each dataset; no cross-dataset or hardware-disjoint axis. | OPEN |
+| (b) 0/1/5/20-shot calibration curves per subject | No. No few-shot experiments in the paper. | OPEN |
+| (c) Per-subject performance distributions (not averages) | No. Only aggregate mean ± SD across seeds. | OPEN |
+| (d) Pre-training-overlap audit | No. Not attempted. Leakage inherited, not audited. | OPEN |
+| (e) Riemannian / classical-ML baselines under same splits | No. Neural models only; no MDM, FgMDM, SVM, LDA. | OPEN |
+| Challenge dataset — training/validation access | CC-BY-SA-4.0, no DUA, no registration, freely downloadable | CLOSED |
+| Challenge dataset — test set (Release 12) access | Unconfirmed as of May 2026; post-competition release promised but not observed | PARTIAL |
+
+### Implication for deferral decision
+
+The critic's finding (premature deferral) is confirmed. EEG-FM-Bench addresses none of the five quality-bar requirements in §6 that represent the candidate's distinctive contribution. The shortlist's deferral reason — "already partly addressed by EEG-FM-Bench" — is factually incorrect. The correct reading of EEG-FM-Bench's role relative to this candidate is: EEG-FM-Bench names the subject-dependent-split problem and enforces subject-independence, which is the *prerequisite* for honest evaluation, not the evaluation itself. The five requirements in §6 are the research gap that remains above that prerequisite. The deferral should be rescinded and the candidate re-entered into the admission-gate process. The dataset access constraint (Gap 2) does not block admission: training/validation data is freely available and sufficient for the proposed scope.
