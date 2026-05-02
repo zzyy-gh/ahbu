@@ -50,11 +50,13 @@ The vision does not pre-commit to a constituency. The pain-point validation laye
 
 ## Hard constraints (non-negotiable, per pain point)
 
-Apply independently to every pain point admitted to the portfolio. Failing any → drop or defer; never downgrade with caveats.
+Apply independently to every pain point admitted to the portfolio. Failing any → drop or defer; never downgrade with caveats. Each constraint is enforced at the layer that can actually verify it:
 
-1. **Pain-point real and validated.** Some constituency genuinely feels it; we have evidence.
-2. **Solution feasible.** Public data, OSS tooling, available compute, scoped time horizon.
-3. **Quality bar:** honest held-out testing · ablations where they matter · failure modes characterized · uncertainty reported. No metric gaming, no cherry-picking, no hand-waving.
+1. **Pain-point real and validated.** Some constituency genuinely feels it; we have evidence. *Enforced at layer 10 (admission gate).*
+2. **Solution feasible.** Public data, OSS tooling, available compute, scoped time horizon. *Enforced at layer 20 (methodology) — layer 20 may cancel a track that turns out infeasible at our compute envelope. Not pre-judged at admission.*
+3. **Quality bar:** honest held-out testing · ablations where they matter · failure modes characterized · uncertainty reported. No metric gaming, no cherry-picking, no hand-waving. *Enforced at layers 20 (protocol design) / 30 (execution) / 40 (analysis sign-off).*
+
+This distribution is deliberate. Layer 10 used to filter on all three at admission time; that prematurely killed creative or novel framings before the layers responsible for feasibility / quality could even look. Now layer 10 keeps the portfolio open on real-pain alone, and the downstream layers cancel-back if their constraint fails. Both retire-completed and retire-cancelled are valid outcomes.
 
 If any constraint conflicts irreconcilably with progress: escalate, don't paper over.
 

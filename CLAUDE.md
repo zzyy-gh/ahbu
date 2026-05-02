@@ -67,7 +67,11 @@ Each layer / track-layer `README.md` declares **mandate, knowledge, output, help
 - **Critic pass** required at each help-boundary milestone (admission, protocol-lock, experiments sign-off, analysis sign-off). Use `.claude/agents/critic.md` persona via Agent tool or as a teammate.
 - **Human checkpoint** at end of each meaningful chunk. Don't barrel through admission → methodology → experiments without check-in.
 - **Pain-point validation = required artifact** for every admission. No track instantiates without admission record.
-- **Hard constraints** (per pain point, non-negotiable): real validated pain · feasible solution · honest evaluation. Failing any → defer or drop, never admit-with-caveats.
+- **Hard constraints** (per pain point, non-negotiable) are distributed across layers, not all enforced at admission:
+  - Real validated pain → enforced at layer 10 (admission gate).
+  - Feasible solution → enforced at layer 20 (methodology). Layer 20 may cancel a track that turns out infeasible at our compute envelope. NOT pre-judged at admission.
+  - Honest evaluation → enforced at layers 20 / 30 / 40.
+  Failing any at the layer that owns it → retire-cancelled (a valid outcome). Layer 10 deliberately keeps the portfolio open on real-pain alone, to avoid premature filtering of creative / novel framings.
 - **Reuse first.** Methodology designers must scan `shared/` before drafting `approach.md`. Promote eagerly to `shared/` once ≥1 plausible second consumer exists.
 - **Use git.** Commit as you go. Tag milestones: `v0-vision`, `v1-shortlisted`, `v2-<slug>-admitted`, `v3-<slug>-protocol-locked`, `v4-<slug>-results`, `v5-<slug>-retired`. Branches encouraged for parallel tracks.
 
