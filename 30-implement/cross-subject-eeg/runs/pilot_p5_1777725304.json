@@ -1,0 +1,6 @@
+{
+  "status": "skipped",
+  "reason": "LaBraM-Large checkpoint not at external\\LaBraM\\checkpoints\\labram-large.pth \u2014 pilot is optional.",
+  "pilot": "P-5",
+  "spec": "20-plan/cross-subject-eeg/pilots-README.md#P-5"
+}
