@@ -80,7 +80,11 @@ This is a publishable finding per the defensibility-critic verdict
 
 ## R-3 — LaBraM-Base exceeds 4 GB VRAM at inference time
 
-**Description:** LaBraM-Base, when loaded into PyTorch on the GTX 1650
+**Status (post-pilot 2026-05-02):** **CLEARED with massive margin.** Pilot P-1 measured peak VRAM = **0.097 GB** at fp32 batch=1, single 22×200 epoch on GTX 1650 (3 % of the 3 GB threshold; LaBraM-Base = 6.02 M params). See `30-implement/cross-subject-eeg/runs/pilot_p1_*.json`. Forward time 6.97 s (cold start; will warm up).
+
+The Kaggle T4 fallback is no longer load-bearing for the FM probe arm at this configuration. Track-specific opt-in note in `30-implement/compute.md` updated accordingly. The mitigation steps below are kept for historical reference and would re-activate only if a future probe (longer sequences, larger batches) approaches the threshold.
+
+**Description (original):** LaBraM-Base, when loaded into PyTorch on the GTX 1650
 in inference mode (batch=1, float32, sequence length corresponding to
 a 2-second 22-channel epoch), consumes more than 3 GB VRAM. (3 GB
 rather than 4 GB to leave headroom for OS, Python, and CUDA overhead.)
@@ -88,25 +92,19 @@ rather than 4 GB to leave headroom for OS, Python, and CUDA overhead.)
 **Probability:** L (LaBraM-Base has ~5 M parameters; at float32,
 weights alone are ~20 MB; input activations for a 22×200 epoch are
 negligible). However, if LaBraM expects a large token sequence (e.g.,
-whole-session context), this could spike.
+whole-session context), this could spike. **Confirmed L empirically** by P-1.
 
 **Impact:** H (would require moving to cloud or cancelling FM arm).
 
-**Mitigation:**
-1. As first pilot probe (week 1), run a single-epoch inference and
-   log `torch.cuda.max_memory_allocated()`. Record in
-   `pilots/README.md`.
+**Mitigation (no longer triggered; kept for reference):**
+1. ~~As first pilot probe (week 1), run a single-epoch inference and log peak VRAM.~~ DONE — P-1 result above.
 2. If 3 GB < VRAM usage <= 4 GB: switch to float16 (half precision)
-   for inference. Retest.
+   for inference. Retest. *(Not needed at current config.)*
 3. If still > 3 GB in float16: move FM feature extraction to
    Kaggle GPU notebook (T4 16 GB, 9 hr/week, sufficient for
-   PhysionetMI 109 subjects). Store extracted features locally.
-   This is not a compute-infeasible path.
+   PhysionetMI 109 subjects). *(Not needed at current config.)*
 
-**Kill criterion:** If LaBraM-Base at batch=1, float16, on Kaggle T4
-fails to run (environment conflict, quota exhausted, or sequence-length
-error not fixable within 2 days of debugging), cancel the FM probe arm.
-Headline becomes Riemannian-only. Document the failure mode.
+**Kill criterion (would re-activate if future probe spikes VRAM):** If LaBraM-Base at batch=1, float16, on Kaggle T4 fails to run (environment conflict, quota exhausted, or sequence-length error not fixable within 2 days of debugging), cancel the FM probe arm. Headline becomes Riemannian-only.
 
 ---
 
@@ -320,7 +318,7 @@ cross-dataset generalization claim and document the exclusion.
 |---|---|---|---|---|
 | R-1 | FM checkpoint unavailable | L | H | No open-weight FM loadable by end of week 1 → FM arm cancelled |
 | R-2 | LaBraM pre-training overlaps test split | M | M | All test datasets in pre-training corpus → FM headline cancelled; leakage audit IS the result |
-| R-3 | LaBraM-Base > 3 GB VRAM at inference | L | H | Fails on Kaggle T4 float16 → FM arm cancelled |
+| R-3 | LaBraM-Base > 3 GB VRAM at inference | L | H | **CLEARED 2026-05-02:** P-1 measured 0.097 GB / 3 GB threshold (3 % of envelope). Kaggle fallback no longer load-bearing. |
 | R-4 | MOABB API / download breaks | M | M | PhysionetMI preprocessing fails, no substitute cleanable in 3 days → retire-cancel |
 | R-5 | PhysionetMI N < 62 usable subjects | L–M | M | Combined test N < 30 after artifact rejection → drop illiteracy-rate claim from headline |
 | R-6 | HBN data download impractical | M | M | Inaccessible locally and via Kaggle by week 3 → drop HBN arm |

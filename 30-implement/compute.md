@@ -31,7 +31,7 @@ Use these *only* if a project-relevant experiment justifies the data egress / se
 
 Some tracks load-bearingly depend on a free-tier fallback when the local 4 GB envelope is insufficient. Each such dependency must be listed here so the project's actual compute envelope is always discoverable in one place.
 
-- **`30-implement/cross-subject-eeg/`** — Kaggle T4 (16 GB, 9 hr/week) is an opt-in fallback for LaBraM-Base FM feature extraction only, triggered if local GTX 1650 cannot run inference at batch=1 float16. Riemannian baseline + headline statistical comparison stay local. Account access + quota verified at week-1 environment setup. Cancel-back trigger: if Kaggle is unavailable AND local cannot run FM, the FM probe arm is cancelled (R-3 in track risk register); Riemannian-only headline still proceeds.
+- **`30-implement/cross-subject-eeg/`** — Kaggle T4 (16 GB, 9 hr/week) was originally documented as an opt-in fallback for LaBraM-Base FM feature extraction. **No longer load-bearing as of 2026-05-02:** pilot P-1 measured peak VRAM 0.097 GB at fp32 batch=1 on the local GTX 1650 (3 % of the 3 GB threshold). All cross-subject-eeg work runs locally for the foreseeable future. Risk-register R-3 marked CLEARED. The Kaggle fallback would re-activate only if a future probe (longer sequences, larger batches) approaches the threshold.
 
 ## Time horizon
 
