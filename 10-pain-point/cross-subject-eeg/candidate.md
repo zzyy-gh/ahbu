@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/README.md` (candidate spec)
+
 # Candidate: Cross-Subject Generalization in EEG-Based Decoding
 
 *Investigated 2026-05-02 by `pain-point-researcher`. Broad-exploration phase: surfacing evidence, not arguing for adoption.*

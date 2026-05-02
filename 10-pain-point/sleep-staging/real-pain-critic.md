@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/sleep-staging/candidate.md` (under review) + `10-pain-point/README.md` (real-pain-only critic-pass scope)
+
 # Critic pass -- sleep-staging candidate.md (inc. Gap-closing 2026-05-02) -- 2026-05-02
 
 ## Verdict

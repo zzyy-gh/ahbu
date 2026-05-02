@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/cross-subject-eeg/candidate.md` (under review) + `10-pain-point/README.md` (real-pain-only critic-pass scope)
+
 # Critic pass — cross-subject-eeg.md (inc. Gap-closing 2026-05-02) — 2026-05-02
 
 ## Verdict

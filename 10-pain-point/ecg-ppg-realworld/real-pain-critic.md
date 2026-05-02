@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/ecg-ppg-realworld/candidate.md` (under review) + `10-pain-point/README.md` (real-pain-only critic-pass scope)
+
 # Critic pass -- ecg-ppg-realworld real-pain claim -- 2026-05-02
 
 ## Verdict

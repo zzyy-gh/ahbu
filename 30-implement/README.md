@@ -69,3 +69,13 @@ flowchart LR
 
 - Methodology proves infeasible at run-time (data inaccessible, dependency unavailable, OOM at smallest viable config) → return to layer 20 with a re-design ask. If no re-design recovers, escalate to layer 10 as `retire-cancelled`.
 - Headline returns a result that has no informative direction (underpowered, dataset misaligned with the question) → layer 20's analysis pass calls it out; layer 10 logs `retire-cancelled`.
+
+## Spec convention
+
+Every work artifact in this layer must start with a one-line `> **Spec:** <path>` quote naming the upstream artifact whose mandate it serves. Per-file recommended specs:
+
+- `<slug>/code/README.md` → `20-plan/<slug>/approach.md`
+- `<slug>/code/pilots/p*.py` → `20-plan/<slug>/pilots-README.md` (specific section, e.g. `#P-1`). Already enforced as the `spec` field in each pilot's JSON output.
+- `<slug>/code/headline/*.py` → `20-plan/<slug>/protocol-lock.md`
+- `<slug>/results.md` → `20-plan/<slug>/protocol-lock.md`
+- `shared/<area>/<artifact>/README.md` → the originating-track promotion event (which `20-plan/<slug>/approach.md` flagged) + the second-consumer that triggered promotion.

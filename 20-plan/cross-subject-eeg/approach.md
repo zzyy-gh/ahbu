@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/cross-subject-eeg/admission.md`
+
 # Approach — cross-subject-eeg
 
 **Track:** cross-subject-eeg

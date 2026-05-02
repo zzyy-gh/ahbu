@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/README.md` (candidate spec)
+
 # Candidate: ECG / PPG signal interpretation in real-world settings
 
 Slug: `ecg-ppg-realworld`

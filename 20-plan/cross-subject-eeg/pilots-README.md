@@ -1,3 +1,5 @@
+> **Spec:** `20-plan/cross-subject-eeg/approach.md`
+
 # Pilot probes — cross-subject-eeg
 
 **Status:** Not pre-registered. Pilots use dev split ONLY.

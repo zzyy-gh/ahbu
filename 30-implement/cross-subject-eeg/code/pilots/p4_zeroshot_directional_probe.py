@@ -1,4 +1,5 @@
 """
+Spec: 20-plan/cross-subject-eeg/pilots-README.md#P-4
 P-4 — Zero-shot accuracy on 5 BNCI2014_001 subjects.
 
 Question: directional zero-shot cross-subject accuracy of LaBraM-Base

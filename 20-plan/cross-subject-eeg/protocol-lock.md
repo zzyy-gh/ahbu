@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/cross-subject-eeg/admission.md`
+
 # Protocol lock — cross-subject-eeg
 
 **Track:** cross-subject-eeg

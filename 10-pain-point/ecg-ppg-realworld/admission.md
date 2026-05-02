@@ -1,3 +1,5 @@
+> **Spec:** `00-vision/README.md` (hard constraint #1: pain real and validated) + `10-pain-point/README.md` (validation rubric)
+
 # Admission record — ecg-ppg-realworld
 
 - **Date:** 2026-05-02

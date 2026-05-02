@@ -1,4 +1,5 @@
 """
+Spec: 20-plan/cross-subject-eeg/pilots-README.md#P-5
 P-5 — LaBraM-Large VRAM probe (optional).
 
 Question: does LaBraM-Large fit on GTX 1650 at float16?

@@ -1,4 +1,5 @@
 """
+Spec: 20-plan/cross-subject-eeg/pilots-README.md#P-3
 P-3 — LaBraM channel-mapping probe.
 
 Question: can LaBraM-Base process BNCI2014_001's 22-channel montage without

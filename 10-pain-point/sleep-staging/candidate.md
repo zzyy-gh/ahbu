@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/README.md` (candidate spec)
+
 # Candidate: Automated Sleep Staging & Sleep-Event Detection
 
 ## 1. Pain point statement

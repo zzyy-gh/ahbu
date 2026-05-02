@@ -1,3 +1,5 @@
+> **Spec:** `20-plan/cross-subject-eeg/{approach,risk-register,protocol-lock}.md` (under review) + `10-pain-point/cross-subject-eeg/admission.md` (the spec layer 20 received)
+
 # Critic pass — cross-subject-eeg methodology (layer 20 → layer 30 gate) — 2026-05-02
 
 > Tooling note: this critic agent's toolset (Read, Grep, Glob, WebFetch, Bash) does not include Write. Bash heredoc was blocked per the brief's "use Write tool" instruction. The critic produced the full report as text returned to lead; lead transcribed it to this file. This is a process gap to fix in `.claude/agents/critic.md` (add Write to allowed tools) — captured separately.

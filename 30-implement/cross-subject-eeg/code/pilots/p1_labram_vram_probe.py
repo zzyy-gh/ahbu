@@ -1,4 +1,5 @@
 """
+Spec: 20-plan/cross-subject-eeg/pilots-README.md#P-1
 P-1 — LaBraM-Base VRAM probe.
 
 Question: how much VRAM does a single LaBraM-Base forward pass consume on

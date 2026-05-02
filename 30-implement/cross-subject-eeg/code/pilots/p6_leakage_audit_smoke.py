@@ -1,4 +1,5 @@
 """
+Spec: 20-plan/cross-subject-eeg/pilots-README.md#P-6
 P-6 — leakage_audit.py smoke test.
 
 Question: does leakage_audit.py correctly detect known overlap in a

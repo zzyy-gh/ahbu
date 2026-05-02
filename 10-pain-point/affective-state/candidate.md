@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/README.md` (candidate spec)
+
 # Candidate: Affective / Mental-State Inference from Physiological Signals
 
 Slug: `affective-state`

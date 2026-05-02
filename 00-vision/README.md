@@ -43,3 +43,7 @@ Anything produced for one pain point that could plausibly serve another gets sur
 Researchers · clinicians · BCI users · wearable developers · end users (patients, consumers) · ML model developers working on biosignals.
 
 Vision does not pre-commit to a constituency. Pain points enter the portfolio one at a time, evidence-gated.
+
+## Spec convention (project-wide)
+
+Every work artifact in every layer starts with a one-line `> **Spec:** <path>` quote naming the upstream artifact whose mandate it serves. This makes the help relation traceable at file granularity, not only at layer-README granularity. Each layer's README documents the per-file mapping.

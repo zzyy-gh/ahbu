@@ -1,3 +1,5 @@
+> **Spec:** `20-plan/cross-subject-eeg/approach.md`
+
 # cross-subject-eeg — implementation
 
 Code, environment, run instructions for the cross-subject-eeg track.

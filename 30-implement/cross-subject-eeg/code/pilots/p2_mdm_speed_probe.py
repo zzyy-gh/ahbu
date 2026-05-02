@@ -1,4 +1,5 @@
 """
+Spec: 20-plan/cross-subject-eeg/pilots-README.md#P-2
 P-2 — MDM speed probe on BNCI2014_001.
 
 Question: how long does a full 9-subject LOSO with pyRiemann MDM take on

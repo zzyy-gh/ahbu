@@ -1,3 +1,5 @@
+> **Spec:** `10-pain-point/affective-state/candidate.md` (under review) + `10-pain-point/README.md` (real-pain-only critic-pass scope)
+
 # Critic pass -- affective-state/candidate.md -- 2026-05-02
 
 ## Verdict
