@@ -22,10 +22,16 @@ Captured 2026-05-02. Update when changes.
 ## Free / public compute that may be in scope
 
 - Colab free tier (T4 16 GB, time-limited) — feasible for moderate training jobs.
-- Kaggle notebooks (P100 / T4, 30 GB RAM, 9 hr) — feasible for moderate jobs and dataset access.
+- Kaggle notebooks (P100 / T4, 30 GB RAM, 9 hr/week) — feasible for moderate jobs and dataset access.
 - HuggingFace Spaces (CPU free, GPU paid).
 
 Use these *only* if a project-relevant experiment justifies the data egress / setup cost. Default to local.
+
+## Track-specific opt-in fallbacks
+
+Some tracks load-bearingly depend on a free-tier fallback when the local 4 GB envelope is insufficient. Each such dependency must be listed here so the project's actual compute envelope is always discoverable in one place.
+
+- **`tracks/cross-subject-eeg/`** — Kaggle T4 (16 GB, 9 hr/week) is an opt-in fallback for LaBraM-Base FM feature extraction only, triggered if local GTX 1650 cannot run inference at batch=1 float16. Riemannian baseline + headline statistical comparison stay local. Account access + quota verified at week-1 environment setup. Cancel-back trigger: if Kaggle is unavailable AND local cannot run FM, the FM probe arm is cancelled (R-3 in track risk register); Riemannian-only headline still proceeds.
 
 ## Time horizon
 

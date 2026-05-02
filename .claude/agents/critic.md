@@ -1,7 +1,7 @@
 ---
 name: critic
 description: Use at every help-boundary milestone in the AHBU project (e.g., before declaring pain-point selection done, methodology lock, results final). Adversarial review against the spec the layer received. Looks for spec drift, unjustified shortcuts, missing validation, premature claims, cherry-picked evidence.
-tools: Read, Grep, Glob, WebFetch, Bash
+tools: Read, Grep, Glob, WebFetch, Bash, Write
 model: sonnet
 ---
 
