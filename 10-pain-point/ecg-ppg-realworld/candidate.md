@@ -96,12 +96,20 @@ These constituencies are reachable: forum threads and DOI authors are public.
 
 ### 3c. Demographic generalization (skin tone, age, comorbidities)
 
-- **Systematic review and meta-analysis** on skin pigmentation in PPG /
-  pulse-rate accuracy: "the accuracy of such devices … is often compromised
-  by skin pigmentation, which attenuates the signal in individuals with
-  darker skin tones"; at 60–70% saturation, darker pigmentation produced
-  average overestimation of 3.56 ± 2.45% vs 0.37 ± 3.20% for lighter tones
-  [[JMIR](https://www.jmir.org/2024/1/e62769/)].
+- **Systematic review and meta-analysis** on skin pigmentation in pulse
+  oximetry accuracy (Singh et al. 2024): "the accuracy of such devices …
+  is often compromised by skin pigmentation, which attenuates the signal
+  in individuals with darker skin tones." Pooled mean SpO₂ bias 1.27 %
+  (dark, 95 % CI 0.58–1.95) vs 0.70 % (light, 95 % CI 0.17–1.22) — both
+  exceed FDA accuracy thresholds for SpO₂ devices. The paper notes the
+  difference may not be clinically relevant in typical SpO₂ ranges; the
+  pain is real but the magnitude depends on saturation regime
+  [[JMIR](https://www.jmir.org/2024/1/e62769/)]. *(Note: an earlier
+  draft of this candidate cited specific 60–70 % saturation figures
+  (3.56 ± 2.45 % vs 0.37 ± 3.20 %) attributed to this paper. Those
+  numbers do not appear in Singh et al. 2024 and have been removed —
+  see real-pain-critic.md major finding 2026-05-02. The pain claim
+  survives on the pooled-bias figures + the secondary sources below.)*
 - "Devices calibrated on individuals with medium skin pigmentation may lead
   to inaccurate readings for both lighter and darker skin pigmentation"
   [[MDPI Sensors review](https://www.mdpi.com/1424-8220/22/9/3402)].

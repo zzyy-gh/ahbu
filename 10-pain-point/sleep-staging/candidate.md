@@ -48,7 +48,7 @@ Sleep staging — the assignment of 30-second epochs to Wake / N1 / N2 / N3 / RE
 
 - **Chee et al., Sleep Med 2024 / Oura Gen3 + OSSA 2.0 multi-night PSG study, n=96, 421k epochs** ([PMID 38382312](https://pubmed.ncbi.nlm.nih.gov/38382312/)). Stage accuracies 75.5% (light) – 90.6% (REM); REM sensitivity 76%.
 - **Oura systematic review/meta-analysis, 2025** ([PMC12602993](https://pmc.ncbi.nlm.nih.gov/articles/PMC12602993/)).
-- **Stone et al., Sleep 2021, "Performance of seven consumer sleep-tracking devices vs PSG"** ([PMC8120339](https://pmc.ncbi.nlm.nih.gov/articles/PMC8120339/)). Most devices misclassify 30–50% of REM and deep sleep.
+- **Chinoy et al., Sleep 2021, "Performance of seven consumer sleep-tracking devices vs PSG"** ([PMC8120339](https://pmc.ncbi.nlm.nih.gov/articles/PMC8120339/)). Most devices misclassify 30–50% of REM and deep sleep.
 - **Multicenter validation of 11 trackers, JMIR mHealth 2023** ([PMC10654909](https://pmc.ncbi.nlm.nih.gov/articles/PMC10654909/)). Best macro-F1 0.69, worst 0.26 across 349,114 epochs.
 - **Six wrist-worn wearables stage scoring, Sleep Adv 2025** ([article](https://academic.oup.com/sleepadvances/article/6/2/zpaf021/8090472)). Systematic underestimation of wake (11.8–39.6 min).
 - **Three-device validation, MDPI Sensors 2024** ([PMC11511193](https://pmc.ncbi.nlm.nih.gov/articles/PMC11511193/)).
@@ -57,7 +57,7 @@ Sleep staging — the assignment of 30-second epochs to Wake / N1 / N2 / N3 / RE
 ### 3f. REM specifically
 
 - Modern PSG DL: REM F1 ≈ 0.90 (U-Sleep) — REM is no longer the hardest stage; **N1 is**.
-- Wearables: REM remains hard. Fitbit REM sensitivity 67% ([PMC11511193](https://pmc.ncbi.nlm.nih.gov/articles/PMC11511193/)); SleepScore underestimates REM ([Stone 2021](https://pmc.ncbi.nlm.nih.gov/articles/PMC8120339/)). Most devices significantly overestimate REM latency.
+- Wearables: REM remains hard. Fitbit REM sensitivity 67% ([PMC11511193](https://pmc.ncbi.nlm.nih.gov/articles/PMC11511193/)); SleepScore underestimates REM ([Chinoy 2021](https://pmc.ncbi.nlm.nih.gov/articles/PMC8120339/)). Most devices significantly overestimate REM latency.
 
 ### 3g. Forum / practitioner signals
 
@@ -69,7 +69,7 @@ Sleep staging — the assignment of 30-second epochs to Wake / N1 / N2 / N3 / RE
 
 ### 3h. Scoring-time burden
 
-- **42.7 s autoscore vs 4,243 s manual scoring** (Bakker et al., Sleep 2023, [JCSM 2020](https://jcsm.aasm.org/doi/full/10.5664/jcsm.8278)).
+- **42.7 s autoscore vs 4,243 s manual scoring per PSG** (Choo et al., Frontiers in Neurology 2023, [PMC9981786](https://pmc.ncbi.nlm.nih.gov/articles/PMC9981786/)).
 - ~1.5–2 h per study standard ([SleepScoringSolution](https://www.sleepscoringsolution.com/services/sleep-scoring-service/); [AXG Sleep Diagnostics](https://axgsleepdiagnostics.com/sleep-blog-2/sleep-study-scoring/)).
 - **"Emerging challenges in the transition from manual to automated sleep scoring," SLEEP 2025** ([article](https://academic.oup.com/sleep/article/48/10/zsaf202/8209742)) — explicit position piece on this transition.
 
@@ -142,7 +142,7 @@ The original candidate flagged two sub-gaps: (a) no primary-source quantified bu
 
 **Finding 1 — Timed study with actual technologists (not just modeled estimates).**
 
-Bakker et al. (Frontiers in Neurology 2023, DOI 10.3389/fneur.2023.1123935, [PMC9981786](https://pmc.ncbi.nlm.nih.gov/articles/PMC9981786/)) measured actual technologist time on 86 PSGs at a clinical sleep lab. Results: manual scoring averaged **4,243 seconds (70.7 minutes)** per PSG; automated scoring + expert review averaged 1,929 seconds (32.1 minutes). Annual extrapolation at 750 patients/year = 0.25 FTE savings. This is a time-motion measurement, not a self-report survey — researchers directly tracked technologist time. The same 4,243-second figure is independently confirmed in Holm et al., Journal of Sleep Research 2026 (DOI 10.1111/jsr.70113, [PMC12856104](https://pmc.ncbi.nlm.nih.gov/articles/PMC12856104/)), which describes manual PSG scoring as "a time-consuming task, which takes up to 2 h to score a single 8-h PSG" and reports inter-scorer disagreement of up to **14% on sleep staging** and **34.6% on respiratory events**, with OSA severity classifications differing in **66% of cases** depending on the scorer.
+Choo et al. (Frontiers in Neurology 2023, DOI 10.3389/fneur.2023.1123935, [PMC9981786](https://pmc.ncbi.nlm.nih.gov/articles/PMC9981786/)) measured actual technologist time on 86 PSGs at a clinical sleep lab. Results: manual scoring averaged **4,243 seconds (70.7 minutes)** per PSG; automated scoring + expert review averaged 1,929 seconds (32.1 minutes). Annual extrapolation at 750 patients/year = 0.25 FTE savings. This is a time-motion measurement, not a self-report survey — researchers directly tracked technologist time. The same 4,243-second figure is independently confirmed in Holm et al., Journal of Sleep Research 2026 (DOI 10.1111/jsr.70113, [PMC12856104](https://pmc.ncbi.nlm.nih.gov/articles/PMC12856104/)), which describes manual PSG scoring as "a time-consuming task, which takes up to 2 h to score a single 8-h PSG" and reports inter-scorer disagreement of up to **14% on sleep staging** and **34.6% on respiratory events**, with OSA severity classifications differing in **66% of cases** depending on the scorer.
 
 **Finding 2 — AAST workforce attrition data (institutional, not individual-interview).**
 
@@ -200,7 +200,7 @@ Dr. Dionne Morgan, sleep medicine physician, quoted in a Baptist Health article 
 
 Survey of 176 sleep medicine providers (47% psychologists, 37% physicians). Key published result: providers reported a "generally cautious stance toward consumer sleep technology"; drawbacks named by providers included **"added time in the clinical visit"** and **"low perceptions of helpfulness of the data."** Providers estimated 36% of patients use consumer sleep technology. This is a constituency-level survey — the pain is named by clinicians themselves as adding clinical burden, not just an academic concern.
 
-**Sub-gap 2c verdict: CLOSED.** The consumer-pain-vs-vendor-claim disambiguation question is answered by multiple independent sources: (1) a published case series with verbatim patient complaints about wearable staging conflicting with PSG; (2) two named clinician statements explicitly limiting wearable staging for clinical use; (3) a 176-provider survey documenting added clinical visit time as a named cost. The vendor claims of accuracy are not corroborated by independent PSG validation studies (Stone 2021, JMIR 2023, Sleep Adv 2025 all show 30–50% misclassification of REM and deep sleep). The consumer pain is real, felt by both end-users and by clinicians managing those users.
+**Sub-gap 2c verdict: CLOSED.** The consumer-pain-vs-vendor-claim disambiguation question is answered by multiple independent sources: (1) a published case series with verbatim patient complaints about wearable staging conflicting with PSG; (2) two named clinician statements explicitly limiting wearable staging for clinical use; (3) a 176-provider survey documenting added clinical visit time as a named cost. The vendor claims of accuracy are not corroborated by independent PSG validation studies (Chinoy 2021, JMIR 2023, Sleep Adv 2025 all show 30–50% misclassification of REM and deep sleep). The consumer pain is real, felt by both end-users and by clinicians managing those users.
 
 ---
 
@@ -214,6 +214,6 @@ Survey of 176 sleep medicine providers (47% psychologists, 37% physicians). Key 
 
 The original open question "Is consumer-wearable inaccuracy a pain they feel, or an academic concern?" is now answerable: the Baron case series documents patients already feeling the pain (trust in tracker over PSG); the provider survey documents clinicians naming it as a cost; the named clinical statements confirm the clinical consequence. It is not purely academic.
 
-The sleep-technologist individual-voice gap remains — no published interview or personal testimonial from a named technologist about scoring burden has been located. However, the timed-observation data (Bakker 2023, Holm 2026) and AAST institutional attrition data are sufficient primary-source evidence for admission. If a reviewer requires individual testimony, the AAST Learning Center's "Pediatric Scoring" and "Advanced Pediatrics Sleep" training modules ([aastweb.org](https://learn.aastweb.org/products/pediatric-scoring)) imply the market exists for specialized training, suggesting clinicians are paying to learn — but this is inferential, not direct voice.
+The sleep-technologist individual-voice gap remains — no published interview or personal testimonial from a named technologist about scoring burden has been located. However, the timed-observation data (Choo 2023, Holm 2026) and AAST institutional attrition data are sufficient primary-source evidence for admission. If a reviewer requires individual testimony, the AAST Learning Center's "Pediatric Scoring" and "Advanced Pediatrics Sleep" training modules ([aastweb.org](https://learn.aastweb.org/products/pediatric-scoring)) imply the market exists for specialized training, suggesting clinicians are paying to learn — but this is inferential, not direct voice.
 
 **Admission impact:** Neither gap blocks admission. Gap 1 is cleanly resolved. Gap 2 achieves the "≥2 independent evidence sources" threshold for each sub-pain with direct observation or named-source statements. The candidate passes the validation rubric's constituency-evidence bar.
