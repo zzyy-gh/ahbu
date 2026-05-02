@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "device": "NVIDIA GeForce GTX 1650 with Max-Q Design",
+  "mixed_precision": false,
+  "batch": 32,
+  "seq_len": 1000,
+  "n_params_M": 18.49,
+  "peak_vram_gb": 0.62,
+  "threshold_gb": 3.0,
+  "step_time_s": 8.8532,
+  "loss_at_step_0": 1.1871,
+  "pilot": "P-3",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-3"
+}
