@@ -67,13 +67,34 @@ Each layer / track-layer `README.md` declares **mandate, knowledge, output, help
 - **Critic pass** required at each help-boundary milestone (admission, protocol-lock, experiments sign-off, analysis sign-off). Use `.claude/agents/critic.md` persona via Agent tool or as a teammate.
 - **Human checkpoint** at end of each meaningful chunk. Don't barrel through admission → methodology → experiments without check-in.
 - **Pain-point validation = required artifact** for every admission. No track instantiates without admission record.
-- **Hard constraints** (per pain point, non-negotiable) are distributed across layers, not all enforced at admission:
-  - Real validated pain → enforced at layer 10 (admission gate).
-  - Feasible solution → enforced at layer 20 (methodology). Layer 20 may cancel a track that turns out infeasible at our compute envelope. NOT pre-judged at admission.
-  - Honest evaluation → enforced at layers 20 / 30 / 40.
-  Failing any at the layer that owns it → retire-cancelled (a valid outcome). Layer 10 deliberately keeps the portfolio open on real-pain alone, to avoid premature filtering of creative / novel framings.
 - **Reuse first.** Methodology designers must scan `shared/` before drafting `approach.md`. Promote eagerly to `shared/` once ≥1 plausible second consumer exists.
 - **Use git.** Commit as you go. Tag milestones: `v0-vision`, `v1-shortlisted`, `v2-<slug>-admitted`, `v3-<slug>-protocol-locked`, `v4-<slug>-results`, `v5-<slug>-retired`. Branches encouraged for parallel tracks.
+
+### Hard-constraint enforcement (layer routing)
+
+The three hard constraints declared in `README.md` are not all enforced at the same layer. Each is enforced where it can actually be verified:
+
+| Constraint | Enforced at | Mechanism |
+|---|---|---|
+| Pain point real | Layer 10 (admission gate) | Real-pain critic pass + human checkpoint. Failing → don't admit. |
+| Solution feasible | Layer 20 (methodology) | Methodology design must fit our envelope. Failing → retire-cancel back to layer 10. NOT pre-judged at admission — pre-judging filters out creative framings before they get a real look. |
+| Quality bar | Layers 20 / 30 / 40 | Layer 20 designs the protocol that meets it; layer 30 executes; layer 40 signs off honestly. Failing at any → retire-cancel back to layer 10. |
+
+Both `retire-completed` and `retire-cancelled` are valid portfolio exits. Both produce lessons.
+
+### Within-layer agile, cross-layer gated
+
+- Within a layer, iterate fast: cheap drafts, pilots, probes, scratch experiments. The cost of wrong inside a layer is low.
+- At layer boundaries, gate strictly: critic pass + human checkpoint. The cost of advancing wrong work to the next layer is high.
+
+This is the operational form of the README's "efficiency over ceremony" stance.
+
+### Pilot vs headline (per track, layers 20 + 30)
+
+- **Pilots:** small, fast, exploratory experiments inside layer 20 to inform methodology choices. Not pre-registered. May touch dev split. Live under `tracks/<slug>/20-methodology/pilots/`.
+- **Headline:** the experiment that supports the track's primary claim. Pre-registered in `tracks/<slug>/20-methodology/protocol-lock.md` before it runs. Touches the held-out partition exactly once.
+
+Pilots feed methodology; headline feeds analysis. Don't conflate them.
 
 ## Agent team
 

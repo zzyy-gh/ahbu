@@ -16,37 +16,26 @@ The portfolio is bounded by the quality bar, not by count. Better to carry one r
 
 ## Hard constraints (per pain point)
 
-Three constraints, each enforced at the layer that can actually verify it. No "fix it later" within a layer's responsibility, but layers may cancel-back to the portfolio when their constraint fails — that is a normal outcome, not a failure of discipline.
+Three constraints, no exceptions, no "we'll fix it later":
 
-- **Pain point must be real.** *Enforced at layer 10 (admission gate).* Validate that some constituency genuinely feels the pain. No invented problems, no future-work-section hypotheticals. Document the validation. If you can't validate, drop the candidate or escalate.
-- **Solution must be feasible.** *Enforced at layer 20 (methodology).* Public data, OSS tooling, available compute, scoped time horizon. Layer 20 may cancel a track that turns out infeasible at our envelope — *not pre-judged at admission time*, because pre-judging filters out creative or novel framings before they get a real look.
-- **Quality bar is non-negotiable.** *Enforced at layers 20 / 30 / 40.* Honest held-out testing, ablations where they matter, failure modes characterized, uncertainty reported. No metric gaming, no cherry-picking, no hand-waving.
+- **Pain point must be real.** Some constituency genuinely feels it; we have evidence. No invented problems, no future-work-section hypotheticals.
+- **Solution must be feasible.** Public data, OSS tooling, available compute, scoped time horizon.
+- **Quality bar is non-negotiable.** Honest held-out testing, ablations where they matter, failure modes characterized, uncertainty reported. No metric gaming, no cherry-picking, no hand-waving.
 
-A track exits the portfolio either by completing its analysis layer (`retire-completed`) or by being cancelled from a downstream layer with a documented reason (`retire-cancelled`). Both are valid; both produce lessons.
+A pain point that fails any constraint exits the portfolio with a documented reason. Lessons captured regardless.
 
 ## Stance
 
-- **Novelty welcome.** Creative, out-of-box, or unconventional framings are first-class. The admission gate does not pre-filter on "we don't know how to build this" — that is precisely what layer 20 explores.
-- **Pilot vs headline.** Within a track, fast exploratory pilots inform methodology without pre-registration. Only the headline experiment is pre-registered and protocol-locked.
-- **Cancel-back is healthy.** A clean cancel from layer 20 / 30 / 40 with documented reason is a portfolio update, not a project failure. Lessons captured either way.
-- **Within-layer agile, cross-layer gated.** Each layer iterates fast internally; layer boundaries hold a critic-pass + human-checkpoint gate. Goal: maximise (new output − risk).
+- **Novelty welcome.** Creative, out-of-box, or unconventional framings are first-class outputs of this project, not deviations from it.
+- **Honest exits.** Cancelling a pursuit cleanly when a constraint fails is a real outcome, not a project failure.
+- **Efficiency over ceremony.** Maximise (new output − risk). Iterate fast where the cost of wrong is low; gate carefully where the cost of wrong is high.
 
 ## Reuse principle
 
-Anything produced for one pain point that could plausibly serve another gets surfaced as a shared artifact with its own small spec. Examples: a leakage-clean evaluation harness, a domain-shift diagnostic, a calibrated-abstention wrapper, a per-cohort stratifier, a baseline implementation. Tracks consume from the shared layer and contribute back to it. The shared layer earns its keep when at least two tracks use the same artifact — promote eagerly but not prematurely.
-
-## Project operations
-
-The framework leaves operations to the project. For this one:
-
-- **Critic at help boundaries.** Before declaring a milestone complete, run a critic pass — a separate agent invocation or structured self-review — against the spec the layer received. Looks for spec drift, unjustified shortcuts, missing validation, premature claims.
-- **Human checkpoint at the end of each meaningful complete chunk.** Self-assess; when the chunk is right, hand over for review. Escalate sooner only when a hard constraint conflicts with the vision, a discovered fact changes the project's premise, or the chunk as scoped cannot meet the quality bar.
-- **Pain-point validation is a required artifact** for every portfolio admission.
-- **Portfolio discipline.** A registry of candidate · admitted · deferred · retired pain points is maintained, with reasons. Admission requires critic-pass + human checkpoint.
-- **Use git.** Commit as you go. Tag milestones. Branches encouraged for parallel track work.
+Anything produced for one pain point that could plausibly serve another gets surfaced as a shared artifact with its own small spec. Examples: a leakage-clean evaluation harness, a domain-shift diagnostic, a calibrated-abstention wrapper, a per-cohort stratifier, a baseline implementation. The shared layer earns its keep when at least two pursuits use the same artifact — promote eagerly but not prematurely.
 
 ## Start
 
-Read the framework. Establish your resource picture. Validate candidate pain points (broad before deep). Admit one or more to the portfolio. For each admitted pain point, run methodology → experiments → analysis under the quality bar. Surface reusable artifacts as they emerge.
+Read the framework. Validate candidate pain points (broad before deep). Admit those that meet the constraints. For each admitted pain point, do the work under the quality bar. Surface reusable artifacts as they emerge.
 
-Implementation details (repo layout, agent personas, kickoff sequence, milestone tags) live in `CLAUDE.md`.
+Implementation details — repo layout, layer-by-layer enforcement of constraints, cancel-back protocol, pilot-vs-headline mechanics, agent personas, kickoff sequence, milestone tags — live in `CLAUDE.md`.
