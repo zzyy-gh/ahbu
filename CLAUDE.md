@@ -24,11 +24,17 @@ Each layer's `README.md` declares its **mandate, knowledge, output, help target*
 
 ## Agent team
 
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is enabled in `.claude/settings.local.json`. Use **agent teams** (peer-to-peer teammates with a shared task list) for phases that benefit from cross-challenge and parallel exploration — pain-point validation, methodology debate, ablation runs. Use plain subagents (Agent tool) for one-shot lookups.
+
+Defined personas in `.claude/agents/`:
+
 - `pain-point-researcher` — surveys constituencies + literature for evidence of real pain.
 - `critic` — adversarial review at help boundaries.
 - `methodologist` — designs concrete approach after pain point selected.
 
-Spawn additional agents (data-plumber, baseline-builder, ablation-runner, writer, etc.) when the work calls for it. Document new agents alongside existing ones.
+Spawn additional teammates (data-plumber, baseline-builder, ablation-runner, writer, etc.) when the work calls for it. Document new agents alongside existing ones.
+
+Note: env-var changes to `.claude/settings.local.json` take effect on the **next session**. The currently-running session must be restarted before agent-team commands become available.
 
 ## Resource picture
 
