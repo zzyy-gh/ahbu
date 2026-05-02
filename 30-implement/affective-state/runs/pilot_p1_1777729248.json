@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "n_features": 92,
+  "schema_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\affective-state\\runs\\feature_schema_v1.yaml",
+  "groups": {
+    "hrv_time": 25,
+    "hrv_frequency": 10,
+    "hrv_nonlinear": 51,
+    "eda_features": 6
+  },
+  "eda_method_used": "highpass",
+  "pilot": "P-1",
+  "spec": "20-plan/affective-state/pilots-README.md#P-1"
+}
