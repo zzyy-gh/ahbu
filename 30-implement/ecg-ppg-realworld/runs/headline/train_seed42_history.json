@@ -1,0 +1,262 @@
+{
+  "seed": 42,
+  "epochs_run": 36,
+  "epochs_planned": 50,
+  "early_stop_triggered": true,
+  "best_cal_holdout_af_auroc": 0.94814,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.12169,
+      "cal_holdout_af_auroc": 0.69581,
+      "elapsed_s": 295.9,
+      "lr": 0.0009990133642141358
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.04262,
+      "cal_holdout_af_auroc": 0.7563,
+      "elapsed_s": 287.0,
+      "lr": 0.000996057350657239
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.95378,
+      "cal_holdout_af_auroc": 0.88699,
+      "elapsed_s": 286.7,
+      "lr": 0.0009911436253643444
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.89755,
+      "cal_holdout_af_auroc": 0.88458,
+      "elapsed_s": 286.7,
+      "lr": 0.0009842915805643156
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.8645,
+      "cal_holdout_af_auroc": 0.88723,
+      "elapsed_s": 286.7,
+      "lr": 0.0009755282581475769
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.81289,
+      "cal_holdout_af_auroc": 0.92394,
+      "elapsed_s": 286.7,
+      "lr": 0.0009648882429441258
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.80046,
+      "cal_holdout_af_auroc": 0.92951,
+      "elapsed_s": 286.5,
+      "lr": 0.0009524135262330099
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.7727,
+      "cal_holdout_af_auroc": 0.93058,
+      "elapsed_s": 286.3,
+      "lr": 0.0009381533400219318
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.74144,
+      "cal_holdout_af_auroc": 0.93937,
+      "elapsed_s": 284.5,
+      "lr": 0.0009221639627510075
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.69339,
+      "cal_holdout_af_auroc": 0.92674,
+      "elapsed_s": 284.3,
+      "lr": 0.0009045084971874736
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.68409,
+      "cal_holdout_af_auroc": 0.93145,
+      "elapsed_s": 284.6,
+      "lr": 0.0008852566213878945
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.66363,
+      "cal_holdout_af_auroc": 0.93185,
+      "elapsed_s": 284.5,
+      "lr": 0.0008644843137107056
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.6366,
+      "cal_holdout_af_auroc": 0.94018,
+      "elapsed_s": 284.9,
+      "lr": 0.0008422735529643443
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.6162,
+      "cal_holdout_af_auroc": 0.93576,
+      "elapsed_s": 284.9,
+      "lr": 0.0008187119948743448
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.59525,
+      "cal_holdout_af_auroc": 0.93849,
+      "elapsed_s": 284.7,
+      "lr": 0.0007938926261462366
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.58123,
+      "cal_holdout_af_auroc": 0.94155,
+      "elapsed_s": 284.6,
+      "lr": 0.0007679133974894982
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.55697,
+      "cal_holdout_af_auroc": 0.93103,
+      "elapsed_s": 284.4,
+      "lr": 0.0007408768370508576
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.5447,
+      "cal_holdout_af_auroc": 0.94218,
+      "elapsed_s": 291.1,
+      "lr": 0.0007128896457825362
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.52825,
+      "cal_holdout_af_auroc": 0.94177,
+      "elapsed_s": 301.6,
+      "lr": 0.0006840622763423389
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.51698,
+      "cal_holdout_af_auroc": 0.93515,
+      "elapsed_s": 294.7,
+      "lr": 0.0006545084971874735
+    },
+    {
+      "epoch": 21,
+      "train_loss": 0.49242,
+      "cal_holdout_af_auroc": 0.94495,
+      "elapsed_s": 295.4,
+      "lr": 0.0006243449435824271
+    },
+    {
+      "epoch": 22,
+      "train_loss": 0.48952,
+      "cal_holdout_af_auroc": 0.9452,
+      "elapsed_s": 289.4,
+      "lr": 0.0005936906572928622
+    },
+    {
+      "epoch": 23,
+      "train_loss": 0.47235,
+      "cal_holdout_af_auroc": 0.94329,
+      "elapsed_s": 284.8,
+      "lr": 0.000562666616782152
+    },
+    {
+      "epoch": 24,
+      "train_loss": 0.46133,
+      "cal_holdout_af_auroc": 0.94029,
+      "elapsed_s": 284.8,
+      "lr": 0.0005313952597646566
+    },
+    {
+      "epoch": 25,
+      "train_loss": 0.43673,
+      "cal_holdout_af_auroc": 0.94789,
+      "elapsed_s": 284.7,
+      "lr": 0.0004999999999999998
+    },
+    {
+      "epoch": 26,
+      "train_loss": 0.42679,
+      "cal_holdout_af_auroc": 0.94814,
+      "elapsed_s": 284.7,
+      "lr": 0.00046860474023534314
+    },
+    {
+      "epoch": 27,
+      "train_loss": 0.40795,
+      "cal_holdout_af_auroc": 0.94476,
+      "elapsed_s": 285.0,
+      "lr": 0.00043733338321784774
+    },
+    {
+      "epoch": 28,
+      "train_loss": 0.39373,
+      "cal_holdout_af_auroc": 0.94271,
+      "elapsed_s": 284.8,
+      "lr": 0.00040630934270713756
+    },
+    {
+      "epoch": 29,
+      "train_loss": 0.37512,
+      "cal_holdout_af_auroc": 0.93311,
+      "elapsed_s": 284.6,
+      "lr": 0.00037565505641757246
+    },
+    {
+      "epoch": 30,
+      "train_loss": 0.3452,
+      "cal_holdout_af_auroc": 0.93649,
+      "elapsed_s": 284.5,
+      "lr": 0.00034549150281252633
+    },
+    {
+      "epoch": 31,
+      "train_loss": 0.33965,
+      "cal_holdout_af_auroc": 0.93703,
+      "elapsed_s": 293.8,
+      "lr": 0.00031593772365766105
+    },
+    {
+      "epoch": 32,
+      "train_loss": 0.31028,
+      "cal_holdout_af_auroc": 0.942,
+      "elapsed_s": 293.4,
+      "lr": 0.00028711035421746355
+    },
+    {
+      "epoch": 33,
+      "train_loss": 0.2955,
+      "cal_holdout_af_auroc": 0.93728,
+      "elapsed_s": 291.8,
+      "lr": 0.0002591231629491422
+    },
+    {
+      "epoch": 34,
+      "train_loss": 0.27618,
+      "cal_holdout_af_auroc": 0.9369,
+      "elapsed_s": 306.7,
+      "lr": 0.00023208660251050145
+    },
+    {
+      "epoch": 35,
+      "train_loss": 0.24687,
+      "cal_holdout_af_auroc": 0.93666,
+      "elapsed_s": 295.8,
+      "lr": 0.00020610737385376337
+    },
+    {
+      "epoch": 36,
+      "train_loss": 0.23065,
+      "cal_holdout_af_auroc": 0.93593,
+      "elapsed_s": 286.5,
+      "lr": 0.00018128800512565502
+    }
+  ],
+  "best_weights": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\headline\\weights_seed42_best.pt"
+}

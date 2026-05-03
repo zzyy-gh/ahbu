@@ -1,0 +1,17 @@
+{
+  "n_seeds_aggregated": 1,
+  "seeds": [
+    42
+  ],
+  "ppv_at_17_abstention_mean": 0.63804,
+  "ppv_at_17_abstention_std": 0.0,
+  "ppv_baseline_mean": 0.56109,
+  "ppv_baseline_std": 0.0,
+  "auroc_af_mean": 0.94678,
+  "auroc_af_std": 0.0,
+  "abstention_rate_achieved_mean": 0.18606,
+  "ece_cal_mean": 0.04041,
+  "primary_seed": 42
+}
+
+Wrote C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\headline\headline_summary.json

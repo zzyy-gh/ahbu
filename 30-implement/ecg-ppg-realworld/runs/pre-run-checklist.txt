@@ -1,0 +1,16 @@
+# Pre-run checklist — ecg-ppg-realworld headline
+# Generated: 2026-05-03 23:01:59
+# Seeds: [42]
+# Model: xresnet1d50
+# Batch size: 8
+
+[X] weights_seed42_best.pt
+[X] calibration_seed42.json
+[X] calibration_seed42.json has abstention_threshold
+[X] partition_audit.txt exists
+[X] test_seed42.json absent (not yet touched)
+[X] seeds documented
+[X] batch_size documented
+[X] model variant documented
+
+STATUS: ALL_CHECKS_PASSED

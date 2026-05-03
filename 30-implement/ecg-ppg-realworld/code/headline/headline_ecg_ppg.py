@@ -904,6 +904,10 @@ def main() -> int:
     except Exception as e:  # noqa: BLE001
         result = {"status": "fail", "reason": f"unhandled exception: {e}", "traceback": traceback.format_exc()}
 
+    if result.get("status") != "pass":
+        print(json.dumps({k: v for k, v in result.items() if k != "traceback"}, indent=2), flush=True)
+        if "traceback" in result:
+            print(result["traceback"], flush=True)
     return 0 if result.get("status") == "pass" else 1
 
 

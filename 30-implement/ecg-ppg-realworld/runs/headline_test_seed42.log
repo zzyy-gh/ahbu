@@ -1,0 +1,53 @@
+[test] HELD-OUT TOUCH: seed=42 test_records=1650 (excluded_noisy=56) T=0.9411 threshold=0.6837
+[test] loading test waveforms...
+  [load] 500/1650 (failed=0)
+  [load] 1000/1650 (failed=0)
+  [load] 1500/1650 (failed=0)
+[test] load done in 32.7s (failed=0)
+[test] inference...
+{
+  "status": "pass",
+  "seed": 42,
+  "T": 0.94105,
+  "abstention_threshold": 0.683676,
+  "abstention_threshold_target": 0.17,
+  "abstention_rate_achieved_on_test": 0.18606,
+  "n_test": 1650,
+  "n_excluded_noisy": 56,
+  "n_committed": 1343,
+  "auroc_af_post_T": 0.94678,
+  "ece_uncal": 0.03812,
+  "ece_cal": 0.04041,
+  "ppv_at_17_abstention": {
+    "point": 0.63804,
+    "ci95_lo": 0.57738,
+    "ci95_hi": 0.7027,
+    "n_committed": 1343
+  },
+  "ppv_at_0_abstention_baseline": {
+    "point": 0.56109,
+    "ci95_lo": 0.51315,
+    "ci95_hi": 0.61422,
+    "n_committed": 1650
+  },
+  "ppv_improvement_pp": 7.695,
+  "mcnemar_table_2x2": [
+    [
+      104,
+      20
+    ],
+    [
+      38,
+      59
+    ]
+  ],
+  "mcnemar_statistic": 4.98276,
+  "mcnemar_p_value": 0.0256,
+  "bootstrap_n": 2000,
+  "bootstrap_seed": 42,
+  "weights_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\headline\\weights_seed42_best.pt",
+  "verdict": "POSITIVE: statistically significant and clinically meaningful PPV improvement from calibrated abstention",
+  "spec": "20-plan/ecg-ppg-realworld/protocol-lock.md \u00a75-\u00a77"
+}
+
+Wrote C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\headline\test_seed42.json

@@ -1,0 +1,285 @@
+[headline-train] seed=42 train=5279 cal_holdout=1320
+[headline-train] loading + preprocessing waveforms...
+  [load] 500/5279 (failed=0)
+  [load] 1000/5279 (failed=0)
+  [load] 1500/5279 (failed=0)
+  [load] 2000/5279 (failed=0)
+  [load] 2500/5279 (failed=0)
+  [load] 3000/5279 (failed=0)
+  [load] 3500/5279 (failed=0)
+  [load] 4000/5279 (failed=0)
+  [load] 4500/5279 (failed=0)
+  [load] 5000/5279 (failed=0)
+  [load] 500/1320 (failed=0)
+  [load] 1000/1320 (failed=0)
+[headline-train] load complete in 143.8s (train_failed=0, cal_failed=0)
+[headline-train] class weights (inv-freq): [0.40620189905166626, 2.7211339473724365, 0.8542070984840393, 1319.75]
+  [seed=42 ep 1/50] step 100/660 running_loss=1.2879 elapsed=57s
+  [seed=42 ep 1/50] step 200/660 running_loss=1.1919 elapsed=92s
+  [seed=42 ep 1/50] step 300/660 running_loss=1.1633 elapsed=128s
+  [seed=42 ep 1/50] step 400/660 running_loss=1.1523 elapsed=169s
+  [seed=42 ep 1/50] step 500/660 running_loss=1.1329 elapsed=210s
+  [seed=42 ep 1/50] step 600/660 running_loss=1.1262 elapsed=250s
+[seed=42] epoch 1: train_loss=1.1217 cal_af_auroc=0.6958 (296s)
+  -> new best @ epoch 1: AUROC=0.6958
+  [seed=42 ep 2/50] step 100/660 running_loss=1.0443 elapsed=40s
+  [seed=42 ep 2/50] step 200/660 running_loss=1.0551 elapsed=81s
+  [seed=42 ep 2/50] step 300/660 running_loss=1.0508 elapsed=121s
+  [seed=42 ep 2/50] step 400/660 running_loss=1.0554 elapsed=162s
+  [seed=42 ep 2/50] step 500/660 running_loss=1.0529 elapsed=202s
+  [seed=42 ep 2/50] step 600/660 running_loss=1.0447 elapsed=243s
+[seed=42] epoch 2: train_loss=1.0426 cal_af_auroc=0.7563 (287s)
+  -> new best @ epoch 2: AUROC=0.7563
+  [seed=42 ep 3/50] step 100/660 running_loss=0.9602 elapsed=40s
+  [seed=42 ep 3/50] step 200/660 running_loss=0.9564 elapsed=81s
+  [seed=42 ep 3/50] step 300/660 running_loss=0.9653 elapsed=121s
+  [seed=42 ep 3/50] step 400/660 running_loss=0.9466 elapsed=162s
+  [seed=42 ep 3/50] step 500/660 running_loss=0.9540 elapsed=202s
+  [seed=42 ep 3/50] step 600/660 running_loss=0.9536 elapsed=243s
+[seed=42] epoch 3: train_loss=0.9538 cal_af_auroc=0.8870 (287s)
+  -> new best @ epoch 3: AUROC=0.8870
+  [seed=42 ep 4/50] step 100/660 running_loss=0.8651 elapsed=40s
+  [seed=42 ep 4/50] step 200/660 running_loss=0.8922 elapsed=81s
+  [seed=42 ep 4/50] step 300/660 running_loss=0.8944 elapsed=121s
+  [seed=42 ep 4/50] step 400/660 running_loss=0.8937 elapsed=162s
+  [seed=42 ep 4/50] step 500/660 running_loss=0.9052 elapsed=202s
+  [seed=42 ep 4/50] step 600/660 running_loss=0.9047 elapsed=243s
+[seed=42] epoch 4: train_loss=0.8976 cal_af_auroc=0.8846 (287s)
+  [seed=42 ep 5/50] step 100/660 running_loss=0.8890 elapsed=40s
+  [seed=42 ep 5/50] step 200/660 running_loss=0.8621 elapsed=81s
+  [seed=42 ep 5/50] step 300/660 running_loss=0.8738 elapsed=121s
+  [seed=42 ep 5/50] step 400/660 running_loss=0.8714 elapsed=162s
+  [seed=42 ep 5/50] step 500/660 running_loss=0.8622 elapsed=202s
+  [seed=42 ep 5/50] step 600/660 running_loss=0.8622 elapsed=243s
+[seed=42] epoch 5: train_loss=0.8645 cal_af_auroc=0.8872 (287s)
+  -> new best @ epoch 5: AUROC=0.8872
+  [seed=42 ep 6/50] step 100/660 running_loss=0.8763 elapsed=40s
+  [seed=42 ep 6/50] step 200/660 running_loss=0.8370 elapsed=81s
+  [seed=42 ep 6/50] step 300/660 running_loss=0.8285 elapsed=121s
+  [seed=42 ep 6/50] step 400/660 running_loss=0.8242 elapsed=162s
+  [seed=42 ep 6/50] step 500/660 running_loss=0.8251 elapsed=202s
+  [seed=42 ep 6/50] step 600/660 running_loss=0.8218 elapsed=243s
+[seed=42] epoch 6: train_loss=0.8129 cal_af_auroc=0.9239 (287s)
+  -> new best @ epoch 6: AUROC=0.9239
+  [seed=42 ep 7/50] step 100/660 running_loss=0.8048 elapsed=40s
+  [seed=42 ep 7/50] step 200/660 running_loss=0.7951 elapsed=81s
+  [seed=42 ep 7/50] step 300/660 running_loss=0.7959 elapsed=121s
+  [seed=42 ep 7/50] step 400/660 running_loss=0.8060 elapsed=162s
+  [seed=42 ep 7/50] step 500/660 running_loss=0.8088 elapsed=202s
+  [seed=42 ep 7/50] step 600/660 running_loss=0.7970 elapsed=242s
+[seed=42] epoch 7: train_loss=0.8005 cal_af_auroc=0.9295 (286s)
+  -> new best @ epoch 7: AUROC=0.9295
+  [seed=42 ep 8/50] step 100/660 running_loss=0.7938 elapsed=40s
+  [seed=42 ep 8/50] step 200/660 running_loss=0.7759 elapsed=81s
+  [seed=42 ep 8/50] step 300/660 running_loss=0.7682 elapsed=121s
+  [seed=42 ep 8/50] step 400/660 running_loss=0.7814 elapsed=162s
+  [seed=42 ep 8/50] step 500/660 running_loss=0.7713 elapsed=202s
+  [seed=42 ep 8/50] step 600/660 running_loss=0.7690 elapsed=242s
+[seed=42] epoch 8: train_loss=0.7727 cal_af_auroc=0.9306 (286s)
+  -> new best @ epoch 8: AUROC=0.9306
+  [seed=42 ep 9/50] step 100/660 running_loss=0.7912 elapsed=40s
+  [seed=42 ep 9/50] step 200/660 running_loss=0.7662 elapsed=80s
+  [seed=42 ep 9/50] step 300/660 running_loss=0.7599 elapsed=120s
+  [seed=42 ep 9/50] step 400/660 running_loss=0.7607 elapsed=160s
+  [seed=42 ep 9/50] step 500/660 running_loss=0.7460 elapsed=201s
+  [seed=42 ep 9/50] step 600/660 running_loss=0.7422 elapsed=241s
+[seed=42] epoch 9: train_loss=0.7414 cal_af_auroc=0.9394 (284s)
+  -> new best @ epoch 9: AUROC=0.9394
+  [seed=42 ep 10/50] step 100/660 running_loss=0.6585 elapsed=40s
+  [seed=42 ep 10/50] step 200/660 running_loss=0.6669 elapsed=80s
+  [seed=42 ep 10/50] step 300/660 running_loss=0.6935 elapsed=120s
+  [seed=42 ep 10/50] step 400/660 running_loss=0.6957 elapsed=160s
+  [seed=42 ep 10/50] step 500/660 running_loss=0.6972 elapsed=200s
+  [seed=42 ep 10/50] step 600/660 running_loss=0.6978 elapsed=241s
+[seed=42] epoch 10: train_loss=0.6934 cal_af_auroc=0.9267 (284s)
+  [seed=42 ep 11/50] step 100/660 running_loss=0.7119 elapsed=40s
+  [seed=42 ep 11/50] step 200/660 running_loss=0.6975 elapsed=80s
+  [seed=42 ep 11/50] step 300/660 running_loss=0.6814 elapsed=120s
+  [seed=42 ep 11/50] step 400/660 running_loss=0.6821 elapsed=160s
+  [seed=42 ep 11/50] step 500/660 running_loss=0.6805 elapsed=201s
+  [seed=42 ep 11/50] step 600/660 running_loss=0.6795 elapsed=241s
+[seed=42] epoch 11: train_loss=0.6841 cal_af_auroc=0.9315 (285s)
+  [seed=42 ep 12/50] step 100/660 running_loss=0.6761 elapsed=40s
+  [seed=42 ep 12/50] step 200/660 running_loss=0.6578 elapsed=80s
+  [seed=42 ep 12/50] step 300/660 running_loss=0.6626 elapsed=120s
+  [seed=42 ep 12/50] step 400/660 running_loss=0.6636 elapsed=160s
+  [seed=42 ep 12/50] step 500/660 running_loss=0.6688 elapsed=201s
+  [seed=42 ep 12/50] step 600/660 running_loss=0.6669 elapsed=241s
+[seed=42] epoch 12: train_loss=0.6636 cal_af_auroc=0.9319 (284s)
+  [seed=42 ep 13/50] step 100/660 running_loss=0.6344 elapsed=40s
+  [seed=42 ep 13/50] step 200/660 running_loss=0.6339 elapsed=80s
+  [seed=42 ep 13/50] step 300/660 running_loss=0.6303 elapsed=120s
+  [seed=42 ep 13/50] step 400/660 running_loss=0.6337 elapsed=161s
+  [seed=42 ep 13/50] step 500/660 running_loss=0.6384 elapsed=201s
+  [seed=42 ep 13/50] step 600/660 running_loss=0.6405 elapsed=241s
+[seed=42] epoch 13: train_loss=0.6366 cal_af_auroc=0.9402 (285s)
+  -> new best @ epoch 13: AUROC=0.9402
+  [seed=42 ep 14/50] step 100/660 running_loss=0.6064 elapsed=40s
+  [seed=42 ep 14/50] step 200/660 running_loss=0.6033 elapsed=80s
+  [seed=42 ep 14/50] step 300/660 running_loss=0.6178 elapsed=120s
+  [seed=42 ep 14/50] step 400/660 running_loss=0.6214 elapsed=161s
+  [seed=42 ep 14/50] step 500/660 running_loss=0.6198 elapsed=201s
+  [seed=42 ep 14/50] step 600/660 running_loss=0.6137 elapsed=241s
+[seed=42] epoch 14: train_loss=0.6162 cal_af_auroc=0.9358 (285s)
+  [seed=42 ep 15/50] step 100/660 running_loss=0.5794 elapsed=40s
+  [seed=42 ep 15/50] step 200/660 running_loss=0.5901 elapsed=80s
+  [seed=42 ep 15/50] step 300/660 running_loss=0.5742 elapsed=120s
+  [seed=42 ep 15/50] step 400/660 running_loss=0.5990 elapsed=161s
+  [seed=42 ep 15/50] step 500/660 running_loss=0.6061 elapsed=201s
+  [seed=42 ep 15/50] step 600/660 running_loss=0.6023 elapsed=241s
+[seed=42] epoch 15: train_loss=0.5952 cal_af_auroc=0.9385 (285s)
+  [seed=42 ep 16/50] step 100/660 running_loss=0.5904 elapsed=40s
+  [seed=42 ep 16/50] step 200/660 running_loss=0.5794 elapsed=80s
+  [seed=42 ep 16/50] step 300/660 running_loss=0.5658 elapsed=120s
+  [seed=42 ep 16/50] step 400/660 running_loss=0.5763 elapsed=161s
+  [seed=42 ep 16/50] step 500/660 running_loss=0.5702 elapsed=201s
+  [seed=42 ep 16/50] step 600/660 running_loss=0.5763 elapsed=241s
+[seed=42] epoch 16: train_loss=0.5812 cal_af_auroc=0.9415 (285s)
+  -> new best @ epoch 16: AUROC=0.9415
+  [seed=42 ep 17/50] step 100/660 running_loss=0.5779 elapsed=40s
+  [seed=42 ep 17/50] step 200/660 running_loss=0.5566 elapsed=80s
+  [seed=42 ep 17/50] step 300/660 running_loss=0.5479 elapsed=120s
+  [seed=42 ep 17/50] step 400/660 running_loss=0.5568 elapsed=160s
+  [seed=42 ep 17/50] step 500/660 running_loss=0.5489 elapsed=200s
+  [seed=42 ep 17/50] step 600/660 running_loss=0.5550 elapsed=241s
+[seed=42] epoch 17: train_loss=0.5570 cal_af_auroc=0.9310 (284s)
+  [seed=42 ep 18/50] step 100/660 running_loss=0.5793 elapsed=40s
+  [seed=42 ep 18/50] step 200/660 running_loss=0.5469 elapsed=81s
+  [seed=42 ep 18/50] step 300/660 running_loss=0.5522 elapsed=121s
+  [seed=42 ep 18/50] step 400/660 running_loss=0.5468 elapsed=162s
+  [seed=42 ep 18/50] step 500/660 running_loss=0.5483 elapsed=204s
+  [seed=42 ep 18/50] step 600/660 running_loss=0.5503 elapsed=246s
+[seed=42] epoch 18: train_loss=0.5447 cal_af_auroc=0.9422 (291s)
+  -> new best @ epoch 18: AUROC=0.9422
+  [seed=42 ep 19/50] step 100/660 running_loss=0.5137 elapsed=43s
+  [seed=42 ep 19/50] step 200/660 running_loss=0.4946 elapsed=87s
+  [seed=42 ep 19/50] step 300/660 running_loss=0.5213 elapsed=131s
+  [seed=42 ep 19/50] step 400/660 running_loss=0.5301 elapsed=173s
+  [seed=42 ep 19/50] step 500/660 running_loss=0.5291 elapsed=215s
+  [seed=42 ep 19/50] step 600/660 running_loss=0.5272 elapsed=257s
+[seed=42] epoch 19: train_loss=0.5283 cal_af_auroc=0.9418 (302s)
+  [seed=42 ep 20/50] step 100/660 running_loss=0.4906 elapsed=40s
+  [seed=42 ep 20/50] step 200/660 running_loss=0.5055 elapsed=81s
+  [seed=42 ep 20/50] step 300/660 running_loss=0.5113 elapsed=122s
+  [seed=42 ep 20/50] step 400/660 running_loss=0.5104 elapsed=164s
+  [seed=42 ep 20/50] step 500/660 running_loss=0.5188 elapsed=207s
+  [seed=42 ep 20/50] step 600/660 running_loss=0.5166 elapsed=248s
+[seed=42] epoch 20: train_loss=0.5170 cal_af_auroc=0.9351 (295s)
+  [seed=42 ep 21/50] step 100/660 running_loss=0.5061 elapsed=44s
+  [seed=42 ep 21/50] step 200/660 running_loss=0.5118 elapsed=87s
+  [seed=42 ep 21/50] step 300/660 running_loss=0.4822 elapsed=128s
+  [seed=42 ep 21/50] step 400/660 running_loss=0.4909 elapsed=169s
+  [seed=42 ep 21/50] step 500/660 running_loss=0.4845 elapsed=209s
+  [seed=42 ep 21/50] step 600/660 running_loss=0.4907 elapsed=250s
+[seed=42] epoch 21: train_loss=0.4924 cal_af_auroc=0.9450 (295s)
+  -> new best @ epoch 21: AUROC=0.9450
+  [seed=42 ep 22/50] step 100/660 running_loss=0.4218 elapsed=42s
+  [seed=42 ep 22/50] step 200/660 running_loss=0.4550 elapsed=85s
+  [seed=42 ep 22/50] step 300/660 running_loss=0.4681 elapsed=125s
+  [seed=42 ep 22/50] step 400/660 running_loss=0.4831 elapsed=165s
+  [seed=42 ep 22/50] step 500/660 running_loss=0.4870 elapsed=205s
+  [seed=42 ep 22/50] step 600/660 running_loss=0.4925 elapsed=245s
+[seed=42] epoch 22: train_loss=0.4895 cal_af_auroc=0.9452 (289s)
+  -> new best @ epoch 22: AUROC=0.9452
+  [seed=42 ep 23/50] step 100/660 running_loss=0.4528 elapsed=40s
+  [seed=42 ep 23/50] step 200/660 running_loss=0.4655 elapsed=80s
+  [seed=42 ep 23/50] step 300/660 running_loss=0.4629 elapsed=121s
+  [seed=42 ep 23/50] step 400/660 running_loss=0.4808 elapsed=161s
+  [seed=42 ep 23/50] step 500/660 running_loss=0.4823 elapsed=201s
+  [seed=42 ep 23/50] step 600/660 running_loss=0.4775 elapsed=241s
+[seed=42] epoch 23: train_loss=0.4723 cal_af_auroc=0.9433 (285s)
+  [seed=42 ep 24/50] step 100/660 running_loss=0.4243 elapsed=40s
+  [seed=42 ep 24/50] step 200/660 running_loss=0.4313 elapsed=80s
+  [seed=42 ep 24/50] step 300/660 running_loss=0.4420 elapsed=120s
+  [seed=42 ep 24/50] step 400/660 running_loss=0.4595 elapsed=161s
+  [seed=42 ep 24/50] step 500/660 running_loss=0.4615 elapsed=201s
+  [seed=42 ep 24/50] step 600/660 running_loss=0.4613 elapsed=241s
+[seed=42] epoch 24: train_loss=0.4613 cal_af_auroc=0.9403 (285s)
+  [seed=42 ep 25/50] step 100/660 running_loss=0.4055 elapsed=40s
+  [seed=42 ep 25/50] step 200/660 running_loss=0.4165 elapsed=80s
+  [seed=42 ep 25/50] step 300/660 running_loss=0.4135 elapsed=120s
+  [seed=42 ep 25/50] step 400/660 running_loss=0.4247 elapsed=160s
+  [seed=42 ep 25/50] step 500/660 running_loss=0.4372 elapsed=201s
+  [seed=42 ep 25/50] step 600/660 running_loss=0.4344 elapsed=241s
+[seed=42] epoch 25: train_loss=0.4367 cal_af_auroc=0.9479 (285s)
+  -> new best @ epoch 25: AUROC=0.9479
+  [seed=42 ep 26/50] step 100/660 running_loss=0.3894 elapsed=40s
+  [seed=42 ep 26/50] step 200/660 running_loss=0.3857 elapsed=80s
+  [seed=42 ep 26/50] step 300/660 running_loss=0.4187 elapsed=120s
+  [seed=42 ep 26/50] step 400/660 running_loss=0.4237 elapsed=161s
+  [seed=42 ep 26/50] step 500/660 running_loss=0.4170 elapsed=201s
+  [seed=42 ep 26/50] step 600/660 running_loss=0.4264 elapsed=241s
+[seed=42] epoch 26: train_loss=0.4268 cal_af_auroc=0.9481 (285s)
+  -> new best @ epoch 26: AUROC=0.9481
+  [seed=42 ep 27/50] step 100/660 running_loss=0.3818 elapsed=40s
+  [seed=42 ep 27/50] step 200/660 running_loss=0.3869 elapsed=80s
+  [seed=42 ep 27/50] step 300/660 running_loss=0.3944 elapsed=120s
+  [seed=42 ep 27/50] step 400/660 running_loss=0.4000 elapsed=160s
+  [seed=42 ep 27/50] step 500/660 running_loss=0.4030 elapsed=201s
+  [seed=42 ep 27/50] step 600/660 running_loss=0.4062 elapsed=241s
+[seed=42] epoch 27: train_loss=0.4080 cal_af_auroc=0.9448 (285s)
+  [seed=42 ep 28/50] step 100/660 running_loss=0.3864 elapsed=40s
+  [seed=42 ep 28/50] step 200/660 running_loss=0.3918 elapsed=80s
+  [seed=42 ep 28/50] step 300/660 running_loss=0.3927 elapsed=120s
+  [seed=42 ep 28/50] step 400/660 running_loss=0.3951 elapsed=161s
+  [seed=42 ep 28/50] step 500/660 running_loss=0.3874 elapsed=201s
+  [seed=42 ep 28/50] step 600/660 running_loss=0.3924 elapsed=241s
+[seed=42] epoch 28: train_loss=0.3937 cal_af_auroc=0.9427 (285s)
+  [seed=42 ep 29/50] step 100/660 running_loss=0.3489 elapsed=40s
+  [seed=42 ep 29/50] step 200/660 running_loss=0.3566 elapsed=80s
+  [seed=42 ep 29/50] step 300/660 running_loss=0.3557 elapsed=120s
+  [seed=42 ep 29/50] step 400/660 running_loss=0.3536 elapsed=161s
+  [seed=42 ep 29/50] step 500/660 running_loss=0.3681 elapsed=201s
+  [seed=42 ep 29/50] step 600/660 running_loss=0.3700 elapsed=241s
+[seed=42] epoch 29: train_loss=0.3751 cal_af_auroc=0.9331 (285s)
+  [seed=42 ep 30/50] step 100/660 running_loss=0.3235 elapsed=40s
+  [seed=42 ep 30/50] step 200/660 running_loss=0.3202 elapsed=80s
+  [seed=42 ep 30/50] step 300/660 running_loss=0.3334 elapsed=120s
+  [seed=42 ep 30/50] step 400/660 running_loss=0.3424 elapsed=160s
+  [seed=42 ep 30/50] step 500/660 running_loss=0.3361 elapsed=201s
+  [seed=42 ep 30/50] step 600/660 running_loss=0.3382 elapsed=241s
+[seed=42] epoch 30: train_loss=0.3452 cal_af_auroc=0.9365 (285s)
+  [seed=42 ep 31/50] step 100/660 running_loss=0.3053 elapsed=41s
+  [seed=42 ep 31/50] step 200/660 running_loss=0.3258 elapsed=82s
+  [seed=42 ep 31/50] step 300/660 running_loss=0.3197 elapsed=123s
+  [seed=42 ep 31/50] step 400/660 running_loss=0.3236 elapsed=166s
+  [seed=42 ep 31/50] step 500/660 running_loss=0.3410 elapsed=208s
+  [seed=42 ep 31/50] step 600/660 running_loss=0.3382 elapsed=250s
+[seed=42] epoch 31: train_loss=0.3396 cal_af_auroc=0.9370 (294s)
+  [seed=42 ep 32/50] step 100/660 running_loss=0.2868 elapsed=42s
+  [seed=42 ep 32/50] step 200/660 running_loss=0.2934 elapsed=86s
+  [seed=42 ep 32/50] step 300/660 running_loss=0.2927 elapsed=128s
+  [seed=42 ep 32/50] step 400/660 running_loss=0.2982 elapsed=168s
+  [seed=42 ep 32/50] step 500/660 running_loss=0.3071 elapsed=209s
+  [seed=42 ep 32/50] step 600/660 running_loss=0.3027 elapsed=249s
+[seed=42] epoch 32: train_loss=0.3103 cal_af_auroc=0.9420 (293s)
+  [seed=42 ep 33/50] step 100/660 running_loss=0.2929 elapsed=42s
+  [seed=42 ep 33/50] step 200/660 running_loss=0.2873 elapsed=84s
+  [seed=42 ep 33/50] step 300/660 running_loss=0.2701 elapsed=125s
+  [seed=42 ep 33/50] step 400/660 running_loss=0.2860 elapsed=166s
+  [seed=42 ep 33/50] step 500/660 running_loss=0.2861 elapsed=207s
+  [seed=42 ep 33/50] step 600/660 running_loss=0.2891 elapsed=247s
+[seed=42] epoch 33: train_loss=0.2955 cal_af_auroc=0.9373 (292s)
+  [seed=42 ep 34/50] step 100/660 running_loss=0.2757 elapsed=43s
+  [seed=42 ep 34/50] step 200/660 running_loss=0.2897 elapsed=87s
+  [seed=42 ep 34/50] step 300/660 running_loss=0.2730 elapsed=131s
+  [seed=42 ep 34/50] step 400/660 running_loss=0.2849 elapsed=175s
+  [seed=42 ep 34/50] step 500/660 running_loss=0.2735 elapsed=217s
+  [seed=42 ep 34/50] step 600/660 running_loss=0.2756 elapsed=260s
+[seed=42] epoch 34: train_loss=0.2762 cal_af_auroc=0.9369 (307s)
+  [seed=42 ep 35/50] step 100/660 running_loss=0.2134 elapsed=45s
+  [seed=42 ep 35/50] step 200/660 running_loss=0.2148 elapsed=87s
+  [seed=42 ep 35/50] step 300/660 running_loss=0.2258 elapsed=129s
+  [seed=42 ep 35/50] step 400/660 running_loss=0.2280 elapsed=171s
+  [seed=42 ep 35/50] step 500/660 running_loss=0.2349 elapsed=211s
+  [seed=42 ep 35/50] step 600/660 running_loss=0.2431 elapsed=252s
+[seed=42] epoch 35: train_loss=0.2469 cal_af_auroc=0.9367 (296s)
+  [seed=42 ep 36/50] step 100/660 running_loss=0.1979 elapsed=40s
+  [seed=42 ep 36/50] step 200/660 running_loss=0.2189 elapsed=81s
+  [seed=42 ep 36/50] step 300/660 running_loss=0.2168 elapsed=121s
+  [seed=42 ep 36/50] step 400/660 running_loss=0.2233 elapsed=162s
+  [seed=42 ep 36/50] step 500/660 running_loss=0.2295 elapsed=202s
+  [seed=42 ep 36/50] step 600/660 running_loss=0.2282 elapsed=242s
+[seed=42] epoch 36: train_loss=0.2306 cal_af_auroc=0.9359 (286s)
+  -> early stop at epoch 36 (no improvement in 10 epochs; best=0.9481)
+[headline-train] seed=42 done. best AUROC=0.9481. History: C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\headline\train_seed42_history.json

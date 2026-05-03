@@ -1,0 +1,171 @@
+{
+  "status": "pass",
+  "seed": 42,
+  "T": 0.94105,
+  "abstention_threshold": 0.683676,
+  "abstention_threshold_target": 0.17,
+  "abstention_rate_achieved_on_test": 0.18606,
+  "n_test": 1650,
+  "n_excluded_noisy": 56,
+  "n_committed": 1343,
+  "auroc_af_post_T": 0.94678,
+  "ece_uncal": 0.03812,
+  "ece_cal": 0.04041,
+  "ppv_at_17_abstention": {
+    "point": 0.63804,
+    "ci95_lo": 0.57738,
+    "ci95_hi": 0.7027,
+    "n_committed": 1343
+  },
+  "ppv_at_0_abstention_baseline": {
+    "point": 0.56109,
+    "ci95_lo": 0.51315,
+    "ci95_hi": 0.61422,
+    "n_committed": 1650
+  },
+  "ppv_improvement_pp": 7.695,
+  "mcnemar_table_2x2": [
+    [
+      104,
+      20
+    ],
+    [
+      38,
+      59
+    ]
+  ],
+  "mcnemar_statistic": 4.98276,
+  "mcnemar_p_value": 0.0256,
+  "ppv_vs_coverage_curve": {
+    "n_total": 1650,
+    "n_positive_true": 152,
+    "points": [
+      {
+        "target_coverage": 1.0,
+        "achieved_coverage": 1.0,
+        "threshold": 0.3495481014251709,
+        "n_committed": 1650,
+        "n_predicted_positive": 221,
+        "ppv": 0.5610859728506787,
+        "ppv_ci95_lo": 0.51315222323049,
+        "ppv_ci95_hi": 0.6142150108774473,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.95,
+        "achieved_coverage": 0.9503030303030303,
+        "threshold": 0.5250651836395264,
+        "n_committed": 1568,
+        "n_predicted_positive": 202,
+        "ppv": 0.5841584158415841,
+        "ppv_ci95_lo": 0.536036036036036,
+        "ppv_ci95_hi": 0.6397849462365591,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.9,
+        "achieved_coverage": 0.9,
+        "threshold": 0.5768306255340576,
+        "n_committed": 1485,
+        "n_predicted_positive": 190,
+        "ppv": 0.6052631578947368,
+        "ppv_ci95_lo": 0.5538984142043915,
+        "ppv_ci95_hi": 0.6629834254143646,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.85,
+        "achieved_coverage": 0.8503030303030303,
+        "threshold": 0.636761486530304,
+        "n_committed": 1403,
+        "n_predicted_positive": 171,
+        "ppv": 0.6257309941520468,
+        "ppv_ci95_lo": 0.5730337078651685,
+        "ppv_ci95_hi": 0.6878980891719745,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.83,
+        "achieved_coverage": 0.8303030303030303,
+        "threshold": 0.6694692969322205,
+        "n_committed": 1370,
+        "n_predicted_positive": 166,
+        "ppv": 0.6265060240963856,
+        "ppv_ci95_lo": 0.5714285714285714,
+        "ppv_ci95_hi": 0.6878980891719745,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.79,
+        "achieved_coverage": 0.7903030303030303,
+        "threshold": 0.7125231027603149,
+        "n_committed": 1304,
+        "n_predicted_positive": 161,
+        "ppv": 0.6459627329192547,
+        "ppv_ci95_lo": 0.5895953757225434,
+        "ppv_ci95_hi": 0.7103448275862069,
+        "bootstrap_n": 2000
+      }
+    ]
+  },
+  "selective_classification_curve": {
+    "n_total": 1650,
+    "auc_correctness": 0.6929364954737571,
+    "points": [
+      {
+        "target_coverage": 1.0,
+        "achieved_coverage": 1.0,
+        "threshold": 0.3495481014251709,
+        "n_committed": 1650,
+        "accuracy_on_committed": 0.7896969696969697
+      },
+      {
+        "target_coverage": 0.95,
+        "achieved_coverage": 0.9503030303030303,
+        "threshold": 0.5250651836395264,
+        "n_committed": 1568,
+        "accuracy_on_committed": 0.8054846938775511
+      },
+      {
+        "target_coverage": 0.9,
+        "achieved_coverage": 0.9,
+        "threshold": 0.5768306255340576,
+        "n_committed": 1485,
+        "accuracy_on_committed": 0.8202020202020202
+      },
+      {
+        "target_coverage": 0.85,
+        "achieved_coverage": 0.8503030303030303,
+        "threshold": 0.636761486530304,
+        "n_committed": 1403,
+        "accuracy_on_committed": 0.83464005702067
+      },
+      {
+        "target_coverage": 0.83,
+        "achieved_coverage": 0.8303030303030303,
+        "threshold": 0.6694692969322205,
+        "n_committed": 1370,
+        "accuracy_on_committed": 0.8416058394160584
+      },
+      {
+        "target_coverage": 0.79,
+        "achieved_coverage": 0.7903030303030303,
+        "threshold": 0.7125231027603149,
+        "n_committed": 1304,
+        "accuracy_on_committed": 0.8535276073619632
+      }
+    ],
+    "coverage_full": {
+      "target_coverage": 1.0,
+      "achieved_coverage": 1.0,
+      "threshold": 0.3495481014251709,
+      "n_committed": 1650,
+      "accuracy_on_committed": 0.7896969696969697
+    }
+  },
+  "bootstrap_n": 2000,
+  "bootstrap_seed": 42,
+  "weights_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\headline\\weights_seed42_best.pt",
+  "verdict": "POSITIVE: statistically significant and clinically meaningful PPV improvement from calibrated abstention",
+  "spec": "20-plan/ecg-ppg-realworld/protocol-lock.md \u00a75-\u00a77"
+}

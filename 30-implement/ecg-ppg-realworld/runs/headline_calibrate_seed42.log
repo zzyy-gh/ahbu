@@ -1,0 +1,34 @@
+[calibrate] seed=42 dev_train=5279 cal_holdout=1320
+[calibrate] loading dev waveforms (cal hold-out + train)...
+  [load] 500/1320 (failed=0)
+  [load] 1000/1320 (failed=0)
+  [load] 500/5279 (failed=0)
+  [load] 1000/5279 (failed=0)
+  [load] 1500/5279 (failed=0)
+  [load] 2000/5279 (failed=0)
+  [load] 2500/5279 (failed=0)
+  [load] 3000/5279 (failed=0)
+  [load] 3500/5279 (failed=0)
+  [load] 4000/5279 (failed=0)
+  [load] 4500/5279 (failed=0)
+  [load] 5000/5279 (failed=0)
+[calibrate] load done in 76.4s
+{
+  "seed": 42,
+  "T": 0.94105,
+  "T_search_bounds": [
+    0.5,
+    10.0
+  ],
+  "brier_uncalibrated_on_cal": 0.27827,
+  "brier_calibrated_on_cal": 0.27801,
+  "calibration_auroc_af_post_T_on_cal": 0.94808,
+  "abstention_threshold": 0.683676,
+  "abstention_threshold_target_rate": 0.17,
+  "abstention_threshold_achieved_rate_on_dev_train": 0.17011,
+  "n_cal_holdout": 1320,
+  "n_dev_train": 5279,
+  "weights_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\headline\\weights_seed42_best.pt"
+}
+
+Wrote C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\headline\calibration_seed42.json
