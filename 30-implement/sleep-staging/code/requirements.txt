@@ -11,6 +11,7 @@ matplotlib>=3.9,<4
 seaborn>=0.13,<1
 h5py>=3.10,<4
 pyyaml>=6,<7
+requests>=2.32,<3      # for P-7 NSRR token validation + MESA covariates download
 # U-Sleep is fetched separately from https://github.com/perslev/U-Sleep
 # (its requirements may conflict with the above; install in a separate
 # sub-venv if needed)
