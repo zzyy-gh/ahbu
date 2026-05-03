@@ -1,0 +1,62 @@
+{
+  "status": "pass",
+  "device": "NVIDIA GeForce GTX 1650 with Max-Q Design",
+  "total_vram_gb": 4.29,
+  "n_params_M": 18.49,
+  "input_shape": [
+    8,
+    1,
+    9000
+  ],
+  "fp32_threshold_gb": 3.0,
+  "fp16_threshold_gb": 2.5,
+  "kill_threshold_gb": 3.2,
+  "fp32_pass": true,
+  "fp16_pass": true,
+  "fp32_kill": false,
+  "fp16_kill": false,
+  "per_run": [
+    {
+      "ok": true,
+      "batch": 8,
+      "seq_len": 9000,
+      "in_channels": 1,
+      "mixed_precision": false,
+      "peak_vram_gb": 1.22,
+      "step_time_s": 23.416,
+      "loss": 1.4375
+    },
+    {
+      "ok": true,
+      "batch": 8,
+      "seq_len": 9000,
+      "in_channels": 1,
+      "mixed_precision": true,
+      "peak_vram_gb": 0.695,
+      "step_time_s": 1.2268,
+      "loss": 1.7144
+    },
+    {
+      "ok": true,
+      "batch": 16,
+      "seq_len": 9000,
+      "in_channels": 1,
+      "mixed_precision": false,
+      "peak_vram_gb": 2.349,
+      "step_time_s": 0.6581,
+      "loss": 1.2809
+    },
+    {
+      "ok": true,
+      "batch": 16,
+      "seq_len": 9000,
+      "in_channels": 1,
+      "mixed_precision": true,
+      "peak_vram_gb": 1.263,
+      "step_time_s": 1.7163,
+      "loss": 1.6909
+    }
+  ],
+  "pilot": "P-3",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-3"
+}

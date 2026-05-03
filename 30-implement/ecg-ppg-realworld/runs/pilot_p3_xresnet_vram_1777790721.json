@@ -1,0 +1,7 @@
+{
+  "status": "fail",
+  "reason": "could not build xresnet1d50: cannot import name 'xresnet1d50' from 'fastai.vision.models.xresnet' (C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\code\\.venv\\Lib\\site-packages\\fastai\\vision\\models\\xresnet.py)",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\code\\pilots\\p3_xresnet_vram_cinc.py\", line 115, in probe\n    model = build_xresnet1d50(in_channels=in_channels, n_out=n_classes)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\code\\pilots\\p3_xresnet_vram_cinc.py\", line 38, in build_xresnet1d50\n    from fastai.vision.models.xresnet import xresnet1d50\nImportError: cannot import name 'xresnet1d50' from 'fastai.vision.models.xresnet' (C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\code\\.venv\\Lib\\site-packages\\fastai\\vision\\models\\xresnet.py)\n",
+  "pilot": "P-3",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-3"
+}
