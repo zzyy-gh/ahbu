@@ -6,15 +6,16 @@ The active state of the AHBU pain-point portfolio. Each candidate has a status; 
 
 ## Active
 
-| Slug | Status | Track dir | Admitted | Notes |
-|------|--------|-----------|----------|-------|
-| `cross-subject-eeg` | admitted | `30-implement/cross-subject-eeg/` | 2026-05-02 | First admission under v2 rubric. Critic `pass-with-fixes` (citation fix applied). Pre-reg required at layer-20 protocol-lock. |
+| Slug | Status | Track dir | Admitted | Layer-20 status | Layer-30 status | Notes |
+|------|--------|-----------|----------|-----------------|-----------------|-------|
+| `cross-subject-eeg` | admitted | `30-implement/cross-subject-eeg/` | 2026-05-02 | protocol-lock v2 (2026-05-03), critic-v2 pass-with-fixes applied | pilots P-1..P-6 + leakage_audit done | HYBRID: MDM on PhysionetMI + LaBraM on Cho2017 after PhysionetMI contamination found. Headline not yet run. |
+| `affective-state` | admitted | `30-implement/affective-state/` | 2026-05-02 | protocol-lock v2 (2026-05-03), critic-v2 pass-with-fixes applied | pilots P-1, P-2, P-3 (WESAD only), P-6 done | Path X: EDA expanded 6→40 features; N_total=126 (exact-binom power 0.04594). DEAP/MAHNOB-HCI access pending. Headline not yet run. |
+| `ecg-ppg-realworld` | admitted | `30-implement/ecg-ppg-realworld/` | 2026-05-02 | protocol-lock v2 (2026-05-03), critic-v2 pass-with-fixes applied | OLD PTB-XL P-1, P-3 done — OBSOLETE; NEW CinC 2017 P-1..P-6 NOT YET RUN | Path C: pivoted PTB-XL → CinC 2017 after fold-10 AFIB count = 8 (need >=87). Headline not yet run. |
+| `sleep-staging` | admitted | `30-implement/sleep-staging/` | 2026-05-02 | protocol-lock v2 (2026-05-03), critic-v2 pass-with-fixes applied | runs/ EMPTY — no pilots run | TWO co-primary headlines: HEADLINE-A MESA N~1850 + HEADLINE-B HMC PSG N=77. P-3 (U-Sleep VRAM) gates both; P-7 gates HEADLINE-A. Headline not yet run. |
 
 ## Candidates under investigation
 
-| Slug | Status | Date | Real-pain critic verdict | Notes (advisory, not gating) |
-|------|--------|------|--------------------------|------------------------------|
-| `affective-state` | admitted | `20-plan/affective-state/` (pending) | 2026-05-02 | Critic `pass-with-fixes` (DEAP-label inversion + WESAD figures fixed). Operative constituency = academic EEG / wearable-stress communities. Layer-20 advisory: feature-stability audit sub-scope (2/164 reproducibility per arXiv:2508.10561) is the strongest framing; pre-reg feature list + dataset + arousal operationalization. |
+_None — all 4 candidates admitted as of 2026-05-02._
 
 ## Deferred
 
