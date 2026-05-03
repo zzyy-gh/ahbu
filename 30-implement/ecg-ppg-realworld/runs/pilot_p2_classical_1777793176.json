@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "n_sampled": 973,
+  "n_extracted": 973,
+  "n_extraction_errors": 0,
+  "mean_extraction_s_per_record": 0.407,
+  "median_extraction_s_per_record": 0.37,
+  "extraction_speed_threshold_s": 10.0,
+  "extraction_speed_pass": true,
+  "auroc_within_pilot_holdout": 0.9154,
+  "auroc_threshold": 0.75,
+  "auroc_pass": true,
+  "n_features_used": 88,
+  "rr_cv_median_afib": 0.20438985386134306,
+  "rr_cv_median_nonafib": 0.04787504295704517,
+  "rr_cv_sanity_pass": true,
+  "n_train_holdout": 195,
+  "extraction_errors_sample": [],
+  "pilot": "P-2",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-2"
+}
