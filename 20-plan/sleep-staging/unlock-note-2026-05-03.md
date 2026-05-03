@@ -1,4 +1,4 @@
-> **Spec:** `10-pain-point/sleep-staging/admission.md`
+> **Spec:** `20-plan/sleep-staging/protocol-lock.md` (document being unlocked) + `10-pain-point/sleep-staging/admission.md` (original mandate)
 
 # Protocol unlock note — sleep-staging — 2026-05-03
 

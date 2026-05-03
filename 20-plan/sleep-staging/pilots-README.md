@@ -43,7 +43,13 @@ Fallback attempt (P-1b, only if primary fails): CAP Sleep, 10-subject sample fro
    Record in `30-implement/sleep-staging/runs/hmc_access_tier.txt`.
 3. Load ECG channel (channel name "ECG" or "EKG" per header) via MNE `read_raw_edf()`.
 4. Compute SQI: `nk.ecg_quality()` on each 30-second window. Compute fraction above 0.5.
-5. Report per-subject ECG presence, SQI fraction, sampling rate.
+5. **AHI metadata check (added per critic-v2 M-2):** parse the EDF header / accompanying
+   metadata file for an AHI field (or equivalent: respiratory event index per hour). For
+   the 10-subject sample, record per-subject AHI value (or `null` if absent). Also probe
+   for sex and age fields (the §3 fallback stratification variables). Record in
+   `30-implement/sleep-staging/runs/hmc_metadata_audit.json`.
+6. Report per-subject ECG presence, SQI fraction, sampling rate, AHI presence, sex,
+   age.
 
 **Procedure — fallback P-1b (CAP Sleep, only if HMC access fails):**
 1. Download 10 subject EDF files from https://physionet.org/content/capslpdb/1.0.0/.
@@ -59,6 +65,10 @@ Fallback attempt (P-1b, only if primary fails): CAP Sleep, 10-subject sample fro
     above SQI threshold. This is the expected outcome given open-access confirmation.
 (b) Fallback: CAP access completes within 1 hour; >= 8/10 subjects have ECG; R&K label
     distribution after mapping is plausible (N2 dominant, < 15 % W, > 10 % REM).
+(c) Metadata audit (per critic-v2 M-2): record AHI presence (yes / no) and, if present,
+    AHI distribution across the 10-subject sample. Sex and age fields recorded for the
+    §3 fallback stratification path. The metadata audit is non-blocking — it informs the
+    §3 conditional (AHI vs sex+age-decade stratification) but does not gate P-1 PASS.
 
 **Script:** `30-implement/sleep-staging/code/pilots/p1_hmc_access_check.py` (existing;
 script is compatible with both HMC PSG and CAP Sleep — pass `--dataset cap` flag if

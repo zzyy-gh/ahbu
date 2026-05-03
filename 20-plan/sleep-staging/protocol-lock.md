@@ -123,8 +123,14 @@ The labeled set (154 subjects) with PSG + stage annotations is used.
 - Dev subjects: 77 subjects.
 - Test subjects: 77 subjects (154 - 77).
 - Split seed: random_state=42.
-- Stratified by AHI category (none / mild / moderate / severe OSA) if metadata available;
-  else by epoch-count quartile.
+- Stratified by AHI category (none: AHI<5 / mild: 5≤AHI<15 / moderate: 15≤AHI<30 /
+  severe: AHI≥30) **if AHI metadata is present in HMC PSG headers** (confirmed at
+  P-1 success criterion).
+- **If AHI metadata is absent from HMC PSG:** split is stratified by sex (M/F) and
+  age-decade (40s / 50s / 60s / 70s+). The AHI-stratified secondary analysis of
+  scope (a) is unaffected (MESA carries its own AHI metadata); only the HMC PSG
+  stratification variable changes. This is a pre-specified conditional, not a
+  post-hoc choice.
 - Procedure: `subject_disjoint_split(all_subjects, test_fraction=0.50, stratify_col=ahi_band,
   random_state=42)`.
 
@@ -169,10 +175,17 @@ is ample). The large test partition (N~1,850) gives well-powered OSA-stratificat
 analysis.
 
 **Scope (a) power story:** With N~1,850 test subjects and expected AHI-band distribution
-(none ~40 %, mild ~25 %, moderate ~20 %, severe ~15 %), the smallest stratum is severe
-OSA (~280 subjects). A two-sample proportion test comparing severe-OSA macro-F1 to no-OSA
-macro-F1 with expected 10 pp gap, 80 % power, alpha=0.05 requires N~170 per stratum.
-N~280 meets this threshold comfortably. The analysis is properly powered.
+(none ~40 %, mild ~25 %, moderate ~20 %, severe ~15 %; figures from Dean et al. 2015,
+J Clin Sleep Med, MESA Sleep cohort baseline characteristics — to be confirmed against
+the actual MESA covariates file in P-7), the smallest stratum is severe OSA (~280 subjects).
+A two-sample proportion test comparing severe-OSA macro-F1 to no-OSA macro-F1 with
+expected 10 pp gap, 80 % power, alpha=0.05 requires N~170 per stratum. N~280 meets
+this threshold comfortably. (The §5 multiplicity policy applies to the two top-level
+co-primary headline Wilcoxon tests; it does not apply to this within-scope secondary
+stratum comparison.) **Conditional kill:**
+if P-7 reveals the severe-OSA fraction in the MESA sample is < 10 % (smallest stratum
+< ~185 subjects after the 90/10 split), the power story is revisited and HEADLINE-A
+must be re-locked before any test access.
 
 **Stage labels:** AASM v2 scoring (5-class). Same 3-class mapping as scope (b) for
 cross-scope comparability.
@@ -224,6 +237,30 @@ stratum (OSA performance degradation). Reported as a point estimate with 95 % CI
 ---
 
 ## 5. Statistical tests (pre-registered)
+
+### Multiplicity policy across the two co-primary headlines
+
+This protocol declares two co-primary headline tests: HEADLINE-A
+(scope a, MESA, two-sample Wilcoxon on no-OSA vs severe-OSA macro-F1)
+and HEADLINE-B (scope b, HMC PSG, paired Wilcoxon on U-Sleep vs HRV-RF
+macro-F1). The two tests use **different datasets** (MESA vs HMC PSG),
+**different model families** (single U-Sleep stratum-comparison vs
+U-Sleep-vs-RF paired comparison), and **different estimands**
+(within-model OSA-severity degradation vs between-model EEG-vs-HRV gap).
+
+**Policy (pre-registered, option (b) per critic-v2 M-1):** the two
+headlines test independent estimands on independent datasets and are
+each individually interpretable. No family-wise error rate correction
+is applied; each headline is tested at its declared alpha = 0.05.
+Both headlines are reported, regardless of direction, per their own
+case-rule tables below. This rationale is locked here pre-experiment;
+it cannot be characterized as post-hoc.
+
+**Conservative fallback:** if a reviewer or the analysis sign-off
+critic deems the independence argument insufficient, the published
+report adds Bonferroni-corrected p-values (alpha = 0.025 per test)
+as a sensitivity column alongside the primary alpha = 0.05 result;
+the case-rule labels do not change.
 
 ### Scope (b) statistical test
 
@@ -298,6 +335,9 @@ All must be true before touching the HMC PSG test split:
       Audit result in `30-implement/sleep-staging/runs/usleep_overlap_audit.txt`.
 - [ ] No test-split subject data loaded for any prior experiment.
 - [ ] All ablations and pilots run on dev split only.
+- [ ] **P-3 (U-Sleep VRAM probe) PASS** with peak VRAM <= 3 GB at batch=32 on
+      a single-channel HMC PSG record. Result in
+      `30-implement/sleep-staging/runs/pilot_p3_*.json`. Gating per critic-v2 C-1.
 - [ ] Pre-run checklist written to `30-implement/sleep-staging/runs/pre-run-checklist-scopeb.txt`.
 
 ### Pre-run checklist — scope (a) HEADLINE-A
@@ -313,6 +353,13 @@ All must be true before touching the MESA test partition:
 - [ ] NSRR token validity confirmed (test download of a single MESA EDF file before
       bulk download).
 - [ ] No MESA test-split subject data loaded for any prior experiment.
+- [ ] **P-3 (U-Sleep VRAM probe) PASS** with peak VRAM <= 3 GB at batch=32 on
+      a single-channel MESA record (or HMC PSG, since both use single-channel
+      U-Sleep mode). Result in `30-implement/sleep-staging/runs/pilot_p3_*.json`.
+      Gating per critic-v2 C-1.
+- [ ] **P-7 (MESA AHI distribution sanity)**: severe-OSA stratum size confirmed
+      >= 185 subjects (in the 90 % test partition). Below this triggers the
+      §3 conditional kill and a re-lock before any test access.
 - [ ] Pre-run checklist written to `30-implement/sleep-staging/runs/pre-run-checklist-scopea.txt`.
 
 ### The result is "real" when

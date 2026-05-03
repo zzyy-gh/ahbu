@@ -319,7 +319,7 @@ numbers.
 | HMC PSG download (~2 GB compressed) | local | 30 min |
 | Sleep-EDF download (~1 GB) | local | 15 min |
 | Dreem-DOD download (58 GB) | local | 4–8 hr |
-| MESA download via NSRR token (~150 GB for EDF files) | local | 12–24 hr (bandwidth-limited) |
+| MESA download via NSRR token (~165 GB for EDF files) | local | 12–24 hr (bandwidth-limited) |
 | ECG preprocessing + R-peak detection (HMC PSG, 154 subj) | CPU | 2–3 hr |
 | HRV feature extraction (154 subj × ~1000 epochs) | CPU | 1–2 hr |
 | RF training on 77 dev subjects | CPU | < 5 min |
@@ -344,9 +344,14 @@ arrays are saved per-subject.
 ~165 GB. If local storage is insufficient, use Kaggle (100 GB per dataset) or process
 in batches: download, extract U-Sleep probabilities, delete EDF, repeat.
 
-**Fits 4 GB envelope:** yes for all GPU tasks. U-Sleep inference at batch=32 uses
-< 2 GB VRAM confirmed by P-3 pilot. Verify for MESA channel configuration (U-Sleep
-single-channel mode, same as HMC PSG).
+**Fits 4 GB envelope:** estimated yes. U-Sleep inference at batch=32 is
+**estimated** at < 2 GB VRAM; **to be confirmed by P-3 before any full
+inference run**. P-3 has not yet run (`30-implement/sleep-staging/runs/`
+empty as of 2026-05-03). HEADLINE-A and HEADLINE-B inference are gated
+on P-3 PASS (success criterion: peak VRAM <= 3 GB at batch=32) per
+`protocol-lock.md` §6 pre-run checklists. Verify for MESA channel
+configuration as part of P-3 (U-Sleep single-channel mode, same as
+HMC PSG).
 
 ### Time to first honest result
 
