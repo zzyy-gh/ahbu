@@ -1,261 +1,299 @@
 > **Spec:** `20-plan/ecg-ppg-realworld/approach.md`
 
-# Pilot probes — ecg-ppg-realworld
+# Pilot probes — ecg-ppg-realworld (CinC 2017)
 
-**Status:** Not pre-registered. Pilots use dev/validation split ONLY
-(strat_fold 1–9). They do not touch the held-out test partition
-(strat_fold 10). Results here may inform final design choices but do
-not constitute headline results.
+**Status:** Not pre-registered. Pilots use dev split ONLY (80 % of CinC
+2017 working set, ~6,786 records, partition seed=42 per
+`protocol-lock.md` §3). They do NOT touch the held-out test partition
+(20 %, ~1,696 records, AF positive ~154). Results inform final design
+choices but do not constitute headline results.
+
+**Rewrite history:** Original pilots-README (committed in 93bf404) was
+PTB-XL-specific and was retained in error after the PTB-XL → CinC 2017
+pivot in cd372bd. Critic-v2 finding C-1 flagged the contradiction; the
+rewrite below is the actual fix. The obsolete PTB-XL pilot scripts in
+`30-implement/ecg-ppg-realworld/code/pilots/` (p1_ptbxl_load.py,
+p2_classical_baseline.py, p3_xresnet_vram.py) are removed in this same
+commit.
 
 Run pilots in priority order. Each result must be recorded in the
-"Result field." If a pilot reveals a fatal design flaw, update
-approach.md and risk-register.md — do not silently discard the result.
+"Result field" of its section. If a pilot reveals a fatal design flaw,
+update approach.md and risk-register.md — do not silently discard the
+result.
 
 ---
 
-## P-1 — PTB-XL load and AFIB record count verification (CRITICAL, week 1)
+## P-1 — CinC 2017 download + class count verification (CRITICAL, week 1)
 
-**Question:** Does PTB-XL v1.0.3 download cleanly, and how many
-AFIB-labeled records exist in each strat_fold at likelihood_threshold=100.0?
+**Question:** Does PhysioNet/CinC 2017 v1.0.0 download cleanly under
+its ODC-BY licence, and does the labelled training set contain the
+expected ~771 AF records out of 8,528 total?
 
-**Dataset/split:** All folds (strat_fold 1–10 metadata only; strat_fold 10
-waveforms NOT loaded). Read only `ptbxl_database.csv` and `scp_statements.csv`.
+**Dataset/split:** All records (no test/dev partition yet at this stage —
+this pilot reads the full REFERENCE.csv; the 80/20 partition is
+generated and frozen only after this pilot passes).
 
 **Procedure:**
-1. Download PTB-XL v1.0.3 from PhysioNet.
-2. Load `ptbxl_database.csv` with pandas.
-3. Parse `scp_codes` column; count records with AFIB likelihood >= 100.0
-   per strat_fold.
-4. Verify total record count = 21,799.
-5. Verify that no patient_id appears in both strat_fold 1–9 and
-   strat_fold 10 (run `partition.py:validate_partition()` on patient IDs).
-6. Sample-read 10 WFDB records from strat_fold 1 using `wfdb.rdrecord()`.
-   Confirm no parse errors.
+1. Download from https://physionet.org/content/challenge-2017/1.0.0/
+   (no credentialing required; ODC-BY).
+2. Verify ODC-BY licence text in `LICENSE.txt`.
+3. Read `REFERENCE-v3.csv`. Count records per class label
+   (`N` Normal, `A` AF, `O` Other, `~` Noisy).
+4. Assert total record count matches the published 8,528.
+5. Sample-read 10 WFDB records via `wfdb.rdrecord()`. Confirm no
+   parse errors and that `record.fs == 300` and `record.n_sig == 1`.
+6. Report per-class counts, total, sample-read pass/fail, and the
+   first ten record IDs read.
 
 **Success criterion:**
-- strat_fold 10 AFIB count >= 87 (power threshold per risk-register R-2).
-- validate_partition() passes with zero overlap.
-- 10 WFDB sample records load without error.
+- Total record count == 8,528 (exact, per CinC 2017 spec).
+- AF (`A`) count >= 700 (expected ~771; >= 700 leaves comfortable
+  margin for the 20 % test stratum to clear ~140 AF records — well
+  above the protocol-lock §3 expected ~154 AF positive).
+- 10 sample WFDB records load without error at 300 Hz, single lead.
 
-**Estimated time:** 1–2 hours (including download).
+**Estimated time:** 30–60 min (including download; CinC 2017 release
+is ~600 MB compressed).
 
 **Result field:** [FILL AFTER RUN]
-Expected: strat_fold 10 AFIB count ~ 151 (= ~1,514 / 10).
-If count < 87: trigger R-2 mitigation before any further work.
+
+If AF count < 700 or total ≠ 8,528: STOP, escalate to risk-register
+R-1 (dataset-shape kill). The PTB-XL pivot was already triggered by
+this same kind of discovery; a second dataset failure would force a
+full design re-pass.
 
 ---
 
-## P-2 — Classical baseline pipeline speed and sanity check (week 1)
+## P-2 — Classical baseline pipeline speed and sanity check on CinC 2017 dev (week 1)
 
-**Question:** How long does the classical baseline pipeline take
-(NeuroKit2 feature extraction + logistic regression) on a 1,000-record
-subset of strat_fold 1–8? Are extracted features sensible?
+**Question:** How long does the classical baseline pipeline (NeuroKit2
+ECG features + logistic regression) take per CinC 2017 record, and
+does the AF-vs-rest AUROC clear the lower-bound sanity threshold on a
+1,000-record dev sample?
 
-**Dataset/split:** Random 1,000-record sample from strat_fold 1–8
-(balanced 500 AFIB, 500 non-AFIB where available; otherwise all AFIB
-plus matched non-AFIB sample).
+**Dataset/split:** Random 1,000-record sample from the CinC 2017 dev
+split (80 %, ~6,786 records, partition seed=42). Stratified by class.
+Use `partition.json` if it has been written by P-6; otherwise compute
+the 80/20 split locally for this pilot only and discard (the canonical
+partition.json is committed by the headline pre-flight).
 
 **Procedure:**
-1. Load 1,000 records at 100 Hz using `wfdb.rdrecord()`.
-2. Apply preprocessing pipeline (baseline wander, notch, clip, normalize).
-3. Extract 12 features via NeuroKit2 `ecg_process()` + `ecg_intervalrelated()`
-   on Lead II. Time the extraction per record.
-4. Fit logistic regression (sklearn, C=1.0) on 800 records, evaluate on 200.
-5. Report AUROC on the 200-record held-out subset.
-6. Inspect feature distributions: do AFIB records have higher RR-interval
-   CV than non-AFIB? (Sanity check — this should be obvious.)
+1. Load 1,000 records via `wfdb.rdrecord()` from the dev sample.
+2. Apply preprocessing: notch (50/60 Hz), baseline-wander highpass
+   (0.5 Hz), clipping at ±5 mV, per-record z-score normalisation.
+3. Extract NeuroKit2 ECG features via `ecg_process()` +
+   `ecg_intervalrelated()` on the single CinC 2017 lead. Time the
+   extraction per record.
+4. Fit logistic regression (sklearn, C=1.0) on 800 records (binary
+   AF-vs-rest). Evaluate AUROC on 200 held-out (within-pilot only;
+   does NOT touch the headline test split).
+5. Inspect feature distributions: AFIB records should have visibly
+   higher RR-interval CV than non-AFIB (sanity check).
 
 **Success criterion:**
-- Feature extraction < 10 seconds per record (10,000 records would take
-  < 30 hours; target is < 3 s/record to complete in < 10 hours).
-- AUROC on 200-record subset > 0.75 (AFIB is highly distinguishable
-  by RR-interval features; AUC < 0.75 suggests a preprocessing error).
-- AFIB records have visually higher RR-interval CV than non-AFIB.
+- Feature extraction < 10 s per record (10,000 records → < 30 hr;
+  target < 3 s/record for full dev in < 6 hr).
+- AUROC on 200-record subset > 0.75 (AF is highly distinguishable
+  by RR-interval features on clean Lead I; AUROC < 0.75 implies a
+  preprocessing or label-loading bug).
+- AFIB CV(RR) visibly > non-AFIB CV(RR).
 
-**Estimated time:** 2–3 hours.
+**Estimated time:** 2–3 hr.
 
 **Result field:** [FILL AFTER RUN]
-If extraction time > 10 s/record: investigate parallelization with
-joblib or reduce to fewer features. If AUROC < 0.75: debug
-preprocessing (normalization, lead selection, Pan-Tompkins R-peak
-detection on noisy records).
+
+If extraction time > 10 s/record: parallelise via joblib or reduce
+feature set. If AUROC < 0.75: debug preprocessing (R-peak detection
+on noisy CinC 2017 records is non-trivial; try Pan-Tompkins).
 
 ---
 
-## P-3 — xresnet1d50 VRAM probe and one-epoch convergence check (CRITICAL, week 2)
+## P-3 — xresnet1d50 VRAM probe at CinC 2017 input shape (CRITICAL, week 1)
 
-**Question:** How much VRAM does xresnet1d50 use at training batch=32,
-12 leads × 1,000 samples? Does the loss decrease in the first epoch?
+**Question:** At the CinC 2017 headline input shape `(batch, 1, 9000)`
+— 30 s × 300 Hz, single lead — how much peak VRAM does xresnet1d50
+consume on the GTX 1650 4 GB at training batch=8, float32? Does the
+loss decrease in the first epoch?
 
-**Dataset/split:** 500-record subset of strat_fold 1 (250 AFIB, 250
-non-AFIB if available; oversample AFIB to balance).
+**Critic-v2 M-1 background:** The previous track-shared P-3 (in
+cross-subject-eeg) ran at `(batch=32, seq_len=1000)` and reported
+0.62 GB peak VRAM. CinC 2017 input is `(batch=8, seq_len=9000)` —
+9× longer sequence, 0.25× batch, net ~2.25× scaling on a linear model
+gives ~1.4 GB. The linear estimate is unverified for early-block
+activation memory at 9× sequence length. **This re-probe is required
+before any CinC 2017 training run** per critic-v2 fix M-1 in approach.md.
+
+**Dataset/split:** 500-record subset of CinC 2017 dev (250 AF, 250
+non-AF, balanced via oversampling). Synthetic input is acceptable for
+the VRAM portion alone; real records are required for the loss-
+decrease check.
 
 **Procedure:**
-1. Instantiate xresnet1d50 from the PTB-XL benchmarking repository.
-2. Run one training epoch at batch=32, float32.
-3. Log `torch.cuda.max_memory_allocated() / 1e9` (GB) at peak.
-4. Confirm loss decreases from epoch start to epoch end.
-5. Repeat at float16 mixed precision (torch.cuda.amp.autocast()).
+1. Instantiate xresnet1d50 from `helme/ecg_ptbxl_benchmarking`,
+   adjusted for single-lead input (`in_channels=1`).
+2. Run one training epoch at `batch=8`, float32, on the 500-record
+   sample.
+3. Log `torch.cuda.max_memory_allocated() / 1e9` at peak.
+4. Confirm loss at end of epoch < loss at start.
+5. Repeat at float16 mixed-precision (`torch.cuda.amp.autocast()`).
+6. If the float32 result is comfortably under threshold, also probe
+   `batch=16` to inform secondary throughput planning (not gating).
+
+**Success criterion (per protocol-lock §4 kill):**
+- Peak VRAM <= **3.0 GB at float32, batch=8** OR <= 2.5 GB at
+  float16, batch=8. Anything above 3.2 GB triggers the model
+  substitution to xresnet1d18 per protocol-lock R-2.
+- Loss(end) < loss(start) on the 500-record sanity training.
+
+**Estimated time:** 1–2 hr.
+
+**Result field:** [FILL AFTER RUN]
+
+If VRAM > 3.2 GB at both float32 and float16: switch to xresnet1d18,
+document the substitution in `runs/`, and re-run P-3 against
+xresnet1d18. Substitution is pre-authorised in protocol-lock §4 and
+risk-register R-2; no critic re-pass required.
+
+---
+
+## P-4 — Abstention threshold sweep on CinC 2017 dev validation hold-out (week 2)
+
+**Question:** Does confidence-threshold abstention produce a
+meaningful PPV-vs-coverage trade-off on a CinC 2017 dev subset? Is
+the confidence-correctness AUC above the R-3 kill-trigger threshold
+of 0.55?
+
+**Dataset/split:** CinC 2017 dev (80 %, ~6,786 records). Internally
+split: 80 % training (~5,429), 20 % validation hold-out (~1,357,
+seed=42). Validation hold-out is the within-dev probe surface; NOT
+the headline test split.
+
+**Procedure:**
+1. Train xresnet1d50 (or xresnet1d18 if P-3 forced substitution) for
+   3 epochs on the within-dev training portion. (Quick sanity
+   training, NOT the full 50-epoch headline training.)
+2. Fit temperature parameter T on the validation hold-out using the
+   protocol-lock §5 calibration procedure (Brier-score minimisation).
+3. Compute coverage-vs-PPV curve via
+   `30-implement/shared/eval/abstention.py:selective_classification_curve()`,
+   sweeping threshold from 0.50 to 1.00.
+4. Compute confidence-correctness AUC: per-record, label = 1 if the
+   prediction is correct, score = max-softmax confidence; AUC
+   summarises the predictive power of the confidence score itself.
+5. Plot coverage-vs-PPV. Inspect for monotone relation
+   (higher confidence → higher PPV).
 
 **Success criterion:**
-- Peak VRAM <= 3 GB at float32, OR <= 2.5 GB at float16.
-  Documents R-8 risk status.
-- Loss at end of epoch < loss at start (convergence check passes).
+- Confidence-correctness AUC >= 0.55 (R-3 kill threshold). If a
+  3-epoch model already produces AUC < 0.55, the abstention mechanism
+  is fundamentally weak and the headline is at risk.
+- PPV at coverage=0.83 (= 17 % abstention, the headline operating
+  point) > PPV at coverage=1.00 (full commit) on the 3-epoch model.
 
-**Estimated time:** 1 hour.
+**Estimated time:** 2–3 hr (includes 3-epoch training).
 
 **Result field:** [FILL AFTER RUN]
-If VRAM > 3 GB float32 and > 2.5 GB float16: reduce batch to 16.
-If loss does not decrease: check preprocessing and label extraction
-before committing to full training.
+
+A 3-epoch model is intentionally weaker than the 50-epoch headline.
+A weak signal here is acceptable; a *reversed* signal (abstention
+hurts PPV) warrants an investigation before headline.
 
 ---
 
-## P-4 — Abstention threshold sweep on validation set (week 2)
+## P-5 — Calibration baseline: Brier and ECE before vs after temperature scaling (week 2)
 
-**Question:** On strat_fold 9, does confidence-threshold abstention
-produce a meaningful PPV-vs-coverage trade-off? Is the confidence-
-correctness AUC above 0.55 (the kill-trigger threshold from risk-register R-3)?
+**Question:** How miscalibrated is the raw 3-epoch xresnet1d50 on the
+CinC 2017 within-dev validation hold-out? Does temperature scaling
+improve calibration in the right direction?
 
-**Dataset/split:** strat_fold 9 only (validation partition).
-
-**Procedure:**
-1. Train xresnet1d50 for 3 epochs on strat_fold 1 (quick sanity training —
-   NOT the full 50-epoch training, which belongs in week 2).
-2. Apply temperature scaling on strat_fold 9 (fit T on strat_fold 9
-   Brier score).
-3. Compute coverage-vs-PPV curve using `abstention.py:selective_classification_curve()`
-   on strat_fold 9. Sweep threshold from 0.50 to 1.00.
-4. Compute confidence-correctness AUC: is a record's max-confidence
-   score predictive of whether its prediction is correct? Compute
-   AUC where label = 1 if prediction is correct, score = max-confidence.
-5. Plot the coverage-vs-PPV curve. Visually inspect for a monotone
-   relationship (higher confidence = higher PPV).
-
-**Success criterion:**
-- Confidence-correctness AUC >= 0.55 (above chance; the R-3 kill
-  criterion threshold). If AUC < 0.55 even on a 3-epoch model, the
-  mechanism may be fundamentally broken.
-- PPV at coverage=0.80 >= PPV at coverage=1.00 (abstention helps in
-  the right direction, even if modestly on a 3-epoch model).
-
-**Estimated time:** 2–3 hours (including 3-epoch training run).
-
-**Result field:** [FILL AFTER RUN]
-Note: a 3-epoch model is expected to be weaker than the final 50-epoch
-model. This pilot is a directional sanity check, not a headline-quality
-result. A weak signal here is acceptable; a reversed signal (abstention
-hurts PPV) warrants investigation.
-
----
-
-## P-5 — Calibration baseline: Brier score and ECE before temperature scaling (week 2)
-
-**Question:** How miscalibrated is the raw (pre-temperature-scaling)
-xresnet1d50 on strat_fold 9? Does temperature scaling improve it?
-
-**Dataset/split:** strat_fold 9 (validation partition).
+**Dataset/split:** CinC 2017 within-dev validation hold-out from P-4
+(seed=42, ~1,357 records). Reuse the P-4 model.
 
 **Procedure:**
-1. Use the 3-epoch model from P-4 (acceptable for a calibration probe).
-2. Compute Brier score and ECE (15 bins) on strat_fold 9 with and without
-   temperature scaling.
-3. Plot two reliability diagrams side by side (uncalibrated vs. calibrated).
+1. Use the 3-epoch model from P-4.
+2. Compute Brier score and ECE (15 bins) on the validation hold-out
+   with and without temperature scaling.
+3. Plot reliability diagrams side-by-side (uncalibrated vs calibrated).
 4. Record temperature parameter T.
 
 **Success criterion:**
-- ECE(calibrated) < ECE(uncalibrated) — temperature scaling reduces
-  miscalibration in the right direction.
+- ECE(calibrated) < ECE(uncalibrated): temperature scaling improves
+  calibration.
 - Reliability diagram shows smaller deviation from the diagonal after
   scaling.
-- T value is between 1.0 and 5.0 (a T value > 5.0 indicates severe
-  overconfidence in the early model; may improve with full training).
+- T value in [1.0, 5.0]. T > 5.0 indicates severe overconfidence in
+  the early model; expected to improve with full 50-epoch training
+  but worth flagging.
 
-**Estimated time:** 30 minutes (reuses P-4 model).
+**Estimated time:** 30–45 min (reuses P-4 model).
 
 **Result field:** [FILL AFTER RUN]
-If ECE is not reduced by temperature scaling: investigate whether the
+
+If ECE not reduced by temperature scaling: investigate whether the
 model is underconfident (T < 1.0) or whether Platt scaling is needed.
 
 ---
 
-## P-6 — Site overlap probe: are strat_fold 9 and strat_fold 10 from the same recording sites? (week 3, optional)
+## P-6 — CinC 2017 partition audit: build and validate dev/test split (CRITICAL, week 2)
 
-**Question:** Does the standard PTB-XL strat_fold split produce a
-site-disjoint dev/test partition, or do the same recording sites appear
-in both strat_fold 9 and strat_fold 10?
+**Question:** Does
+`sklearn.model_selection.StratifiedShuffleSplit(n_splits=1,
+test_size=0.2, random_state=42)` on CinC 2017 produce the protocol-
+lock §3 expected split (~6,786 dev / ~1,696 test, AF positive ~154
+in test)?
 
-**Dataset/split:** ptbxl_database.csv metadata only (no waveforms).
-This probe reads the strat_fold 10 site metadata — but NOT strat_fold 10
-labels or waveforms. Site labels are administrative, not a model output.
-Reading site metadata does NOT count as "touching the held-out split"
-per protocol-lock §3.
-
-**Procedure:**
-1. Load ptbxl_database.csv. Group by strat_fold and extract unique
-   site identifiers (if present in metadata).
-2. Check whether any site appears in both strat_fold 9 and strat_fold 10.
-3. Document the site overlap status.
-
-**Success criterion:**
-- Determine: is the strat_fold 10 partition site-disjoint from strat_fold 1–9?
-- Document for the headline results table (not a kill criterion, but
-  a limitation note if overlap exists).
-
-**Estimated time:** 30 minutes.
-
-**Result field:** [FILL AFTER RUN]
-If sites overlap between folds: document as a limitation in approach.md.
-The headline evaluation proceeds regardless — site disjointness is not
-required by the protocol-lock, only patient disjointness is.
-
----
-
-## P-7 — Cross-dataset probe sketch: CinC 2017 compatibility check (week 3, exploratory)
-
-**Question:** Can a PTB-XL-trained model be applied to CinC 2017
-single-lead ECG records without preprocessing errors? What is the
-approximate AUROC on the CinC 2017 normal-vs-AF subset using the
-PTB-XL-trained model's Lead I output?
-
-**Dataset/split:** CinC 2017 training set (8,528 records, public).
-This is NOT the headline test partition. It is a separate corpus used
-only for this exploratory probe.
+**Dataset/split:** All CinC 2017 record IDs (REFERENCE-v3.csv). This
+pilot **builds** the canonical partition.json and writes it to
+`30-implement/ecg-ppg-realworld/runs/partition.json`. The
+partition.json is committed to git as the frozen headline partition
+once this pilot passes.
 
 **Procedure:**
-1. Download CinC 2017 records.
-2. Extract Lead I-equivalent from PTB-XL preprocessing pipeline.
-3. Run the xresnet1d50 (Lead I only or single-lead adapter) on CinC 2017
-   normal vs. AF subset (training labels are available).
-4. Compute AUROC on the full CinC 2017 training set (this is dev-only,
-   no held-out partitioning needed for this exploratory probe).
-5. Document the AUROC and note any preprocessing incompatibilities
-   (different duration, different sampling rate after resampling).
+1. Load REFERENCE-v3.csv. Build the record_id → class_label table.
+2. Run StratifiedShuffleSplit(n_splits=1, test_size=0.2,
+   random_state=42).
+3. Write `partition.json` with two keys: `dev_record_ids`,
+   `test_record_ids` (sorted lists of record-ID strings).
+4. Run `validate_partition()` (from cross-subject-eeg shared utility
+   or local equivalent). Confirm zero overlap.
+5. Report dev/test counts, per-class counts in each split, and
+   confirm no record ID appears in both splits.
+6. Write `partition_audit.txt` with the validate_partition() output.
 
 **Success criterion:**
-- No preprocessing errors (records load and normalize without crash).
-- AUROC > 0.65 (directionally better than chance; a lower value suggests
-  severe domain shift that may make the cross-dataset arm uninformative).
+- Dev count in [6,750, 6,820]; test count in [1,690, 1,710].
+- Test AF (`A`) count in [140, 170] (target ~154 per protocol-lock §3).
+- validate_partition() returns zero violations.
+- partition.json committable as the canonical headline partition.
 
-**Estimated time:** 2–3 hours.
+**Estimated time:** 30 min.
 
 **Result field:** [FILL AFTER RUN]
-This pilot is exploratory. Its result determines whether the CinC 2017
-cross-dataset arm is worth pursuing as a post-headline extension (not
-part of the pre-registered headline).
+
+If the test AF count falls outside [140, 170]: re-examine the seed
+and stratification column. The protocol-lock §3 partition spec is
+the authority; if the actual partition cannot meet the expected
+composition, the protocol must be unlocked and re-locked before any
+training begins. (This would surface a discrepancy between the
+protocol's "expected ~154" and the realised partition; an unlock note
+captures the actual numbers and re-justifies power.)
 
 ---
 
 ## Notes on pilots
 
 - Pilots may be run in any order after their prerequisite week.
-- All pilot results are labeled "dev/val-split / preliminary" in any
-  notes or logs.
-- No pilot result constitutes a headline result.
-- Pilot scripts live in `30-implement/ecg-ppg-realworld/code/pilots/` when written.
-  Each script's module docstring includes:
-  `Spec: 20-plan/ecg-ppg-realworld/pilots-README.md#P-N`
-- P-6 is the only pilot that reads any strat_fold 10 data (site metadata
-  only, not labels or waveforms). This is explicitly permitted per
-  protocol-lock §3 because site labels are administrative and do not
-  influence model selection.
+- All pilot results are labelled "dev-split / preliminary" in any
+  notes or logs. No pilot result constitutes a headline result.
+- Pilot scripts live in `30-implement/ecg-ppg-realworld/code/pilots/`
+  with one file per pilot: `p1_cinc2017_load.py`,
+  `p2_classical_baseline.py`, `p3_xresnet_vram_cinc.py`,
+  `p4_abstention_sweep.py`, `p5_calibration_baseline.py`,
+  `p6_partition_audit.py`. Each script's module docstring carries the
+  spec line `Spec: 20-plan/ecg-ppg-realworld/pilots-README.md#P-N` and
+  each result JSON in `runs/` carries the same as the `spec` field.
+- A future cross-dataset CinC 2020 single-lead probe is **not** part
+  of this layer-30 work. It is a candidate post-headline extension
+  noted in `approach.md` §Cross-dataset extensions; pre-registering
+  it as a pilot would risk conflating exploration with the locked
+  headline.
