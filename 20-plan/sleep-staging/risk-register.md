@@ -229,7 +229,19 @@ Kill criterion: drop Dreem-DOD OOD probe if format incompatibility unfixable in 
 
 ---
 
-## R-14 — HMC PSG per-subject metadata absent (NEW — 2026-05-03 PM, P-1 finding)
+## R-14 — HMC PSG per-subject metadata absent (RESOLVED via option 1 — 2026-05-03 PM)
+
+**Resolution:** Track lead selected option 1 (random unstratified split, seed=42,
+77 dev / 77 test). Decision recorded in
+`30-implement/sleep-staging/runs/hmc_partition_stratification_decision.txt`.
+Protocol-lock §3 updated.
+
+**Residual:** subgroup-stratified analysis on HMC is unavailable. Documented as
+honest limitation in post-headline `limitations.md`. Paired claim unaffected.
+
+---
+
+## R-14 — original entry (NEW — 2026-05-03 PM, P-1 finding)
 
 **Description:** HMC PSG distribution is fully de-identified at the per-subject level.
 PatientID is recorded as `SN### X X X` (confirmed in `HMCdatabase_quickcheck.xml`).
@@ -348,7 +360,7 @@ gap at 80 % power). If N is borderline, report with explicit underpowered caveat
 | R-11 | Dreem-DOD format mismatch | (a) | M | L | Open (lower priority) | Drop Dreem-DOD probe if unfixable in 2 days |
 | R-12 | CAP R&K-to-AASM mapping error | (b) if substitute active | M | M | **NEW** | Halt training if label distribution implausible |
 | R-13 | MESA storage / download bottleneck | (a) | M | M | **NEW** | Delay headline; reduce to N≥500 with caveat if 4 wks elapse |
-| R-14 | HMC PSG per-subject AHI / sex / age absent | (b) | TRIGGERED | L paired / M subgroup | **NEW 2026-05-03 PM** (P-1 finding) | None — primary paired claim unaffected; subgroup analysis becomes descriptive |
+| R-14 | HMC PSG per-subject AHI / sex / age absent | (b) | TRIGGERED | L paired / M subgroup | **RESOLVED 2026-05-03 PM** via option 1 (random unstratified seed=42) | None — primary paired claim unaffected; subgroup unavailable on HMC |
 
 ---
 

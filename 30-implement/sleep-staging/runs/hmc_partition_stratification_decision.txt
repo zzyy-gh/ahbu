@@ -1,0 +1,47 @@
+HMC PSG partition stratification — final decision
+====================================================
+
+Date: 2026-05-03 (PM)
+Decision-maker: track lead (user)
+Trigger: P-1 finding (commit fd98f8d) — HMC PSG distributes only
+population-level aggregate metadata (`subjects_info_aggregated.txt`).
+Per-subject AHI, sex, age all absent in EDF headers and sibling files.
+Both branches of protocol-lock.md §3 HMC stratification conditional
+(AHI; sex+age-decade fallback) are infeasible.
+
+Decision: OPTION 1 — random unstratified split.
+- Procedure: `subject_disjoint_split(all_subjects, test_fraction=0.50,
+  random_state=42)` — no stratify_col argument.
+- Expected partition: 154 subjects → 77 dev / 77 test.
+- Subject ID lists frozen in
+  `30-implement/sleep-staging/runs/partition_definition_hmcpsg.json`
+  before any model training.
+
+Rationale (per pilots-README.md P-1 result field + risk-register R-14):
+1. The primary HEADLINE-B claim is the *paired* EEG-vs-HRV gap. Pairing
+   is within-subject; stratification was secondary scaffolding.
+2. CAP Sleep substitute (option 2) trades 23 subjects (77→54) for a
+   pathology-category stratifier that targets a fundamentally different
+   population (CAP is heavily neuro-disorder; only 4/108 SDB).
+3. Post-hoc signal-derived subgroups (option 3) inflate false-positive
+   rate on subgroup claims and would not pass critic.
+
+Effect on protocol-lock.md §3:
+- HMC stratification conditional collapses: the test partition is
+  computed by `subject_disjoint_split(..., test_fraction=0.50,
+  random_state=42)` without a stratify_col argument. All other §3
+  language (subject-disjoint, frozen partition file, audit) unchanged.
+- Update protocol-lock.md §3 to record this resolution under the
+  "if AHI metadata is absent from HMC PSG" clause.
+
+Effect on risk-register R-14:
+- Status: RESOLVED via option 1.
+- Residual: subgroup analysis on HMC is unavailable; documented as a
+  honest limitation in `findings.md` / `limitations.md` post-headline.
+
+Effect on findings/limitations (post-headline):
+- HEADLINE-B reports population-level paired EEG-vs-HRV gap on N=77 HMC
+  test subjects (random partition, seed=42).
+- Limitations.md notes: "HMC distribution does not include per-subject
+  AHI / sex / age. Subgroup-stratified analysis on HMC was therefore
+  not feasible. The paired claim is unaffected."

@@ -131,8 +131,20 @@ The labeled set (154 subjects) with PSG + stage annotations is used.
   scope (a) is unaffected (MESA carries its own AHI metadata); only the HMC PSG
   stratification variable changes. This is a pre-specified conditional, not a
   post-hoc choice.
-- Procedure: `subject_disjoint_split(all_subjects, test_fraction=0.50, stratify_col=ahi_band,
-  random_state=42)`.
+- **RESOLVED 2026-05-03 PM (P-1 finding, R-14):** AHI metadata absent AND sex/age
+  also absent per-subject (HMC distributes only `subjects_info_aggregated.txt`
+  population-level aggregates; PatientID = `SN### X X X` confirms full
+  de-identification). Both branches of the conditional above are infeasible.
+  Track lead has selected option 1: **random unstratified split**, seed=42.
+  Decision recorded in
+  `30-implement/sleep-staging/runs/hmc_partition_stratification_decision.txt`.
+  Subgroup-stratified secondary analysis on HMC is therefore unavailable and
+  is documented as a limitation in post-headline `limitations.md`. Paired
+  EEG-vs-HRV claim (within-subject) is unaffected.
+- Procedure (revised post-R-14): `subject_disjoint_split(all_subjects,
+  test_fraction=0.50, random_state=42)` — no stratify_col argument. Original
+  call `subject_disjoint_split(all_subjects, test_fraction=0.50,
+  stratify_col=ahi_band, random_state=42)` is retired.
 
 Note: the original lock used 75 dev / 77 test (rounding 154 × 0.50 = 77). This revision
 uses a symmetric 77/77 split. The held-out partition size is unchanged at 77 test subjects.
