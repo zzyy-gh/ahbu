@@ -3,52 +3,69 @@
 # Pilot probes — sleep-staging
 
 **Status:** Not pre-registered. Pilots use dev split ONLY.
-They do not touch the held-out test partition (76 HMC PSG test subjects
-as defined in protocol-lock.md §3). Results here may inform final
-design choices but do not constitute headline results.
+They do not touch the held-out test partitions (77 HMC PSG test subjects for scope b,
+~1,850 MESA test subjects for scope a, as defined in protocol-lock.md §3).
+Results here may inform final design choices but do not constitute headline results.
 
-Pilot numbering is track-local (P-1 through P-N); does not share the
-cross-subject-eeg pilot numbering.
+Pilot numbering is track-local (P-1 through P-N); does not share the cross-subject-eeg
+pilot numbering.
 
-Run pilots in priority order. P-1 is critical-path — blocks P-2 and P-5.
+Run pilots in priority order. P-1 is critical-path for scope (b). P-7 is critical-path
+for scope (a) and can run in parallel with P-1.
+
+**Revision 2026-05-03:** P-1 updated to reflect HMC PSG open-access confirmation and
+revised failure path. P-7 added for NSRR token validation.
 
 ---
 
-## P-1 — HMC PSG access tier and ECG channel check (CRITICAL, week 1)
+## P-1 — HMC PSG access confirmation + ECG channel quality check (CRITICAL for scope b, week 1)
 
-**Question:** (a) Is HMC PSG accessible at the PhysioNet credentialed
-level (same-session account creation) or does it require a multi-week
-DUA? (b) How many subjects have a usable ECG channel with SQI >= 0.5
-on > 70 % of epochs?
+**Question:** (a) Is HMC PSG accessible without credential barriers (expected: yes,
+open CC-BY access confirmed 2026-05-03)? If it is blocked for any local/institutional
+reason, is CAP Sleep accessible as substitute? (b) Of a 10-subject sample, how many
+have ECG SQI >= 0.5 on > 70 % of 30-second windows?
 
-**Dataset/split:** Attempt HMC PSG access for all 154 subjects.
-Load ECG channels for a 10-subject sample.
+**Why this is still run despite open-access confirmation:** Open-access license does not
+guarantee that the download will work in the user's environment (network filtering,
+PhysioNet account configuration, incomplete download). P-1 confirms the full pipeline
+from download to ECG channel extraction before committing to HMC PSG as the primary
+dataset.
 
-**Procedure:**
-1. Create PhysioNet account (if not already done). Navigate to
-   https://physionet.org/content/hmc-sleep-staging/1.0.0/.
-   Note the access tier displayed. Record in
-   `30-implement/sleep-staging/runs/hmc_access_tier.txt`.
-2. Download 10 subject files (the first 10 alphabetically by subject
-   ID as a convenience sample, not a random sample).
-3. Load ECG channel using MNE `read_raw_edf()`. Compute SQI via
-   `nk.ecg_quality()` for each 30-second window.
-4. Compute fraction of windows with SQI >= 0.5 per subject.
-   Report count and fraction above threshold.
+**Dataset/split:**
+Primary attempt: HMC PSG, all 154 subjects available for download. Sample 10 subjects
+(first 10 alphabetically by subject ID) for the ECG quality check.
+Fallback attempt (P-1b, only if primary fails): CAP Sleep, 10-subject sample from the
+108 subjects.
 
-**Success criterion:**
-(a) Access granted within 1 hour of account creation (credentialed-
-    access tier, not multi-week DUA).
-(b) >= 8 of 10 sampled subjects have > 70 % of ECG windows with SQI
-    >= 0.5.
+**Procedure — primary (HMC PSG):**
+1. Download the first 10 subject EDF files from https://physionet.org/content/hmc-sleep-staging/1.0.0/.
+2. Confirm the access tier (CC-BY download should complete without credential prompts).
+   Record in `30-implement/sleep-staging/runs/hmc_access_tier.txt`.
+3. Load ECG channel (channel name "ECG" or "EKG" per header) via MNE `read_raw_edf()`.
+4. Compute SQI: `nk.ecg_quality()` on each 30-second window. Compute fraction above 0.5.
+5. Report per-subject ECG presence, SQI fraction, sampling rate.
 
-If (a) fails: invoke risk-register R-2 — begin CAP Sleep access
-procedure immediately.
-If (b) fails on > 5 of 10 subjects: the ECG quality exclusion
-rate may be higher than expected; adjust the exclusion threshold
-and re-examine (or invoke R-3 kill criterion assessment).
+**Procedure — fallback P-1b (CAP Sleep, only if HMC access fails):**
+1. Download 10 subject EDF files from https://physionet.org/content/capslpdb/1.0.0/.
+2. Load ECG channel; apply same SQI computation.
+3. Load the hypnogram annotation file; apply R&K-to-AASM mapping
+   `{S1→N1, S2→N2, S3→N3, S4→N3, MT→None}`. Verify label distribution is plausible.
+4. Report per-subject results.
+5. If CAP passes P-1b success criterion: activate R-2 substitution path (write
+   `runs/cap_substitute_activation.txt`). Update partition freeze per protocol-lock.md §3.
 
-**Estimated time:** 2 hours (including download of 10-subject sample).
+**Success criteria:**
+(a) Primary: HMC access completes within 1 hour; >= 8/10 subjects have > 70 % ECG windows
+    above SQI threshold. This is the expected outcome given open-access confirmation.
+(b) Fallback: CAP access completes within 1 hour; >= 8/10 subjects have ECG; R&K label
+    distribution after mapping is plausible (N2 dominant, < 15 % W, > 10 % REM).
+
+**Script:** `30-implement/sleep-staging/code/pilots/p1_hmc_access_check.py` (existing;
+script is compatible with both HMC PSG and CAP Sleep — pass `--dataset cap` flag if
+running fallback). Update script to add `--dataset` argument if not already present.
+
+**Estimated time:** 2 hours (including download of 10-subject sample for primary;
+additional 1 hour for fallback if triggered).
 
 **Result field:** [FILL AFTER RUN]
 
@@ -56,31 +73,17 @@ and re-examine (or invoke R-3 kill criterion assessment).
 
 ## P-2 — Dreem-DOD label loading smoke test (week 2)
 
-**Question:** Can the Dreem-DOD-O label files (JSON format, Zenodo
-2025 re-release) be loaded correctly, and do the stage annotations
-align with the expected epoch boundaries?
+Unchanged from original pilots-README.md. Lower priority now that MESA is available
+as scope (a) primary dataset. Still run in week 2 to confirm Dreem-DOD-O is usable
+for P-6 framing probe.
 
-**Dataset/split:** Dreem-DOD-O, 3-subject sample (subjects 0, 1, 2
-from the alphabetically sorted list). Dev use only.
+**Dataset/split:** Dreem-DOD-O, 3-subject sample. Dev use only.
 
-**Procedure:**
-1. Download Dreem-DOD-O (or a 3-subject subset from Zenodo).
-2. Load JSON annotation file for subject 0. Check:
-   - Number of epochs (expected: ~1,000 per 8-hour recording).
-   - Stage label distribution (expected: W < 20 %, N2 ~40 %, REM
-     ~20 %, N1 + N3 remainder).
-   - Consensus label field is present (vs per-rater-only labels).
-3. Align epoch start times with the EEG channel timestamps.
-   Confirm the first epoch start matches the annotation.
-4. Repeat for subjects 1 and 2.
+**Procedure:** Load JSON annotation file. Check epoch count, consensus label field,
+stage distribution. Align with EEG timestamps. Repeat for 3 subjects.
 
-**Success criterion:** All 3 subjects have loadable annotations with
-a valid consensus label field and correct epoch count. Zero NaN or
-out-of-bounds labels.
-
-If consensus field absent: check benchmark repo (dreem-learning-open)
-for the consensus construction code; apply it to get majority-vote
-labels from per-rater fields.
+**Success criterion:** All 3 subjects have loadable annotations with valid consensus
+label and correct epoch count. Zero NaN labels.
 
 **Estimated time:** 1.5 hours.
 
@@ -90,35 +93,23 @@ labels from per-rater fields.
 
 ## P-3 — U-Sleep VRAM probe and inference correctness check (week 2)
 
-**Question:** (a) How much VRAM does U-Sleep inference consume on
-GTX 1650 at batch=32, single EEG channel, 30-second epochs at 100 Hz?
-(b) Do the output probability distributions look valid (not uniform,
-not all-zero, sums to 1)?
+Unchanged from original pilots-README.md. Critical for both scopes (U-Sleep is the
+EEG model for scope b and the only model for scope a).
 
-**Dataset/split:** Sleep-EDF Cassette, 2-subject sample (dev use only).
+**Dataset/split:** Sleep-EDF Cassette, 2-subject sample. Dev use only.
 
-**Procedure:**
-1. Install U-Sleep (pip install usleep or from GitHub).
-2. Load 2 subjects from Sleep-EDF Cassette. Preprocess to 100 Hz,
-   normalize per-epoch.
-3. Run U-Sleep inference at batch=32 on a single subject's epochs
-   (~900 epochs). Log peak VRAM: `torch.cuda.max_memory_allocated() / 1e9`.
-4. Inspect per-epoch probability distributions: compute mean entropy
-   per epoch across 5 classes. Expected: high entropy (near log(5))
-   for N1; low entropy for W and REM.
-5. Compute per-subject macro-F1 on the 2-subject sample against the
-   Sleep-EDF annotations (this is a sanity check, not a result).
-   Expected: Sleep-EDF is in-distribution for U-Sleep (or close to
-   it); macro-F1 should be > 0.65 for a sanity pass.
+**Additional scope-a check:** After confirming correctness on Sleep-EDF, run on 1 MESA
+sample subject (downloaded in P-7) to verify U-Sleep handles MESA channel configuration
+(C4-M1 as primary EEG channel; confirm this is in U-Sleep's supported channel list or
+select an appropriate substitute channel from MESA's montage).
 
-**Success criterion:**
-(a) Peak VRAM <= 3 GB at batch=32. If > 3 GB: re-run at batch=8
-    and record result. If > 3 GB at batch=8: invoke R-5 mitigation.
-(b) Per-epoch probabilities are valid (sum to 1 within 1e-5; entropy
-    varies plausibly across epoch types).
-(c) Sanity-check macro-F1 > 0.60 on the 2-subject Sleep-EDF sample.
+**Success criteria:**
+(a) Peak VRAM <= 3 GB at batch=32.
+(b) Per-epoch probabilities valid.
+(c) Sanity-check macro-F1 > 0.60 on Sleep-EDF 2-subject sample.
+(d) MESA channel compatibility confirmed (no channel-not-found errors).
 
-**Estimated time:** 2 hours.
+**Estimated time:** 2.5 hours (0.5 hr additional for MESA channel check).
 
 **Result field:** [FILL AFTER RUN]
 
@@ -126,34 +117,9 @@ not all-zero, sums to 1)?
 
 ## P-4 — Within-subject RF ceiling vs cross-subject RF gap (week 3)
 
-**Question:** What is the within-subject performance ceiling of the
-HRV-only Random Forest on the dev split? This establishes the upper
-bound that a per-subject trained model achieves and frames how much
-of the EEG-vs-HRV gap is recoverable with subject-specific data.
-
-**Dataset/split:** HMC PSG dev subjects (75 subjects). 80/20 within-
-subject train/test split per subject. This does NOT use the held-out
-test partition.
-
-**Procedure:**
-1. For each of the 75 dev subjects, split their epochs 80/20
-   (temporal split — first 80 % for train, last 20 % for test;
-   do not shuffle, to respect temporal dependence in sleep).
-2. Fit a separate RF (n_estimators=200, class_weight="balanced",
-   random_state=42) on the 80 % training epochs for each subject.
-3. Evaluate on the 20 % test epochs. Compute per-subject 3-class
-   macro-F1.
-4. Compare to the cross-subject RF macro-F1 on the dev LOSO split.
-   Report the within-subject-minus-cross-subject gap.
-
-**Success criterion:** Within-subject macro-F1 >= cross-subject
-macro-F1 + 5 pp. If the gap is < 5 pp, the cross-subject model
-is nearly as good as within-subject for HRV — which would be a
-strong result, but must be scrutinized for temporal leakage.
-
-Note: if within-subject < cross-subject by more than 5 pp, this is
-anomalous and suggests the cross-subject model may be overfitting to
-dev-split noise. Investigate feature importance for anomalies.
+Unchanged from original pilots-README.md. Operates on HMC PSG dev subjects (77).
+Temporal within-subject split 80/20. Compare within-subject macro-F1 vs cross-subject
+LOSO macro-F1 on dev split.
 
 **Estimated time:** 1 hour.
 
@@ -163,35 +129,11 @@ dev-split noise. Investigate feature importance for anomalies.
 
 ## P-5 — LSTM on HRV sequence (temporal context probe, week 3)
 
-**Question:** Does a small LSTM (1 layer, 64 hidden units) trained on
-30-epoch windows of HRV features outperform the epoch-wise Random
-Forest on the dev split? If so, temporal context (sleep cycles) is
-informative beyond single-epoch HRV.
+Unchanged from original pilots-README.md. Operates on HMC PSG dev subjects. LOSO on
+dev split. Compare LSTM macro-F1 to RF macro-F1 on dev.
 
-**Dataset/split:** HMC PSG dev subjects (75 subjects). Subject-disjoint
-LOSO on dev split only.
-
-**Procedure:**
-1. Construct sequence inputs: for each subject, create overlapping
-   windows of 30 consecutive epochs (30 × 11 feature matrix as input,
-   predict the stage of the central epoch). Stride 1.
-2. LSTM: 1 layer, 64 hidden units, linear output head (5 classes).
-   Total parameters: ~37,000. Train on all dev subjects except one
-   (LOSO). Optimizer: Adam, lr=1e-3, epochs=20, batch=64.
-3. Evaluate macro-F1 on the left-out subject. Aggregate across dev
-   subjects.
-4. Compare to RF macro-F1 from the dev LOSO run.
-
-**Success criterion:** Not a pass/fail — directional only. If LSTM
-macro-F1 > RF macro-F1 + 3 pp on dev LOSO, document "temporal context
-is beneficial" and add the LSTM as an additional arm in the next
-protocol iteration (requires an unlock note). If the gap is < 3 pp,
-RF is sufficient and LSTM adds no meaningful value at this scale.
-
-**Compute:** LSTM training on 75 dev subjects × LOSO = 75 training
-runs. Each run has ~74 × ~1000 = ~74,000 training examples, 20 epochs.
-At batch=64: ~23,000 gradient steps per run × 75 runs = CPU feasible
-in ~2–3 hours. No GPU required.
+If LSTM macro-F1 > RF + 3 pp: document "temporal context is beneficial" and consider
+unlock note to add LSTM as a pre-registered arm. If gap < 3 pp: RF is sufficient.
 
 **Estimated time:** 3 hours.
 
@@ -201,33 +143,22 @@ in ~2–3 hours. No GPU required.
 
 ## P-6 — Scope (a) framing probe: U-Sleep on Dreem-DOD-O with CI (week 4)
 
-**Question:** For the Dreem-DOD-O OSA subjects (n=55), what are the
-U-Sleep per-stage F1 values by AHI band, and what are the 95 % CI
-widths? This frames the underpowered scope (a) pilot result honestly
-before the NSRR DUA outcome is known.
+Unchanged from original pilots-README.md, with one revision: this is now explicitly
+a framing/calibration probe for MESA, not a substitute for MESA.
 
-**Dataset/split:** Dreem-DOD-O, all 55 subjects. This is an OOD
-evaluation of U-Sleep (no training). All 55 subjects treated as
-"test" for this pilot (there is no training on Dreem-DOD — U-Sleep
-is frozen). Labeled as pilot; not a pre-registered headline.
+**Question:** For Dreem-DOD-O (n=55 OSA subjects), what are U-Sleep per-stage F1
+values by AHI band, and what are the 95 % CI widths? This frames the expected MESA
+results and surfaces any unexpected U-Sleep failure modes before the large MESA run.
 
-**Procedure:**
-1. Run U-Sleep frozen inference on all 55 Dreem-DOD-O subjects.
-   Map U-Sleep predictions to Dreem-DOD's 5-class labels.
-2. Use Dreem-DOD consensus labels (majority vote across 5 raters)
-   as ground truth.
-3. Compute per-subject 5-class per-stage F1 and 3-class macro-F1.
-4. Stratify by AHI band (none/mild/moderate/severe — AHI is
-   documented in Dreem-DOD-O). Compute per-stratum mean F1 and
-   95 % CI via `cohort_stratifier.stratified_report()`.
-5. Report CI widths explicitly. Expected: CI width for severe-OSA
-   stratum will be wide (estimated n=10–15 subjects in that stratum),
-   demonstrating the underpowered state clearly.
+**Revised framing (2026-05-03):** With MESA available, the P-6 result is contextualized
+as: "This is what U-Sleep achieves on a small (n=55), underpowered OSA cohort. The MESA
+headline will answer the same question at N~1,850." Do not report P-6 results as
+headline findings.
 
-**Success criterion:** This pilot is purely a framing exercise.
-Success = the pilot report is honest: CI widths are wide for small
-strata, reported as such, and the pilot document does not claim this
-is a powered result. The pilot informs the NSRR scope (a) design.
+**Dataset/split:** Dreem-DOD-O, all 55 subjects. OOD evaluation of frozen U-Sleep.
+
+**Success criterion:** Honesty. CI widths are wide for small strata, reported as such.
+The pilot report does not claim powered findings.
 
 **Estimated time:** 3 hours (after P-3 confirms U-Sleep is running).
 
@@ -235,17 +166,64 @@ is a powered result. The pilot informs the NSRR scope (a) design.
 
 ---
 
+## P-7 — NSRR token validation + MESA sample download (CRITICAL for scope a, week 1)
+
+**Question:** (a) Is the NSRR API token valid and does it grant access to MESA?
+(b) Can a sample MESA subject be downloaded successfully? (c) Does the MESA EDF
+contain the expected channels (C4-M1 EEG, ECG, stage annotations)?
+
+**NSRR token security:** The token lives in `.env` as `NSRR_TOKEN` (gitignored). In code:
+```python
+import os
+token = os.environ['NSRR_TOKEN']
+```
+Never print the token value. Log only the validation result (success/fail), not the
+token itself, in `30-implement/sleep-staging/runs/nsrr_token_validation.txt`.
+
+**Procedure:**
+1. Load `NSRR_TOKEN` from environment. Confirm it is non-empty.
+2. Run a token-test request: `GET https://sleepdata.org/api/v1/me.json?auth_token=<token>`.
+   Expected response: 200 OK with JSON containing `authenticated: true` and a username.
+   Log `authenticated: true/false` (not the token) to `runs/nsrr_token_validation.txt`.
+3. Download 1 MESA subject's EDF file using nsrr-gem:
+   `nsrr download mesa/polysomnography/edfs/mesa-sleep-0001.edf --token <token>`
+   or equivalent Python requests call. Confirm download completes.
+4. Load the EDF via MNE. Confirm: (a) C4-M1 EEG channel present; (b) ECG channel
+   present; (c) sampling rate >= 256 Hz for EEG.
+5. Load the MESA staging annotation (XML file for the same subject). Confirm 5-class
+   AASM labels are parseable and epoch count is ~900–1200.
+6. Record channel names, sampling rates, epoch count in `runs/mesa_sample_check.txt`.
+
+**Success criteria:**
+(a) Token validation returns `authenticated: true`.
+(b) EDF download completes without 403 error.
+(c) C4-M1 and ECG channels present. EEG sampling rate >= 256 Hz.
+(d) Annotation file parseable; labels are valid AASM stage codes.
+
+If (a) fails: token is invalid or expired. Re-login to sleepdata.org to renew.
+Trigger R-1a mitigation immediately.
+If (c) fails: MESA channel configuration differs from expected. Examine available EEG
+channels and identify the appropriate U-Sleep-compatible channel (U-Sleep requires
+a central EEG channel, e.g. C4-M1 or C3-M2). Document the fallback channel in the
+approach if needed. This does not halt scope (a) — it adjusts the channel selection.
+
+**Script:** `30-implement/sleep-staging/code/pilots/p7_nsrr_token_validation.py` (new).
+
+**Estimated time:** 1 hour.
+
+**Result field:** [FILL AFTER RUN]
+
+---
+
 ## Notes on pilots
 
-- Pilots may be run in priority order; P-1 must complete before others
-  depend on HMC PSG data.
-- All pilot results are labeled "dev-split / preliminary" in any logs
-  or notes.
+- Run P-1 and P-7 in parallel in week 1 — they are independent and both critical-path.
+- All pilot results are labeled "dev-split / preliminary" in any logs.
 - No pilot result constitutes a headline result.
-- If a pilot reveals a fatal design flaw (e.g., P-1 finds HMC PSG is
-  DUA-blocked): update approach.md, risk-register.md, and protocol-
-  lock.md before proceeding to the headline. An unlock note is required
-  if the partition definition changes.
-- Pilot scripts live in `30-implement/sleep-staging/code/pilots/`
-  when written; each script's module docstring references this file's
-  P-N entry.
+- If P-1 finds HMC PSG blocked: activate R-2 substitute path; re-freeze protocol-lock.md §3
+  with CAP partition; write cap_substitute_activation.txt. Requires unlock note.
+- If P-7 finds token invalid: invoke R-1a; attempt token renewal before escalating.
+- If P-3 reveals MESA channel incompatibility: update channel selection in approach.md
+  (minor change; no unlock note required unless the primary metric definition changes).
+- Pilot scripts live in `30-implement/sleep-staging/code/pilots/` when written; each
+  script's module docstring references this file's P-N entry.

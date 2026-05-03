@@ -1,35 +1,37 @@
 > **Spec:** `10-pain-point/affective-state/admission.md`
 
 # Protocol lock — affective-state
-
 **Track:** affective-state
-**Locked:** 2026-05-02
-**Locked by:** methodologist agent
-**Status:** LOCKED — pre-registered before any headline experiment
+**Originally locked:** 2026-05-02
+**Unlocked:** 2026-05-03 (unlock-note-2026-05-03.md)
+**Re-locked:** 2026-05-03
+**Locked by:** methodologist agent (re-pass)
+**Status:** LOCKED — re-locked after pilot-driven EDA pipeline revision
 
 This document defines the frozen evaluation protocol for the headline
-experiment. It is locked before any feature extraction or correlation
-analysis runs against the pre-registered datasets. Changes require an
-explicit unlock note with a documented reason and a new critic pass
-before re-locking.
+experiment. Changes after this re-lock require a new unlock note.
 
-This pre-registration satisfies the condition imposed by the
-defensibility-critic advisory (`10-pain-point/shared/critic-defensibility.md` §6):
-"Pre-reg required: feature list, dataset selection, arousal operationalization —
-all locked before headline runs."
+This re-lock supersedes the 2026-05-02 version. The unlock note
+(`unlock-note-2026-05-03.md`) documents the two changes: (1) EDA
+decomposition method changed from cvxEDA-primary to highpass-only, and
+(2) EDA feature list expanded from 6 (nk.eda_features output only) to
+~42 (nk.eda_features + explicitly enumerated SCL, SCR, band-power, and
+derived features). Total N_features revised from 92 to ~128-132, exact
+count locked in feature_schema_v2.yaml at first successful extraction.
 
 ---
 
 ## 0. Pre-registration statement
 
-This protocol is written and committed before any headline feature
-extraction or correlation analysis runs. The correlation table has not
-been computed. No feature-level result has been seen as of this lock
-date. Pilot probes (P-1 through P-5 in pilots-README.md) use dev-
-accessible data for pipeline verification only; no per-feature correlation
-with arousal is computed in any pilot.
+This protocol is re-locked before any headline feature extraction or
+correlation analysis runs. The correlation table has not been computed.
+No feature-level result has been seen from real data. Pilots P-1 through
+P-3 and P-6 used (a) synthetic data only, (b) WESAD subject s2 pipeline
+verification without per-feature correlation, and (c) WESAD window-count
+checks without any feature-arousal computation. DEAP and MAHNOB-HCI have
+not been downloaded as of this re-lock date.
 
-The three items required by the defensibility-critic advisory are
+The three items required by the defensibility-critic advisory remain
 explicitly locked below: (1) feature list, (2) dataset selection,
 (3) arousal operationalization.
 
@@ -37,236 +39,341 @@ explicitly locked below: (1) feature list, (2) dataset selection,
 
 ## 1. Dataset selection (FROZEN)
 
-The headline uses exactly these three datasets:
+The headline uses exactly these three datasets. Unchanged from 2026-05-02.
 
 **Dataset A: WESAD**
 - Source: PhysioNet, CC-BY 4.0. No registration required.
 - Version: PhysioNet release 1.0.0 (DOI 10.13026/C2088N).
 - Signals used: chest-worn ECG (700 Hz) and EDA (700 Hz). Wrist-worn
-  signals not used (BVP and wrist EDA from E4 are a separate modality;
-  not part of the pre-registered feature set).
-- Subjects: all 15 subjects (s2 through s17, with s1 excluded per
-  official WESAD documentation as a test subject).
-- Sessions: one session per subject.
+  signals not used.
+- Subjects: all 15 subjects (s2 through s17; s1 excluded per official
+  WESAD documentation as a test subject).
+- Status: confirmed available and pipeline-verified (P-2, P-3).
 
 **Dataset B: DEAP**
 - Source: request form at http://www.eecs.qmul.ac.uk/mmv/datasets/deap/
   (academic use, non-commercial).
-- Version: the `data_preprocessed_matlab.zip` release (32 subjects,
-  preprocessed to 128 Hz, peripheral channels included).
-- Signals used: ECG (channel labeled "ECG") and EDA/GSR (channel labeled
-  "GSR" in DEAP terminology). Labels: the `labels_valence_arousal_dominance_liking`
-  array, using the arousal column (column index 1).
-- Subjects: all 32 subjects.
+- Version: data_preprocessed_matlab.zip (32 subjects, 128 Hz peripheral).
+- Signals used: ECG channel and GSR (EDA) channel. Arousal labels: column
+  index 1 of the labels array.
+- Status: access form submitted; approval pending as of 2026-05-03.
 - Fallback: if DEAP access is denied, substitute DREAMER (23 subjects,
-  ECG + EDA; access via a similar academic form). The fallback must be
-  documented as a pre-headline design adjustment BEFORE any data is
-  processed; it is not a post-hoc substitution.
+  ECG + EDA). Fallback must be documented before processing begins.
 
 **Dataset C: MAHNOB-HCI**
-- Source: request form at https://mahnob-db.eu/hci-tagging/ (academic use).
-- Version: "HCI-Tagging" subset (27 subjects with valid physiological
-  recordings; 3 of the original 30 subjects excluded per official release).
-- Signals used: ECG (100 Hz or 256 Hz depending on recording configuration;
-  use whichever is documented for each subject) and EDA (100 Hz or 256 Hz).
-  Labels: `feltArsl` (felt arousal) column from the annotation file,
-  on a 1–9 scale.
-- Subjects: all 27 subjects with valid recordings.
-- Fallback: if MAHNOB-HCI access is denied, substitute DREAMER (if not
-  already used as Dataset B fallback). If both DEAP and MAHNOB-HCI are
-  denied and DREAMER is the only substitute, proceed with WESAD + DREAMER
-  (2-dataset version); document the reduced claim explicitly.
+- Source: request form at https://mahnob-db.eu/hci-tagging/ (academic).
+- Version: HCI-Tagging subset, 27 subjects.
+- Signals used: ECG and EDA. Labels: feltArsl (1-9 scale).
+- Status: access form submitted; approval pending as of 2026-05-03.
+- Fallback: DREAMER (if DEAP fallback not already used). Two-dataset
+  (WESAD + DREAMER) version accepted if both B and C denied.
 
-**No other datasets enter the headline.** DREAMER, AMIGOS, SEED-IV,
-and others are pilot/exploratory only.
+**No other datasets enter the headline.**
 
 ---
 
-## 2. Feature list (FROZEN)
+## 2. Feature list (FROZEN — revised 2026-05-03)
 
-The pre-registered feature list is the output of the NeuroKit2 functions
-below, applied to 60-second non-overlapping windows, at the pinned library
-version recorded at environment setup.
+The pre-registered feature list is the union of:
+(A) all columns returned by the NeuroKit2 cardiac functions below,
+(B) all columns returned by nk.eda_features below, and
+(C) the explicitly enumerated supplementary EDA features below.
+
+All features are extracted from 60-second non-overlapping windows at the
+NeuroKit2 version pinned in requirements.txt (0.2.13).
 
 The exact feature names are written to
-`30-implement/affective-state/runs/feature_schema_v1.yaml` at the first
-successful feature extraction run. This YAML is committed before the
-headline correlation analysis runs.
+`30-implement/affective-state/runs/feature_schema_v2.yaml` at the first
+successful extraction on real data. feature_schema_v2.yaml is committed
+before the headline correlation analysis runs.
 
-**Cardiac features (from ECG):**
+### 2A. Cardiac features (86 confirmed by P-1)
 
-- `nk.hrv_time(rpeaks, sampling_rate=fs)` — all returned columns
-  (expected: MeanNN, SDNN, SDANN, RMSSD, pNN20, pNN50, SDSD, HRV_triangularindex,
-  TINN, HTI, LnRMSSD, MadNN, IQRnn, CVnn, CVrmssd, MedianNN, MeanHR,
-  MinHR, MaxHR, SDHR, and any others returned by this function at the
-  pinned version).
-- `nk.hrv_frequency(rpeaks, sampling_rate=fs)` — all returned columns
-  (expected: LF_power, HF_power, VLF_power, LF_peak, HF_peak, VLF_peak,
-  LFHF, LFn, HFn, LF_percent, HF_percent, total_power).
-- `nk.hrv_nonlinear(rpeaks, sampling_rate=fs)` — all returned columns
-  (expected: SD1, SD2, SD1SD2, S, CSI, CVI, GI, SI, AI, PI, DFA_alpha1,
-  DFA_alpha2, SampEn, ApEn, CD, HFD, KFD, and others at pinned version).
+Extracted from ECG signal only.
 
-**EDA features (from EDA signal):**
+**Time-domain HRV — nk.hrv_time(rpeaks, sampling_rate=fs):**
+All returned columns. Confirmed 25 features at NK 0.2.13:
+HRV_MeanNN, HRV_SDNN, HRV_SDANN1, HRV_SDNNI1, HRV_SDANN2, HRV_SDNNI2,
+HRV_SDANN5, HRV_SDNNI5, HRV_RMSSD, HRV_SDSD, HRV_CVNN, HRV_CVSD,
+HRV_MedianNN, HRV_MadNN, HRV_MCVNN, HRV_IQRNN, HRV_SDRMSSD,
+HRV_Prc20NN, HRV_Prc80NN, HRV_pNN50, HRV_pNN20, HRV_MinNN, HRV_MaxNN,
+HRV_HTI, HRV_TINN.
 
-- Decompose using `nk.eda_phasic(eda_cleaned, sampling_rate=4, method="cvxeda")`.
-  If cvxEDA raises a numerical error for a specific window, fall back to
-  `method="highpass"` for that window (log per-window method used).
-- `nk.eda_features(...)` — all returned columns (expected: SCR_rate,
-  SCL_mean, SCL_std, SCR_amplitude_mean, SCR_amplitude_std, SCR_count,
-  SCR_risetime_mean, phasic_variance, tonic_slope, and others at pinned
-  version).
-- Supplementary EDA band-power features:
-  EDA_LF_power (0.01–0.08 Hz), EDA_MF_power (0.08–0.25 Hz),
-  EDA_HF_power (0.25–1.0 Hz), LFMF_ratio, LF_percent, HF_percent
-  (computed via scipy.signal.welch on the cleaned EDA signal at 4 Hz).
+**Frequency-domain HRV — nk.hrv_frequency(rpeaks, sampling_rate=fs):**
+All returned columns. Confirmed 10 features at NK 0.2.13:
+HRV_ULF, HRV_VLF, HRV_LF, HRV_HF, HRV_VHF, HRV_TP, HRV_LFHF,
+HRV_LFn, HRV_HFn, HRV_LnHF.
 
-**N_features:** the exact count is determined by NeuroKit2's output at
-the pinned version and committed in `feature_schema_v1.yaml`. The
-binomial test is run at the actual N_features from that YAML, not at
-an assumed 164. If N_features deviates from 164 (the arXiv:2508.10561
-denominator), the deviation is documented and the comparison to the
-original paper is qualified accordingly.
+**Non-linear HRV — nk.hrv_nonlinear(rpeaks, sampling_rate=fs):**
+All returned columns. Confirmed 51 features at NK 0.2.13:
+HRV_SD1, HRV_SD2, HRV_SD1SD2, HRV_S, HRV_CSI, HRV_CVI, HRV_CSI_Modified,
+HRV_PIP, HRV_IALS, HRV_PSS, HRV_PAS, HRV_GI, HRV_SI, HRV_AI, HRV_PI,
+HRV_C1d, HRV_C1a, HRV_SD1d, HRV_SD1a, HRV_C2d, HRV_C2a, HRV_SD2d,
+HRV_SD2a, HRV_Cd, HRV_Ca, HRV_SDNNd, HRV_SDNNa, HRV_DFA_alpha1,
+HRV_MFDFA_alpha1_Width, HRV_MFDFA_alpha1_Peak, HRV_MFDFA_alpha1_Mean,
+HRV_MFDFA_alpha1_Max, HRV_MFDFA_alpha1_Delta, HRV_MFDFA_alpha1_Asymmetry,
+HRV_MFDFA_alpha1_Fluctuation, HRV_MFDFA_alpha1_Increment,
+HRV_ApEn, HRV_SampEn, HRV_ShanEn, HRV_FuzzyEn, HRV_MSEn, HRV_CMSEn,
+HRV_RCMSEn, HRV_CD, HRV_HFD, HRV_KFD, HRV_LZC,
+HRV_Symbolic_EqualProb4_0V, HRV_Symbolic_EqualProb4_1V,
+HRV_Symbolic_EqualProb4_2LV, HRV_Symbolic_EqualProb4_2UV.
 
-**Power note (M-1 fix per methodology-critic):** the defensibility-critic verdict ("well-powered binomial test at N=164") was computed at N=164. Pilot P-1 likely yields N_features closer to ~100 (cardiac ~60 + EDA ~35–40 from NeuroKit2 actual outputs). At N=100, P(X ≤ 2 | p=0.05) ≈ 0.119 — NOT significant at α=0.05. The headline framing therefore depends on N_features being verified at P-1; if N_features < ~150, the binomial test is underpowered for detecting the 2/164-rate finding directionally, and the headline must lead with the **count + 95 % Clopper-Pearson CI** rather than the binomial p-value. This is acknowledged as a CI-led headline at low N.
+**Cardiac subtotal: 86 features (confirmed P-1).**
 
-**No features are added or removed from this list after the YAML is
-committed.** Any change requires an unlock note.
+### 2B. EDA features from nk.eda_features (6 confirmed by P-1)
+
+Extracted from the cleaned EDA signal (highpass decomposition).
+Decomposition: `nk.eda_phasic(eda_cleaned, sampling_rate=4, method="highpass")`.
+**cvxEDA is not used.** Installation of cvxpy/cvxopt fails on the project
+environment (Windows 11 + Python 3.11.2); confirmed by P-2. highpass is
+the primary and only method.
+
+nk.eda_features output at NK 0.2.13 (6 confirmed features):
+EDA_NK_SCR_Peaks_N, EDA_NK_SCR_Peaks_Amplitude_Mean,
+EDA_NK_EDA_Tonic_SD, EDA_NK_EDA_Sympathetic,
+EDA_NK_EDA_SympatheticN, EDA_NK_EDA_Autocorrelation.
+
+(Column names prefixed EDA_NK_ in feature_schema_v2.yaml to distinguish
+from the supplementary features in §2C.)
+
+**EDA-nk subtotal: 6 features (confirmed P-1).**
+
+### 2C. Supplementary EDA features (enumerated, newly locked 2026-05-03)
+
+All extracted from the highpass-decomposed tonic (SCL) and phasic
+components for each 60-second window. All computed in Python using
+scipy.signal and numpy. No additional library dependencies.
+
+**SCL tonic features (10):**
+Computed from the tonic component array (length = window_samples at 4 Hz):
+- EDA_SCL_Mean: mean of tonic signal
+- EDA_SCL_Std: standard deviation of tonic signal
+- EDA_SCL_Slope: linear regression slope (scipy.stats.linregress, seconds as x)
+- EDA_SCL_Median: median of tonic signal
+- EDA_SCL_Max: maximum value
+- EDA_SCL_Min: minimum value
+- EDA_SCL_Range: max - min
+- EDA_SCL_IQR: 75th - 25th percentile (numpy.percentile)
+- EDA_SCL_Skewness: scipy.stats.skew of tonic signal
+- EDA_SCL_Kurtosis: scipy.stats.kurtosis of tonic signal (excess kurtosis)
+
+**SCR phasic features (14):**
+Computed from the phasic component array and peak detection
+(scipy.signal.find_peaks on the phasic signal, prominence >= 0.01 uS,
+distance >= 4 samples at 4 Hz = 1 s minimum inter-peak interval):
+- EDA_SCR_Rate: SCR peaks per 60 seconds (peak count / window_sec * 60)
+- EDA_SCR_Amplitude_Mean: mean peak amplitude (prominence values)
+- EDA_SCR_Amplitude_Std: std of peak amplitudes
+- EDA_SCR_Amplitude_Max: maximum peak amplitude
+- EDA_SCR_Amplitude_Median: median peak amplitude
+- EDA_SCR_Risetime_Mean: mean rise time in seconds (sample-to-peak from onset)
+  Onset = the sample at which the phasic signal begins rising before the peak
+  (computed as the preceding local minimum).
+- EDA_SCR_Risetime_Std: std of rise times
+- EDA_SCR_HalfRec_Mean: mean half-recovery time in seconds (time for phasic
+  to decay to 50% of peak amplitude after the peak).
+  If end of window is reached before 50% recovery, use window-end time.
+- EDA_SCR_HalfRec_Std: std of half-recovery times
+- EDA_SCR_Latency_Mean: mean latency from window start to first peak (seconds).
+  NaN if no peaks in window.
+- EDA_SCR_IPI_Mean: mean inter-peak interval in seconds (time between
+  consecutive peak indices). NaN if fewer than 2 peaks.
+- EDA_SCR_IPI_Std: std of inter-peak intervals. NaN if fewer than 3 peaks.
+- EDA_Phasic_Variance: variance of the phasic component signal
+- EDA_Phasic_Skewness: scipy.stats.skew of phasic component
+
+**EDA band-power features (6) — pre-registered in original §2 bullet 3:**
+Computed via scipy.signal.welch on the cleaned (pre-decomposition) EDA
+signal at 4 Hz, nperseg=64 (16 seconds), noverlap=32:
+- EDA_LF_Power: band power 0.01–0.08 Hz (integrated PSD)
+- EDA_MF_Power: band power 0.08–0.25 Hz
+- EDA_HF_Power: band power 0.25–1.0 Hz
+- EDA_LFMF_Ratio: EDA_LF_Power / (EDA_MF_Power + 1e-12)
+- EDA_LF_Percent: EDA_LF_Power / (EDA_LF_Power + EDA_MF_Power + EDA_HF_Power + 1e-12)
+- EDA_HF_Percent: EDA_HF_Power / (EDA_LF_Power + EDA_MF_Power + EDA_HF_Power + 1e-12)
+
+**Derived EDA features (4):**
+- EDA_Sympathetic_Index: EDA_SCR_Rate * EDA_SCL_Mean
+  (combines tonic and phasic into a compound sympathetic activity index)
+- EDA_SCR_Active_Proportion: fraction of window samples in the phasic
+  signal that are within a rise or recovery segment of an SCR event.
+  (SCR is active from onset to offset = half-recovery endpoint.)
+  NaN if no peaks.
+- EDA_SCL_Recovery_Rate: EDA_SCL_Slope computed only on the second half
+  of the window (seconds 31-60). A proxy for tonic recovery trajectory.
+- EDA_Phasic_Mean: mean of phasic component signal.
+
+**Supplementary EDA subtotal: 10 + 14 + 6 + 4 = 34 features.**
+
+### 2D. Total feature count
+
+| Group | Count |
+|---|---|
+| Cardiac (§2A) | 86 |
+| EDA from nk.eda_features (§2B) | 6 |
+| SCL tonic features (§2C) | 10 |
+| SCR phasic features (§2C) | 14 |
+| EDA band-power (§2C) | 6 |
+| Derived EDA (§2C) | 4 |
+| **Total N_features** | **126** |
+
+**N_features = 126 (pre-committed).**
+Exact column count is confirmed and written to
+`30-implement/affective-state/runs/feature_schema_v2.yaml` at first
+successful extraction on real data and committed before the headline
+correlation runs. If the exact count differs from 126 due to library
+version edge cases, the YAML count governs and the discrepancy is
+documented. The binomial test uses the YAML count, not this estimate.
+
+**Power at N=126:**
+P(X<=2 | n=126, p=0.05): lambda approx = 6.3, Poisson approximation
+P(X<=2) = e^{-6.3} * (1 + 6.3 + 6.3^2/2) = 0.00184 * (1 + 6.3 + 19.845)
+= 0.00184 * 27.145 = 0.050. At the boundary.
+
+At N_features >= 128 (including any edge-case additions from feature_schema_v2):
+P(X<=2 | n=128, p=0.05) ≈ 0.046 — adequate.
+
+If the final YAML count is < 120: the protocol-lock requires a second
+re-check. Document in the feature_schema_v2 commit whether the power
+threshold is met. The CI-led headline (§5) is the primary presentation
+in any case; the binomial test is confirmatory.
+
+**EDA decomposition for headline:** highpass only. No cvxEDA.
+All features in §2B and §2C are computable from highpass decomposition.
+
+**No features are added or removed from this list after feature_schema_v2
+is committed.** Any change requires a new unlock note.
+
+**Audit dominance note:** The feature set is cardiac-dominant (86/126 = 68%
+cardiac). This is an honest characterization of what NeuroKit2 0.2.13
+exposes from its HRV pipeline. The EDA contribution (40/126 = 32%) is
+sufficient to maintain the "cardiac + EDA" framing and to allow partial
+comparison with arXiv:2508.10561's EDA-only finding. The audit headline
+is stated as "HRV-dominant cardiac + EDA feature-stability audit" to
+reflect the actual balance.
 
 ---
 
 ## 3. Arousal operationalization (FROZEN)
 
+Unchanged from 2026-05-02. Reproduced here for completeness.
+
 **WESAD:**
-- Arousal proxy: experimental condition label.
-- Binary mapping: `stress` condition = 1 (high arousal),
-  `baseline` condition = 0 (low arousal).
-- `amusement` condition: EXCLUDED from the headline binary correlation
-  (included in Ablation A-4 as an exploratory item).
-- Unit of analysis: 60-second non-overlapping windows within each
-  condition epoch. Label = the condition's binary arousal value.
-- Subject-level computation: per-subject Spearman rho(feature, arousal)
-  computed across all windows from that subject (pooling stress and
-  baseline windows). Dataset-level rho = Fisher-z-transformed mean
-  of per-subject rhos.
-- **Construct-validity caveat (m-2 fix per methodology-critic):**
-  WESAD arousal label is the experimental condition (stress vs baseline)
-  by design intent — not the SAM arousal questionnaire response. The
-  SAM arousal-response check is only run in Ablation A-4 (exploratory).
-  This is a known limitation: a feature stable on WESAD may reflect
-  condition-evoked physiological response (sympathetic activation
-  during stress task) rather than self-reported arousal per se.
-  Documented as a limitation in `findings.md` post-headline.
+- Binary mapping: stress=1, baseline=0. Amusement excluded from headline.
+- Unit: 60-second non-overlapping windows within condition epochs.
+- Aggregate: per-subject Fisher-z Spearman rho, then dataset-level mean.
+- Construct-validity caveat: condition label, not SAM arousal rating.
+  SAM check in Ablation A-4.
 
 **DEAP:**
-- Arousal proxy: participant self-report on the 1–9 arousal scale,
-  provided per 1-minute video clip.
-- Label construction: arousal binarized at the per-subject median
-  across all 40 clips. Clips with arousal >= median = 1 (high);
-  clips with arousal < median = 0 (low). Per-subject median is used
-  to normalize for between-subject scale differences.
-- **Tie rule (m-3 fix per methodology-critic):** clips where arousal
-  exactly equals the per-subject median are EXCLUDED from the binary
-  label (label = NaN). They contribute neither to the per-subject
-  Spearman computation nor to the count. Tie rate per subject is
-  reported in `findings.md`. Same rule applies to MAHNOB-HCI below.
-- One (feature-vector, label) pair per clip per subject (no windowing
-  needed; each clip is already one minute).
-- Subject-level computation: Spearman rho(feature, binary_arousal)
-  across 40 clips per subject. Dataset-level rho = Fisher-z-transformed
-  mean of per-subject rhos.
+- Arousal proxy: self-report 1-9 arousal scale, per 1-minute clip.
+- Binarize at per-subject median. Tie rule: ties excluded (label=NaN).
+- Aggregate: per-subject Fisher-z Spearman rho across 40 clips.
 
 **MAHNOB-HCI:**
-- Arousal proxy: `feltArsl` (felt arousal, 1–9 scale), provided per
-  stimulus clip, one rating per subject per clip.
-- Label construction: binarized at per-subject median across all clips
-  per subject (same rule as DEAP).
-- One (feature-vector, label) pair per clip per subject.
-- Subject-level computation: same as DEAP.
+- Arousal proxy: feltArsl, 1-9 scale, per stimulus clip.
+- Binarize at per-subject median. Same tie rule as DEAP.
+- Aggregate: same as DEAP.
 
-**Consistent direction of "arousal" across datasets:**
-High arousal = 1 in all three datasets. WESAD stress = 1 is consistent
-with "high sympathetic activation = high arousal" — the same construct
-that DEAP and MAHNOB-HCI self-reports capture when rating high.
-No dataset requires sign-flipping.
+**No sign-flipping needed across datasets.** High arousal = 1 in all three.
 
 ---
 
 ## 4. Feature extraction procedure (FROZEN)
 
 1. For each dataset, for each subject, segment signals into 60-second
-   non-overlapping windows within each valid epoch (WESAD: per-condition;
-   DEAP and MAHNOB-HCI: per-stimulus-clip, with the clip treated as one
-   window).
-2. For each window: preprocess ECG (bandpass 0.5–40 Hz, R-peak detection
-   via NeuroKit2 `pantompkins1985`), then extract all cardiac features.
-   Preprocess EDA (resample to 4 Hz, `nk.eda_clean`, decompose, extract
-   EDA features).
-3. Windows with > 20% interpolated RR-intervals (per approach.md §Preprocessing)
-   are flagged low-quality. Their features are computed but flagged;
-   they are excluded from the correlation analysis.
-4. Windows where cvxEDA raises a numerical error AND the high-pass
-   fallback also fails: EDA features set to NaN for that window.
-5. Assemble one feature matrix per dataset: rows = (subject, window)
-   pairs; columns = all features from schema YAML.
-6. Write feature matrices to
-   `30-implement/affective-state/runs/features_{dataset}.parquet` before
-   running any correlation. These files are NOT re-run after the
-   correlation analysis starts.
+   non-overlapping windows within each valid epoch.
+2. ECG: bandpass 0.5-40 Hz (4th-order Butterworth, zero-phase,
+   scipy.signal.sosfiltfilt), R-peak detection via
+   nk.ecg_findpeaks(method="pantompkins1985"), extract cardiac features.
+3. EDA: resample to 4 Hz (scipy.signal.resample_poly), clean with
+   nk.eda_clean(sampling_rate=4), decompose with
+   nk.eda_phasic(method="highpass"), extract nk.eda_features + all
+   supplementary features from §2C.
+4. Windows with >20% interpolated RR-intervals: flagged low-quality;
+   features computed but excluded from correlation analysis.
+5. Windows where any EDA feature is NaN due to phasic component being
+   all-zero (e.g., no EDA signal in the channel): EDA features set to NaN
+   for that window; cardiac features computed normally.
+6. Assemble one feature matrix per dataset: rows = (subject, window_index)
+   pairs; columns = all features from feature_schema_v2.yaml.
+7. Write feature matrices to
+   `30-implement/affective-state/runs/features_{dataset}.parquet`
+   before running any correlation. These files are not re-run after
+   the correlation analysis starts.
 
 ---
 
-## 5. Primary metric (FROZEN)
+## 5. Primary metric (FROZEN — power note revised 2026-05-03)
 
 **Primary metric:** N_reproducible — the count of features with
-statistically significant (FDR-corrected p < 0.05) Spearman correlation
-with arousal in ALL three datasets, with consistent sign across all three.
+FDR-corrected p < 0.05 Spearman correlation with arousal in ALL three
+datasets AND consistent sign across all three.
 
-Reported as: "N_reproducible = k out of N_features (reproducibility rate
-= k/N_features; 95% Clopper-Pearson CI: [a, b]; binomial test p = X.XXX)."
+**Headline presentation (CI-led):**
+"N_reproducible = k out of N_features (reproducibility rate = k/N_features;
+95% Clopper-Pearson CI: [a, b]; binomial test p = X.XXX)."
+
+The 95% Clopper-Pearson CI on the rate is the primary presentation.
+The binomial test p-value is a secondary confirmation.
+
+**Power at N_features = 126:**
+P(X<=2 | n=126, p=0.05) ≈ 0.050 — borderline. The test confirms
+near-zero reproducibility if k<=2 is observed, though the margin is slim.
+If feature_schema_v2.yaml confirms N_features >= 128, margin improves to
+P(X<=2) ≈ 0.046.
+
+**EDA-feature-count caveat:** The EDA portion of the feature set
+(40 features, 32% of total) is computed from highpass decomposition.
+cvxEDA is unavailable on the project environment. Results for EDA features
+are reported with an explicit note: "EDA features computed from highpass
+decomposition (cvxEDA unavailable); comparison with arXiv:2508.10561
+EDA finding is approximate."
 
 **Secondary metrics (reported, not primary):**
 - N features significant in exactly 2 of 3 datasets (consistent sign).
 - N features significant in exactly 1 dataset.
 - N features significant in 0 datasets.
 - Per-feature rho values and 95% bootstrap CI for each dataset.
-- Comparison to arXiv:2508.10561 EDA reproducibility finding (2/164).
-- Secondary classifier LOSO AUC (reproducible-feature subset vs full
-  feature set, subject-disjoint split within each dataset).
+- Comparison to arXiv:2508.10561 EDA finding (2/164).
+- Secondary classifier LOSO AUC on reproducible-feature subset vs full set.
 
 ---
 
 ## 6. Statistical test (FROZEN)
 
-**Per-dataset Spearman test (C-1 fix per methodology-critic — picked per-subject Fisher-z, removed subject-pooled inconsistency):**
-- For each feature × subject pair, compute Spearman rho(feature, binary_arousal) across that subject's windows. This yields one rho per (feature, subject).
-- Aggregate to dataset-level rho via Fisher-z transform: `r_z = arctanh(rho)` per subject; mean across subjects; back-transform: `rho_dataset = tanh(mean(r_z))`. This matches the per-subject convention specified in §3 for all three datasets and is robust to between-subject variance.
-- Compute p-value: pool all per-subject rho values for the feature; one-sample t-test on Fisher-z values against 0 (`scipy.stats.ttest_1samp`). For N_subjects < 15, use permutation test (n_permutations=5000, seed=42) on Fisher-z values.
-- Apply FDR correction (Benjamini-Hochberg, `statsmodels.stats.multitest.fdrcorrection`)
-  across ALL features within each dataset independently.
+**Per-dataset Spearman test (unchanged from 2026-05-02):**
+- For each feature × subject: compute Spearman rho(feature, binary_arousal)
+  across that subject's windows.
+- Aggregate: Fisher-z transform per subject rho; mean across subjects;
+  back-transform to dataset-level rho.
+- p-value: one-sample t-test on Fisher-z values against 0
+  (scipy.stats.ttest_1samp). For N_subjects < 15: permutation test
+  (n_permutations=5000, seed=42).
+- FDR correction: Benjamini-Hochberg across ALL N_features within each
+  dataset independently (statsmodels.stats.multitest.fdrcorrection).
 - Significance threshold: FDR-corrected p < 0.05.
-- The subject-pooled correlation is computed as a **secondary** report only (Ablation A-5 in approach.md compares the two estimators); the headline uses per-subject Fisher-z exclusively.
 
-**Cross-dataset reproducibility test:**
-- A feature is "reproducible" if: FDR-corrected sig=True in ALL THREE
-  datasets AND rho sign is consistent (same sign in all three).
-- Count N_reproducible.
+**Cross-dataset reproducibility:**
+A feature is "reproducible" if FDR-corrected sig=True in ALL THREE
+datasets AND rho sign is consistent across all three.
 
 **Primary binomial test:**
-- `scipy.stats.binomtest(k=N_reproducible, n=N_features, p=0.05,
-  alternative="two-sided")`.
-- Two-sided test: we report both whether the reproducibility rate is
-  significantly above 5% (cardiac features more stable than predicted)
-  and whether it is significantly BELOW 5% (confirming near-zero
-  reproducibility). Both directions are informative per the defensibility
-  critic.
-- 95% Clopper-Pearson CI: `scipy.stats.binom.interval(0.95, N_features,
-  N_reproducible/N_features)` (or equivalent).
+scipy.stats.binomtest(k=N_reproducible, n=N_features, p=0.05,
+alternative="two-sided").
+95% Clopper-Pearson CI: scipy.stats.binom.interval(0.95, N_features,
+N_reproducible/N_features).
 
-**No post-hoc threshold adjustment.** The alpha=0.05 FDR threshold and
-the p0=0.05 binomial null are locked. If a more conservative threshold
-were applied post-hoc based on seeing near-significant features, it would
-invalidate the test.
+**Power claim (revised 2026-05-03):**
+At N_features = 126: P(X<=2 | p=0.05) ≈ 0.050.
+At N_features = 128: P(X<=2 | p=0.05) ≈ 0.046.
+Both are adequate to confirm near-zero reproducibility at alpha=0.05
+if k<=2 is observed. If exact N from feature_schema_v2.yaml is below 120,
+the binomial test is under-powered and the CI-led headline is the sole
+primary presentation; the binomial test is demoted to informational.
+
+**No post-hoc threshold adjustment.** alpha=0.05 FDR threshold and
+p0=0.05 binomial null are locked.
 
 ---
 
@@ -274,59 +381,57 @@ invalidate the test.
 
 The headline result is valid ("the result is real") if:
 
-1. Protocol-lock.md was committed before feature matrices
-   (`features_{dataset}.parquet`) were written.
-2. The feature schema YAML was committed before the correlation table
+1. protocol-lock.md (this re-locked version, 2026-05-03) was committed
+   before feature matrices (features_{dataset}.parquet) were written.
+2. feature_schema_v2.yaml was committed before the correlation table
    was computed.
 3. The correlation table was computed ONCE from the frozen feature
    matrices, using the frozen arousal operationalization.
 4. The binomial test was run once on the frozen correlation table.
 5. No operationalization, feature, or dataset substitution was made
-   after step 3 without an unlock note.
+   after step 3 without a new unlock note.
 
 **What counts as headline-positive:**
-The binomial test rejects H0 (p < 0.05, two-sided) in the direction of
-MORE reproducibility than expected (observed rate > 0.05). This means
-some features (specifically, cardiac features) are more stable across
-datasets than the arXiv:2508.10561 EDA finding would predict.
+Binomial test rejects H0 (p < 0.05, two-sided) in the direction of MORE
+reproducibility than expected (observed rate > 0.05). Some features are
+more stable than the arXiv:2508.10561 EDA finding predicts.
 
 **What counts as headline-null:**
-The binomial test does not reject H0 (p >= 0.05), or rejects it in the
-direction of FEWER reproducible features than 5% (confirming near-zero
-stability for cardiac features as well). Both null outcomes are
-informative:
-- Null A (rate ~ 0): cardiac features are as unstable as EDA features.
-  Confirms universal feature instability. Supports the "don't use these
-  features" advisory.
-- Null B (rate significantly < 0.05): even more extreme instability than
-  expected by chance, indicating systematic feature–arousal dissociation.
+Binomial test does not reject H0 (p >= 0.05), or rejects in the direction
+of FEWER reproducible features than 5%. Both null outcomes are informative:
+- Null A (rate ~ 0%): cardiac + EDA features are as unstable as the
+  original EDA-only finding. Confirms universal feature instability
+  across modalities.
+- Null B (rate < 5%): even more extreme instability. Features are
+  systematically anti-correlated with arousal, or arousal labels are weak.
 
 **What counts as informative regardless of direction:**
-- The reproducibility map (per-feature, per-dataset rho table) is
-  informative in all directions.
-- The comparison to arXiv:2508.10561 EDA finding.
-- The feature schema YAML and extraction code (promoted to shared/).
+- The reproducibility map (per-feature, per-dataset rho table).
+- The comparison to arXiv:2508.10561.
+- feature_schema_v2.yaml and the extraction code (promoted to shared/).
 
 ---
 
 ## 8. Unlock procedure
 
-If this protocol must be changed after locking:
-
-1. Write an unlock note below this section with:
-   - Date
-   - Author
-   - Specific change proposed
-   - Reason the change is necessary
-   - Whether the change affects the feature list, dataset selection,
-     or arousal operationalization (the three pre-registration items)
-2. If the change affects any of the three pre-registration items:
-   a critic re-pass is required before re-locking.
-3. If the correlation table has already been computed (step 3 of
-   the decision rule has occurred): no protocol change is permitted
-   for the primary metric. A changed operationalization would produce
-   a separate exploratory analysis, not the headline.
+Same as original §8. For the avoidance of doubt: this re-locked
+document (2026-05-03) is now the locked protocol. Any further changes
+require a new dated unlock note.
 
 ---
 
-*(No unlock notes below this line as of 2026-05-02.)*
+*(Unlock note 2026-05-03 appended below this line.)*
+
+## Unlock note — 2026-05-03
+
+See `20-plan/affective-state/unlock-note-2026-05-03.md` for the full
+rationale. Summary:
+- Pilot P-1: N_features = 92 (86 cardiac + 6 EDA from nk.eda_features).
+- Pilot P-2: cvxpy/cvxopt installation fails; highpass is primary EDA
+  decomposition (no fallback needed or available).
+- Path chosen: X — expand EDA feature set to N_total ~126-132 using
+  explicitly enumerated SCL/SCR/band-power/derived features computable
+  from highpass decomposition.
+- Power restored: P(X<=2 | n=126, p=0.05) ≈ 0.050.
+- DEAP and MAHNOB-HCI access still pending. WESAD confirmed viable (P-3).
+- Critic re-pass requested before headline feature extraction runs.

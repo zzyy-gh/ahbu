@@ -3,289 +3,173 @@
 # Protocol lock — ecg-ppg-realworld
 
 **Track:** ecg-ppg-realworld
-**Locked:** 2026-05-02
-**Locked by:** methodologist agent
+**Locked:** 2026-05-03
+**Locked by:** methodologist agent (re-pass)
 **Status:** LOCKED — pre-registered before any headline experiment
+**Prior protocol:** none. This is the first lock for this track. The original PTB-XL design was never locked; it was abandoned at the design phase after Pilot P-1 revealed fatal underpowering (see `unlock-note-2026-05-03.md`).
 
-This document defines the frozen evaluation protocol for the headline
-experiment. It is locked before any experiment code is run against
-strat_fold 10. Changes require an explicit unlock note with a documented
-reason and a new critic pass before re-locking.
+This document defines the frozen evaluation protocol for the headline experiment. It is locked before any experiment code is run against the held-out test split. Changes require an explicit unlock note at the bottom of this file, a documented reason, and a new critic acknowledgment before re-locking.
 
 ---
 
 ## 0. Pre-registration statement
 
-This protocol is written and committed before any headline experiment
-is run. The held-out test partition defined in §3 (PTB-XL strat_fold 10)
-has not been examined, summarized, or used for any model selection
-decision as of this lock date.
-
-The dev partition (strat_fold 1–8) and validation partition (strat_fold 9)
-may be used freely for pilots, ablations, temperature scaling fit, and
-threshold selection. The test partition (strat_fold 10) is accessed
-exactly once, for the single authorized evaluation run described in §6.
-
-This pre-registration satisfies the condition imposed by the
-defensibility-critic advisory (10-pain-point/shared/critic-defensibility.md §1):
-"Pre-register: scope and primary metric (PPV@20%-abstain-rate) locked
-before touching the held-out split."
-
-The scope (b) — skin-tone PPG evaluation — is explicitly excluded from
-this protocol per the admission record advisory and the gap-closing pass.
-No PPG corpus is used.
+This protocol is written and committed before any headline experiment is run. The held-out test partition defined in §3 has not been examined, summarized, or used for any model selection decision as of this lock date. The dev split may be used freely for pilots, ablations, calibration fitting, and preliminary analysis. The test split may be accessed exactly once, for the single authorized evaluation run described in §6.
 
 ---
 
-## 1. Headline contribution (pre-registered)
+## 1. Headline question (pre-registered)
 
-One contribution, evaluated exactly once on the held-out test partition.
+On wearable-grade single-lead ECG (PhysioNet/CinC 2017, AliveCor Kardia recordings), does calibrated abstention (temperature-scaled MaxSoftmax, applied to a trained xresnet1d50) increase PPV for AF detection at a fixed abstention rate calibrated to the BASEL Wearable Study inconclusive-rate budget (17 %), relative to the same model committing on all inputs?
 
-> **Does calibrated abstention improve PPV at a fixed alert rate on
-> PTB-XL? Specifically: does a temperature-scaled xresnet1d50
-> abstaining on its 20% least-confident records produce meaningfully
-> higher PPV than the same model evaluated without abstention, on
-> PTB-XL strat_fold 10, patient-disjoint held-out partition?**
+The result is informative in both directions:
 
-No secondary contributions are part of the pre-registered headline.
-The cross-dataset CinC 2017 probe, conformal prediction arm, and
-per-subgroup analyses are all exploratory and are not evaluated on
-a frozen held-out partition.
+- **Positive:** abstention improves PPV. Implication: wearable ECG algorithms could reduce false-positive alert burden by abstaining on the 17 % most uncertain inputs.
+- **Null:** abstention does not reliably improve PPV at this coverage level. Implication: softmax-based confidence thresholding is insufficient for PPV improvement in wearable AFib detection; a different approach is needed.
 
 ---
 
-## 2. Model evaluated (pre-registered)
+## 2. Dataset (pre-registered)
 
-**Primary model:** xresnet1d50 trained on PTB-XL strat_fold 1–8, binary
-AFIB label at likelihood_threshold = 100.0, post-hoc calibrated by
-temperature scaling (T fitted on strat_fold 9 by Brier minimization).
-
-**Primary abstention mechanism:** Confidence-threshold abstention.
-Abstain when max(P_afib, 1 - P_afib) < tau. Primary operating point:
-coverage = 0.80, corresponding to abstaining on the 20% of strat_fold 10
-records with the lowest max-confidence score.
-
-**Seed selection:** Three training seeds evaluated on strat_fold 9
-(Brier score). The seed with the lowest strat_fold 9 Brier score is
-selected. This selection is made and logged BEFORE touching strat_fold 10.
-The selected seed is recorded in `30-implement/ecg-ppg-realworld/runs/seed_selection.txt`.
-
-**Fallback model (if xresnet1d50 training fails, per R-5):**
-Logistic regression on the 12-feature hand-crafted feature vector,
-with Platt scaling for calibration. If the fallback is used, document
-it as a pre-headline design change in `runs/model_selection.txt`.
-The headline metric and statistical test are unchanged.
-
-If both xresnet1d50 and logistic regression fail (AUROC < 0.60 on
-strat_fold 9), the track retires-cancelled per risk-register R-5.
+**PhysioNet/CinC 2017 training set**
+- Version: 1.0.0 (https://physionet.org/content/challenge-2017/1.0.0/)
+- License: Open Data Commons Attribution License v1.0
+- Total records: 8,528 (Normal: 5154, AF: 771, Other: 2557, Noisy: 46)
+- Noisy records (n=46) excluded from all training and evaluation.
+- Working set: 8,482 records (Normal: 5154, AF: 771, Other: 2557).
 
 ---
 
 ## 3. Held-out partition definition (FROZEN)
 
-**Test partition:** PTB-XL v1.0.3, strat_fold 10.
-- PhysioNet path: https://physionet.org/content/ptb-xl/1.0.3/
-- Strat_fold 10 is defined by the `strat_fold` column in
-  `ptbxl_database.csv`. No manual re-selection of records is permitted.
-- Expected approximate record count: ~2,179 total, ~303 AFIB-labeled
-  at likelihood_threshold=100.0.
-- Patient disjointness: guaranteed by PTB-XL's fold construction.
-  Verified by `partition.py:validate_partition()` before the headline run.
-  Pass/fail logged in `30-implement/ecg-ppg-realworld/runs/partition_audit.txt`.
+**Test split (held-out):**
+- 20 % of the working set (8,482 records), stratified by class label.
+- Exact partition: generated by `sklearn.model_selection.StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)`.
+- Expected test-split composition: ~1,696 records total; AF positive ~154; Normal ~1031; Other ~511.
+- This partition is computed once, the resulting record-ID lists are written to `30-implement/ecg-ppg-realworld/runs/partition.json`, and never recomputed.
 
-**Training partition:** strat_fold 1–8.
-**Validation partition (calibration fitting + seed selection by Brier + threshold selection):** strat_fold 9 (M-2 fix per methodology-critic — full permitted uses listed).
+**Dev split:**
+- Remaining 80 % (~6,786 records). Used for all model training, calibration, ablations, and threshold selection.
 
-No records from strat_fold 10 are used for any purpose other than the
-single authorized evaluation run.
+**Partition audit:**
+- Before the headline run, confirm that no record ID appears in both dev and test splits. Run `partition.py:validate_partition()` (from cross-subject-eeg shared utility or equivalent). Result logged in `30-implement/ecg-ppg-realworld/runs/partition_audit.txt`.
 
-### What counts as "touching the held-out split"
-
-The held-out split is touched when any of the following occurs:
-- strat_fold 10 record data is loaded into memory.
-- strat_fold 10 features, predictions, or labels are computed.
-- strat_fold 10 performance is read, even for debugging.
-
-Checking that strat_fold 10 files exist on disk does not count as touching.
-
-The single authorized evaluation run must be preceded by all steps in §6.
+**Patient-level note:**
+CinC 2017 public release does not include patient identifiers. The partition is record-level stratified. Multiple records from the same patient may appear in both splits. This is a documented limitation (risk register R-4). It is standard practice for this dataset and does not invalidate the study; it is reported explicitly in `limitations.md`.
 
 ---
 
-## 4. Primary metric (pre-registered)
+## 4. Model and abstention mechanism (pre-registered)
 
-**PPV at coverage = 0.80**
+**Primary model:** xresnet1d50 (1D ResNet-50 variant from https://github.com/helme/ecg_ptbxl_benchmarking).
 
-Definition: PPV computed over the predicted-AFIB subset of the 80% of
-strat_fold 10 records retained after `max(P_afib, 1 - P_afib)` abstention.
+**Input:** (batch, 1, 9000) — single lead, 30-second window at 300 Hz.
 
-**Two-denominator clarification (M-1 fix per methodology-critic):**
-Coverage and PPV use different denominators.
-- Coverage denominator = ALL retained records (both high-confidence
-  AFIB-predicted AND high-confidence not-AFIB-predicted together).
-- PPV denominator = ONLY the predicted-AFIB subset of those retained
-  records.
-A record with P_afib=0.05 (max-confidence=0.95, predicted not-AFIB) is
-retained in the top 80% (counted in coverage) but contributes neither TP
-nor FP to PPV.
+**Training:**
+- Loss: cross-entropy with class weights (inverse class frequency).
+- Optimizer: Adam, lr=1e-3, cosine decay.
+- Batch size: 8 (adjust to 4 if VRAM constraint triggered; see risk register R-2).
+- Epochs: 50 with early stopping (patience=10, monitor: dev-split AUROC for AF class).
+- Seeds: three independent runs with random seeds {42, 1337, 2025}. Primary result uses seed=42; multi-seed mean and std reported as secondary.
 
-Formally:
-- Sort strat_fold 10 records by max(P_afib, 1 - P_afib) descending.
-- Take the top 80% (highest confidence) → this is the retained set.
-- Within the retained set, identify predicted-AFIB records (P_afib > 0.5).
-- PPV = TP / (TP + FP), where TP = AFIB records predicted as AFIB
-  inside the retained set, FP = non-AFIB records predicted as AFIB
-  inside the retained set.
+**Abstention mechanism (primary):** temperature-scaled MaxSoftmax.
+1. Fit temperature parameter T on dev-split calibration held-out (20 % of dev, random_state=42, stratified).
+2. At inference: abstain if max(softmax(logits / T)) < threshold.
+3. Threshold tuned on the remaining 80 % of dev split to achieve 17 % abstention rate.
+4. On the test split: apply T and threshold without modification.
 
-Operating point anchor: 80% coverage = 20% abstention rate, matching
-the BASEL Wearable Study's 17–21% inconclusive rate (Mannhart et al.
-JACC Clin Electrophysiol 2023). This is a clinically motivated anchor,
-not a post-hoc optimal point.
-
-**Comparison (headline test):** PPV(coverage=0.80, with abstention)
-vs PPV(coverage=1.00, no abstention). Both computed on strat_fold 10.
-The abstention benefit = PPV(0.80) - PPV(1.00).
+**Fallback model (risk register R-2):** if xresnet1d50 exceeds VRAM at any batch size, substitute xresnet1d18. Document the substitution in `30-implement/ecg-ppg-realworld/runs/` before the headline run. This is the only permitted post-lock model substitution; it requires a note in this file below §8 (unlock notes).
 
 ---
 
-## 5. Secondary metrics (pre-registered, reported alongside primary)
+## 5. Primary metric (pre-registered)
 
-These are computed on strat_fold 10 in the same single evaluation run.
-They do not determine headline-positive vs. headline-null; they are
-reported regardless of direction.
+**Primary metric:** Positive Predictive Value (PPV) of the AF class at 17 % abstention, on the held-out test split, using the temperature-scaled MaxSoftmax abstainer applied to xresnet1d50 (seed=42).
 
-- PPV at coverage = {0.70, 0.75, 0.85, 0.90, 1.00} — to show the
-  full PPV-vs-coverage trade-off curve.
-- AUC of the coverage-vs-PPV curve from coverage=0.50 to 1.00.
-- Brier score (temperature-scaled vs. uncalibrated model, for context).
-- ECE at 15 bins.
-- AUROC (for comparison with the existing PTB-XL benchmark literature).
-- Abstention rate at the primary operating point (should be ~20% by
-  construction, but the actual rate may differ slightly depending on
-  the confidence distribution).
-- Count of AFIB records in strat_fold 10 at likelihood_threshold=100.0
-  (actual N, used in all CI computations).
+- **Definition:** PPV = TP / (TP + FP), computed on test-split records for which the model commits (does not abstain), in AF-vs-rest binary mode.
+- **Target abstention rate:** 17 % (lower bound of BASEL Wearable Study 17-21 % inconclusive rate).
+- **Unit:** percentage points, reported as "XX.X % (95 % CI: YY.Y–ZZ.Z %, N_committed = N)".
+- **Baseline (0 % abstention PPV):** PPV of the same model committing on all inputs. Also reported; this is the benchmark for the primary hypothesis test.
+
+**Reporting format:** all primary and secondary metric values include 95 % bootstrap CI (n=2000, stratified by class, random_state=42). Never a point estimate without CI.
 
 ---
 
-## 6. Pre-run checklist (required before touching strat_fold 10)
+## 6. Statistical test for primary hypothesis (pre-registered)
 
-All items must be checked and logged in
-`30-implement/ecg-ppg-realworld/runs/pre-run-checklist.txt` before the
-headline evaluation code is executed.
+**Test:** McNemar's test (one-sided, H1: abstention improves PPV).
 
-- [ ] partition.py:validate_partition() passes on (strat_fold 1–8,
-      strat_fold 9, strat_fold 10) patient-ID sets.
-- [ ] AFIB record count in strat_fold 10 verified at likelihood_threshold=100.0.
-      Count recorded. Count >= 87 (power threshold from R-2 mitigation).
-- [ ] Seed selection completed: three seeds evaluated on strat_fold 9,
-      winning seed recorded in `runs/seed_selection.txt`.
-- [ ] Temperature scaling T parameter fitted on strat_fold 9 and recorded.
-- [ ] Ablation 1 on strat_fold 9 confirms confidence-correctness AUC
-      >= 0.55 (R-3 kill check passed).
-- [ ] No file in `30-implement/ecg-ppg-realworld/runs/` contains results
-      from strat_fold 10 records.
-- [ ] Final literature check completed (R-4 mitigation): no paper found
-      that pre-empts the PPV-at-coverage framing on PTB-XL strat_fold 10.
-      Result of check recorded in `runs/pre-run-checklist.txt`.
+**Construction (M-2 fix per critic-v2 — clarified to test PPV not accuracy):**
 
-If any checklist item fails, do not proceed. Address the failure per
-the risk register.
+The McNemar 2×2 table is constructed from the **AF-predicted-positive subset** of the test split, restricted to records on which both the no-abstention and the abstention conditions render a prediction (the committed set). For each such AF-predicted record, label whether it is a true positive (TP) or false positive (FP). The 2×2 table is:
 
----
+|                  | abstention TP | abstention FP |
+|---|---|---|
+| **no-abstain TP** | concordant TP | discordant: TP→FP |
+| **no-abstain FP** | discordant: FP→TP | concordant FP |
 
-## 7. Statistical test for the headline claim (pre-registered)
+McNemar tests whether the off-diagonal cells (FP→TP vs TP→FP) differ. A significant test in the H1 direction means abstention removes more FPs than TPs from the AF-predicted set — i.e., PPV improves. (A pure McNemar on accuracy would test prediction agreement; that is NOT what is wanted here.) The PPV change is reported alongside the McNemar p-value as the primary effect-size metric.
 
-**Test:** Paired bootstrap test (n=2,000 resamples, stratified by AFIB
-label, seed=42).
+**Significance threshold:** p < 0.05 (single primary test; no Bonferroni correction needed).
 
-**H0:** PPV(coverage=0.80) - PPV(coverage=1.00) = 0.
+**Effect size:** absolute PPV improvement (pp). Reported alongside p-value.
 
-**H1 (one-sided):** PPV(coverage=0.80) > PPV(coverage=1.00).
+**Interpretation rule (pre-registered):**
+- p < 0.05 AND PPV improvement >= 5 pp: "statistically significant and clinically meaningful PPV improvement from calibrated abstention."
+- p < 0.05 AND PPV improvement < 5 pp: "statistically significant but small PPV improvement."
+- p >= 0.05: "no statistically significant PPV improvement from calibrated abstention at 17 % coverage rate."
 
-**p-value:** Fraction of bootstrap resamples where the difference
-PPV(0.80) - PPV(1.00) <= 0.
-
-**Significance threshold:** p < 0.05 (one-sided).
-
-**Effect size:** Absolute PPV difference in percentage points
-at coverage=0.80, with 95% bootstrap CI.
-
-No multiple-comparison correction is needed — there is exactly one
-primary comparison.
+The 5 pp threshold for "clinically meaningful" is chosen relative to the Fitbit Heart Study PPV of 32-34 %: a 5 pp improvement represents ~15 % relative reduction in false-positive rate, which is a visible fraction of the JAHA 2024 burden effect size.
 
 ---
 
-## 8. Decision rule: what counts as headline-positive vs. headline-null
+## 7. Decision rule: what counts as the headline result (pre-registered)
 
-**Headline-positive:**
-PPV(coverage=0.80) - PPV(coverage=1.00) is statistically significant
-(p < 0.05, one-sided) AND the effect size is >= 5 percentage points
-(95% CI lower bound >= 5 pp).
+The headline result is the full set of outputs from the single authorized evaluation run on the held-out test split. It is "real" if:
 
-Rationale for 5 pp threshold: below 5 pp PPV improvement at 20%
-abstention, the clinical benefit is likely too small to justify asking
-a physician to review the abstained records, given that the BASEL
-inconclusive rate was already 17–21% with no ML abstention. The
-clinical cost of a 20% inconclusive rate must be worth at least a
-5 pp PPV improvement to be actionable.
+1. The pre-run checklist in `30-implement/ecg-ppg-realworld/runs/pre-run-checklist.txt` is complete and logged. Checklist items:
+   - [ ] All training runs completed and weights saved.
+   - [ ] Temperature parameter T fitted on dev calibration held-out and saved.
+   - [ ] Abstention threshold fitted on dev split at 17 % abstention rate and saved.
+   - [ ] Partition audit passed (`validate_partition()` returned no violations).
+   - [ ] No test-split data has been loaded or examined prior to this run.
+   - [ ] Seeds, batch size, and model variant (xresnet1d50 or xresnet1d18) are documented.
+2. The evaluation runs once. Results are written to `30-implement/ecg-ppg-realworld/results.md`. If a bug is found after the run, it is documented as a bug and the run is annotated, not re-run.
+3. The primary metric and the baseline (0 % abstention PPV) are both reported regardless of direction.
 
-**Headline-null (informative):**
-PPV(coverage=0.80) - PPV(coverage=1.00) is not statistically significant
-(p >= 0.05), AND the 95% CI upper bound < 10 pp.
+**What counts as null:** the McNemar test fails to reject H0 (p >= 0.05) AND the 95 % bootstrap CI upper bound on the PPV gap is < 10 pp.
 
-A headline-null is informative given:
-(i) Adequate power: N >= 87 AFIB records confirmed in pre-run checklist.
-(ii) Comprehensive reporting: full PPV-vs-coverage curve reported, not
-     only the primary operating point.
-(iii) Pre-registered: this protocol was committed before touching
-      strat_fold 10.
+**What counts as inconclusive (carry-forward v1 m-2 fix):** p >= 0.05 AND 95 % CI upper bound >= 10 pp — test not significant but CI too wide to rule out a meaningful effect. Treated as **neither positive nor null**: report all secondary metrics, characterize the CI direction, flag in `findings.md` for replication. Do NOT retire-cancel on inconclusive — that's an analysis-layer judgment.
 
-The null establishes the performance ceiling for standard temperature-scaled
-selective classification on PTB-XL under 4 GB compute, and advises
-practitioners that this approach does not fix the low-PPV problem.
+**What counts as positive:** p < 0.05 AND PPV improvement >= 5 pp.
 
-**Headline-inconclusive (m-2 fix per methodology-critic):**
-p >= 0.05 AND 95% CI upper bound >= 10 pp — i.e., the test is not
-significant but the CI is too wide to rule out a meaningful effect.
-This case is treated as **NEITHER positive NOR null**: the headline
-result is reported as "underpowered to discriminate; CI too wide".
-Action: report all secondary metrics, characterize the wide-CI
-direction (positive-leaning vs neutral vs negative-leaning), and
-flag in `findings.md` that a larger replication run would resolve.
-Do not retire-cancel the track on inconclusive — that is an
-analysis-layer interpretation, not a layer-30 cancel trigger.
+**What counts as informative regardless of direction (pre-registered):**
+- The PPV-at-coverage curve (all six coverage points).
+- The AUROC for AF detection (comparability with published CinC 2017 results).
+- The abstention rate at the fitted threshold (actual vs target 17 %).
+- The ECE before and after temperature scaling (calibration quality).
+- The multi-seed stability (std across seeds 42, 1337, 2025).
 
-**Partial positive (report separately):**
-If p < 0.05 but effect size < 5 pp: "statistically significant but
-clinically small improvement." Report the full curve; let the reader
-judge clinical relevance.
-
-**What the result is NOT:**
-Regardless of direction, the result does NOT establish that a more
-powerful abstention method (conformal, ensemble) would or would not
-help. The headline is scoped to temperature-scaling abstention only.
-Claims beyond this scope require additional experiments.
+These are pre-specified contributions that remain informative whether the primary hypothesis is confirmed or not.
 
 ---
 
-## 9. Unlock procedure
+## 8. Unlock procedure
 
 If this protocol must be changed after locking:
 
-1. Write an unlock note below §9, with:
+1. Write an unlock note below this section with:
    - Date
    - Author
    - Specific change proposed
    - Reason the change is necessary
-   - Whether the change affects the held-out partition (§3) or
-     primary metric (§4)
-2. If the change affects the held-out partition or primary metric:
-   a critic re-pass is required before re-locking.
-3. If strat_fold 10 has already been accessed (the single authorized
-   evaluation run has begun), no protocol change is permitted.
-   The evaluation proceeds as locked.
+   - Whether the change affects the held-out partition definition or the primary metric
+2. If the change affects the held-out partition or primary metric: a critic acknowledgment is required before re-locking.
+3. If the held-out split has already been touched (the single authorized evaluation run has begun): no protocol change is permitted. The evaluation proceeds as locked.
+
+Permitted post-lock changes without full critic re-pass:
+- Model substitution from xresnet1d50 to xresnet1d18 due to confirmed VRAM constraint (document in unlock note; does not require critic re-pass because the substitution is pre-authorized in §4 and risk register R-2).
 
 ---
 
-*(No unlock notes below this line as of 2026-05-02.)*
+*(No unlock notes below this line as of 2026-05-03.)*

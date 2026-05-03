@@ -3,37 +3,21 @@
 # Approach — ecg-ppg-realworld
 
 **Track:** ecg-ppg-realworld
-**Date:** 2026-05-02
-**Author:** methodologist agent
+**Date:** 2026-05-03
+**Author:** methodologist agent (re-pass after P-1 underpowering finding)
 **Status:** draft — pending critic gate before layer 30
+
+**Dataset pivot note:** PTB-XL was the original target. Pilot P-1 found only 48 AFIB-positive records in PTB-XL (fold-10: 8), approximately 10x below the N = 87 required for 80 % power. Dataset switched to PhysioNet/CinC 2017 (771 AFIB positives, single-lead wearable-grade). Full rationale in `unlock-note-2026-05-03.md`.
 
 ---
 
 ## Scope statement
 
-Calibrated-abstention study for AFib classification on PTB-XL.
-The contribution is NOT a new classifier or a new SOTA number.
-The contribution is an honest calibration and selective-classification
-protocol that asks: does adding a calibrated abstention mechanism
-improve PPV at a fixed alert rate that a clinician would actually
-accept, and by how much?
+Evaluation-diagnostic study on calibrated abstention for wearable-grade AFib classification. The contribution is not a new architecture. It is a disciplined evaluation of whether selective classification (abstention on uncertain inputs) can improve PPV at a clinically motivated fixed alert rate, using a model family that fits in 4 GB VRAM, on a dataset with adequate AFIB-positive counts.
 
-The specific novelty claim, narrowed per the gap-closing pass
-(candidate.md §Gap-closing 2026-05-02 Gap 2) and defensibility
-critic advisory (critic-defensibility.md §1):
+**Headline question:** On wearable-grade single-lead ECG, does calibrated abstention (withholding predictions on uncertain inputs) increase PPV for AFib detection at a fixed coverage rate, relative to a baseline classifier that commits on all inputs?
 
-> **PPV-at-fixed-alert-rate** as the primary evaluation metric,
-> calibrated against the BASEL Wearable Study's observed 17–21%
-> inconclusive rate, evaluated on PTB-XL held-out with a
-> patient-disjoint split — framing not found in Smole 2023,
-> NCA 2024, or Barandas 2024, which all use accuracy-under-rejection
-> or AUROC-under-rejection curves instead.
-
-The skin-tone PPG scope is explicitly dropped (admission.md advisory
-annotation: INFEASIBLE on public data at adequate sample size).
-No PPG corpus is used unless a corpus with Fitzpatrick-labeled
-records at >= 100 subjects per stratum is identified before
-protocol lock — none is known as of 2026-05-02.
+**Why this matters:** Consumer wearables (Apple Watch, Fitbit) produce AFib alerts with PPVs as low as 32-34 % (Fitbit Heart Study) in general populations. The BASEL Wearable Study found 17-21 % of tracings were inconclusive. A classifier that abstains on the 17-21 % most uncertain inputs and commits on the rest — mirroring the BASEL inconclusive budget — should achieve higher PPV on the committed predictions. Whether this holds, and by how much, is the empirical question.
 
 ---
 
@@ -41,185 +25,25 @@ protocol lock — none is known as of 2026-05-02.
 
 ### Scan result
 
-`30-implement/shared/` does not exist. `30-implement/README.md`
-confirms the shared substrate is expected to materialize lazily.
-This track is the **first promoter** for all cardiac-signal and
-calibration utilities.
+`30-implement/shared/` directory does not exist in this worktree. The cross-subject-eeg track defined four promotion candidates (`leakage_audit.py`, `fewshot_curve.py`, `partition.py`, `riemannian_baseline.py`) as future shared artifacts, but they have not been promoted to `shared/` yet (they live in `30-implement/cross-subject-eeg/code/`).
 
 ### Consume
 
-None. (Shared substrate is empty.)
+- `30-implement/cross-subject-eeg/code/pilots/` VRAM probe methodology: xresnet1d50 confirmed at 0.62 GB VRAM peak on GTX 1650 — but at seq_len=1000, batch=32 (cross-subject-eeg input shape). **CinC 2017 headline uses seq_len=9000 (30 s × 300 Hz, 9× longer)**, so a re-probe on the actual headline input shape is required as P-3 of THIS track before training begins (M-1 fix per critic-v2). Linear extrapolation suggests ~1.4–2.0 GB at batch=8 float32; conservative but unverified.
 
-### Promote on completion
+### Track-specific (not promoted on first pass)
 
-The following artifacts will be built in
-`30-implement/ecg-ppg-realworld/code/` and promoted to
-`30-implement/shared/` when plausible second consumers exist.
-Each promotion candidate has at least two plausible consumers named.
+- CinC 2017 loader / preprocessing pipeline.
+- Abstention wrappers (temperature scaling + MaxSoftmax + conformal prediction set size).
+- PPV-at-coverage curve implementation.
 
-**1. `30-implement/shared/eval/calibration.py`**
+### Promote on completion (plausible 2nd consumer annotated)
 
-Purpose: compute standard probabilistic calibration metrics from
-(y_true, y_prob) arrays. No ECG-specific logic.
+- `30-implement/shared/eval/ppv_at_coverage.py` — PPV-at-coverage curve with bootstrap CI. Plausible 2nd consumer: any cardiac classification track (sleep-staging if it evaluates on imbalanced rhythm labels).
+- `30-implement/shared/eval/calibration.py` — Brier score, expected calibration error (ECE), reliability-diagram generator. Plausible 2nd consumer: cross-subject-eeg (confidence calibration for FM predictions); sleep-staging.
+- `30-implement/shared/eval/abstention.py` — selective-classification abstention wrapper: given a scoring function and a coverage target, returns a threshold and the PPV/sensitivity/abstention-rate on a held-out split. Plausible 2nd consumer: cross-subject-eeg (BCI illiteracy abstention); any track with imbalanced binary classification.
 
-Interface:
-
-```python
-def brier_score(y_true: np.ndarray, y_prob: np.ndarray) -> float:
-    """Mean squared probability error. Lower is better."""
-
-def expected_calibration_error(
-    y_true: np.ndarray,
-    y_prob: np.ndarray,
-    n_bins: int = 15,
-) -> float:
-    """Mean absolute deviation between bin confidence and bin accuracy."""
-
-def reliability_diagram(
-    y_true: np.ndarray,
-    y_prob: np.ndarray,
-    n_bins: int = 15,
-    title: str = "",
-    save_path: str | None = None,
-) -> None:
-    """Plot fraction-of-positives vs mean predicted probability per bin."""
-```
-
-Plausible 2nd consumers: sleep-staging (stager epoch-level
-confidence); cross-subject-eeg (FM softmax calibration quality);
-affective-state (any classifier producing probabilities).
-
-**2. `30-implement/shared/eval/abstention.py`**
-
-Purpose: selective-classification evaluation protocol —
-given a model's predicted probabilities and a sweep of abstention
-thresholds, compute coverage (fraction of predictions made), PPV,
-and F1 at each threshold. Encodes the "abstain when uncertain" protocol
-so any track with a classifier + confidence score can evaluate its
-abstention behavior.
-
-Interface:
-
-```python
-def selective_classification_curve(
-    y_true: np.ndarray,
-    y_prob: np.ndarray,
-    thresholds: np.ndarray | None = None,
-    n_thresholds: int = 100,
-) -> pd.DataFrame:
-    """
-    Sweeps abstention threshold from 0 to 1.
-    Returns DataFrame with columns:
-    [threshold, coverage, ppv, f1, n_predicted, n_abstained].
-    Coverage = fraction of samples where model predicts (not abstains).
-    PPV = precision on predicted-positive subset.
-    """
-
-def ppv_at_coverage(
-    curve_df: pd.DataFrame,
-    target_coverage: float,
-) -> tuple[float, float]:
-    """
-    Returns (ppv, threshold) at the coverage level closest to
-    target_coverage. Used to extract the headline number.
-    """
-
-def plot_coverage_vs_ppv(
-    curve_df: pd.DataFrame,
-    title: str = "",
-    save_path: str | None = None,
-) -> None:
-    """
-    Plots PPV vs coverage (abstention rate on x-axis).
-    Annotates the BASEL anchor point (coverage ~ 0.80).
-    """
-```
-
-Plausible 2nd consumers: sleep-staging (abstention on epoch
-classification); cross-subject-eeg (selective BCI decoding);
-affective-state (reject ambiguous arousal estimates).
-
-**3. `30-implement/shared/eval/partition.py`**
-
-Purpose: patient-disjoint (and optionally site-disjoint) train /
-dev / test splitting with validation assertion.
-Self-contained; no cardiac-specific logic.
-
-Interface:
-
-```python
-def patient_disjoint_split(
-    patient_ids: list[str],
-    site_labels: list[str] | None = None,
-    test_fraction: float = 0.20,
-    dev_fraction: float = 0.10,
-    random_state: int = 42,
-    site_disjoint: bool = False,
-) -> dict[str, list[str]]:
-    """
-    Returns {"train": [...], "dev": [...], "test": [...]}.
-    If site_disjoint=True, sites (not patients) are split at the
-    top level; patients within each site remain non-overlapping.
-    """
-
-def validate_partition(partition: dict[str, list[str]]) -> None:
-    """
-    Raises ValueError if any patient ID appears in more than one split.
-    """
-```
-
-Note: cross-subject-eeg is also building a `subject_disjoint_split`
-with compatible interface (see cross-subject-eeg/approach.md §Promote).
-On promotion, these two will be merged or aliased under a unified
-`partition.py` with both entry points; whichever track promotes first
-owns the initial file.
-
-Plausible 2nd consumers: sleep-staging (PSG patient splits);
-affective-state (subject-disjoint affect corpus splits); any track
-that must enforce patient / subject disjointness.
-
-**4. `30-implement/shared/data/ptbxl_loader.py`**
-
-Purpose: thin wrapper around PTB-XL's waveform WFDB files and
-metadata CSV. Returns `(signals, labels, metadata)` in a consistent
-numpy / pandas format. Does not own split logic (that lives in
-`partition.py`).
-
-Interface:
-
-```python
-def load_ptbxl(
-    ptbxl_path: str,
-    sampling_rate: int = 100,
-    leads: list[str] | None = None,  # None = all 12 leads
-) -> tuple[np.ndarray, pd.DataFrame]:
-    """
-    Returns:
-    - signals: np.ndarray shape (n_records, n_leads, n_samples)
-    - metadata: pd.DataFrame with columns including ecg_id, patient_id,
-      strat_fold, scp_codes (parsed), site.
-    Sampling rate: 100 or 500 Hz per PTB-XL release.
-    """
-
-def extract_afib_labels(
-    metadata: pd.DataFrame,
-    likelihood_threshold: float = 100.0,
-) -> pd.Series:
-    """
-    Returns a binary Series (1=AFIB present, 0=not) from the scp_codes
-    column. Default threshold = 100.0 (definite AFIB only).
-    """
-```
-
-Plausible 2nd consumers: any track that uses PTB-XL or a similar
-WFDB-formatted ECG corpus; sleep-staging (if it adds an ECG/HRV arm).
-
-### Track-specific (not promoted)
-
-- Feature extraction code (RR-interval, morphology features via NeuroKit2).
-- Temperature scaling / calibration-fitting scripts specific to the ResNet-1D.
-- Per-experiment notebooks.
-- PTB-XL split configuration JSON (records which strat_fold maps to which role).
+Promotion is deferred until at least one second consumer is confirmed active. These are candidates, not commitments.
 
 ---
 
@@ -227,118 +51,67 @@ WFDB-formatted ECG corpus; sleep-staging (if it adds an ECG/HRV arm).
 
 ### Primary dataset
 
-**PTB-XL**
+**PhysioNet / Computing in Cardiology Challenge 2017 (CinC 2017)**
 
-- **Full name:** PTB-XL, a large publicly available electrocardiography dataset
-- **Version:** v1.0.3 (PhysioNet, June 2022)
-- **License:** ODC-BY (Open Data Commons Attribution License)
-- **Access:** PhysioNet, https://physionet.org/content/ptb-xl/1.0.3/
-  Download via `wget -r -N -c -np https://physionet.org/files/ptb-xl/1.0.3/`
-  or via `wfdb` Python library. No registration required. ~1.7 GB total.
-- **Size:** 21,799 clinical 12-lead ECG records from 18,869 patients.
-  Recording duration: 10 seconds. Sampling rates: 100 Hz (primary) and
-  500 Hz (full resolution). Both are included.
-- **AFIB record count:** approximately 1,514 records labeled AFIB
-  (Strodthoff et al. 2020 Table 1). Held-out test fold (strat_fold=10,
-  the standard PTB-XL test partition) contains approximately 303 AFIB
-  records — adequate per power analysis (N required = 87 for a 21 pp
-  PPV improvement; N available = ~303). Source: critic-defensibility.md §1.
-- **Stratification folds:** PTB-XL provides 10 stratification folds
-  (strat_fold 1–10) that preserve patient disjointness and approximate
-  dataset-level class balance across folds.
+- Full name: "AF Classification from a Short Single Lead ECG Recording: The PhysioNet/Computing in Cardiology Challenge 2017"
+- PhysioNet DOI: https://physionet.org/content/challenge-2017/1.0.0/
+- Version: 1.0.0 (the canonical training set; test set labels were not publicly released)
+- License: Open Data Commons Attribution License v1.0 (ODC-BY). No data-use agreement required. Freely downloadable.
+- Access: `wget -r -N -c -np https://physionet.org/files/challenge-2017/1.0.0/` or via the PhysioNet web interface. Training set ~150 MB.
+- Content: 8,528 single-lead ECG recordings, 9-61 seconds, sampled at 300 Hz. Labels assigned by expert cardiologists.
+- Class distribution (training set):
 
-### Second dataset (exploratory arm, not headline)
+  | Class | N | Fraction |
+  |---|---|---|
+  | Normal sinus rhythm | 5,154 | 60.4 % |
+  | Atrial fibrillation | 771 | 9.0 % |
+  | Other rhythm | 2,557 | 30.0 % |
+  | Too noisy | 46 | 0.5 % |
+  | **Total** | **8,528** | |
 
-**PhysioNet/CinC 2017 (AF Classification from a Short Single Lead ECG)**
+- Recording device: AliveCor Kardia single-lead handheld ECG monitor. This is directly comparable to wearable / consumer-grade ECG (Apple Watch single-lead ECG uses a comparable 1-lead surface ECG recording principle).
+- Signal characteristics: 300 Hz, 16-bit, variable length 9-61 s. Mean length approximately 30 s.
 
-- License: Creative Commons Attribution 4.0 International
-- Access: https://physionet.org/content/challenge-2017/1.0.0/
-- Size: 8,528 single-lead ECGs, 4 classes (Normal, AF, Other, Noisy).
-- Role: cross-dataset probe only. Train/calibrate on PTB-XL, evaluate
-  the same abstention mechanism on CinC 2017. Asks whether an abstention
-  threshold calibrated on PTB-XL transfers to a different single-lead
-  corpus. This arm is exploratory; it is NOT the headline.
-  If CinC 2017 produces confounded results (different lead placement,
-  different prevalence), it is reported separately with explicit caveats.
+### Why CinC 2017 replaces PTB-XL
 
-No PPG corpus is used.
+PTB-XL AFIB-positive counts (pilot P-1): 48 total records across all 21,799 ECGs (fold-10: 8 records). Required N = 87 for 80 % power at the design effect. Underpowered by ~10x. Full explanation in `unlock-note-2026-05-03.md`. CinC 2017 provides 771 AFIB-positive records, adequate for the power requirement. The single-lead modality is more representative of the consumer-wearable constituency than 12-lead clinical ECG.
 
-### Split definition
+### Held-out partition
 
-PTB-XL provides strat_fold 1–10. The standard split per the
-benchmark paper (Strodthoff et al. 2020) is:
+CinC 2017 training set (8,528 records) is the only labeled data available (test-set labels were never released). The partition is defined in `protocol-lock.md` §3.
 
-- **Dev (parameter selection, pilots, ablations):** strat_fold 1–8
-  (approximately 17,440 records, 15,095 patients).
-- **Validation (calibration fitting, threshold selection):** strat_fold 9
-  (approximately 2,180 records).
-- **Test (held-out headline, touched once):** strat_fold 10
-  (approximately 2,179 records, ~303 AFIB).
+**Planned split:**
+- Dev split (80 % of training set, stratified by class): 6,822 records, approximately 617 AFIB positives.
+- Held-out test split (20 % of training set, stratified by class): 1,696 records, approximately 154 AFIB positives. (Minor partition-size fix per critic-v2 m: 20 % of 8,482 = 1,696.4, not 1,706.)
 
-Patient disjointness: guaranteed by PTB-XL's fold construction.
-No patient from strat_fold 10 appears in folds 1–9.
-Verified by `partition.py:validate_partition()` before any headline run.
+**Stratification:** split is stratified by the four-class label to preserve AFIB prevalence in both splits. Random seed = 42. `partition.py:subject_disjoint_split()` called on record IDs (CinC 2017 does not provide patient-level IDs in the public release, so record-level stratification is used; this is documented as a limitation — see risk register R-4).
 
-Site disjointness: PTB-XL records metadata on recording site.
-The strat_fold split is patient-disjoint but NOT necessarily site-disjoint.
-This is noted as a limitation. Site-disjoint analysis is a pilot probe
-(P-4) but is not the headline partition.
+**Held-out discipline:** the 20 % test split is defined at partition time and not examined until the single authorized headline run. All model selection, threshold tuning, calibration fitting, and ablations run on the dev split.
+
+### Secondary dataset (cross-dataset abstention probe, pilot only)
+
+**CinC 2020 single-lead subset (PTB-XL physionet)**
+
+For a pilot probe only (not headline): train calibrated abstainer on CinC 2017 dev; evaluate abstention and PPV on CinC 2020 single-lead recordings (the CinC 2020 training data includes single-lead ECGs from multiple sites alongside 12-lead). This is a cross-dataset domain-generalization probe. Results from this probe are preliminary only and labeled as such. The headline is CinC 2017 test split only.
 
 ---
 
 ## Preprocessing
 
-**Software:** NeuroKit2 >= 0.2.9, wfdb >= 4.1.2, scipy >= 1.11.
-All versions pinned in `30-implement/ecg-ppg-realworld/code/requirements.txt`.
+**Pipeline (CinC 2017 single-lead ECG)**
 
-### Pipeline for PTB-XL ECG records
+All recordings at 300 Hz. No resampling required. Pipeline implemented in `30-implement/ecg-ppg-realworld/code/preprocess.py`.
 
-Applied uniformly to all records at 100 Hz (10-second window = 1,000 samples
-per lead). Processing is deterministic given the input waveform.
+1. **Load WFDB record:** `wfdb.rdrecord()`. Extract single-lead voltage trace.
+2. **Bandpass filter:** 0.5-40 Hz, 4th-order Butterworth zero-phase. Removes DC drift (below 0.5 Hz) and high-frequency noise / EMG (above 40 Hz). AFib discriminative features (P-wave absence, irregular RR) live in 0.5-30 Hz; extending to 40 Hz preserves beat morphology without EMG contamination.
+3. **Normalize:** z-score per recording (subtract mean, divide by std). Handles inter-recording amplitude variation from the AliveCor device (variable skin contact, lead placement).
+4. **Fixed-length window extraction:** split each recording into non-overlapping 30-second windows (9,000 samples at 300 Hz). Shorter recordings padded with zeros to 9,000 samples; recordings shorter than 9 s (2,700 samples) are flagged and excluded. Rationale: 30 s is the minimum window used in clinical AFib detection practice; it captures multiple AF episodes and several RR-interval variation cycles.
+5. **Label assignment:** each window inherits the recording-level label. This is a simplification — within a 30-second window, label quality is constrained by the recording-level ground truth. Documented as a limitation (a recording labeled "Other rhythm" may contain a brief AF episode).
+6. **Noisy-record exclusion:** the 46 "Too noisy" recordings are excluded from all training and evaluation. They are not included in the dev or test splits. This reduces confounding between classification failure and noise-driven abstention.
 
-1. **Load:** Read WFDB record at 100 Hz using `wfdb.rdrecord()`.
-   Use all 12 leads or Lead I + Lead II only for the ResNet-1D variant.
-   Lead selection is a fixed design choice made before any experiment
-   (not tuned on the test split). Default: all 12 leads for the primary
-   model.
+**Software:** wfdb (Python), scipy (filtering), numpy. Versions pinned in `30-implement/ecg-ppg-realworld/code/requirements.txt`.
 
-2. **Baseline wander removal:** High-pass filter at 0.5 Hz (3rd-order
-   Butterworth, zero-phase via `scipy.signal.sosfiltfilt`). Rationale:
-   removes respiratory drift without distorting QRS morphology.
-
-3. **Powerline notch filter:** Notch at 50 Hz (quality factor 30).
-   PTB-XL was recorded in Europe (50 Hz mains). Rationale: removes mains
-   artifact without affecting diagnostic frequency content.
-
-4. **Amplitude clipping:** Clip to [-5 mV, +5 mV] per lead. Rationale:
-   removes saturation artifacts that would produce artificially confident
-   predictions. Report the fraction of records with clipped samples.
-
-5. **Normalization:** Per-lead z-score normalization across the 10-second
-   window (mean subtracted, divided by standard deviation). Rationale:
-   ResNet-1D and logistic regression on morphology features both benefit
-   from unit-variance inputs. For the feature-based baseline, normalization
-   is performed on extracted RR intervals separately, not on raw signal.
-
-6. **Quality gate:** Any record where all 12 leads have standard deviation
-   < 0.01 mV (effectively flat) is flagged as a low-quality record and
-   excluded from analysis. Report count. Rationale: flat records produce
-   undefined z-score normalization and corrupt RR-interval detection.
-
-7. **Feature extraction (for classical baseline only):** Via NeuroKit2
-   `ecg_process()` and `ecg_intervalrelated()` on Lead II:
-   - R-peak detection (Pan-Tompkins).
-   - RR-interval series: mean, std, RMSSD, pNN50, LF/HF ratio.
-   - Morphology features: P-wave presence, QRS duration, QT interval,
-     T-wave polarity (via template correlation).
-   - Irregularity score: coefficient of variation of RR intervals.
-   These 12 features form the classical baseline feature vector.
-
-### No PPG preprocessing
-
-No PPG pipeline is implemented. If the scope is extended in a later
-version of this track (contingent on corpus discovery), a separate
-preprocessing section will be added.
+**Why not segment by R-peaks / beat-level:** beat-level segmentation requires a reliable QRS detector, which itself fails on AF (irregular rhythm). Window-level segmentation avoids this circularity. Recording-level models on fixed-length windows are standard in CinC 2017 entries.
 
 ---
 
@@ -346,264 +119,149 @@ preprocessing section will be added.
 
 ### Feasibility check (4 GB VRAM envelope)
 
-**Classical baseline (logistic regression on 12 hand-crafted features):**
-CPU-only. Trivially feasible.
+**xresnet1d50:** cross-subject-eeg pilot P-3 confirmed 0.62 GB VRAM peak on GTX 1650 at batch=32, float32. This was with a comparable 1D input (EEG epoch ~2 s). CinC 2017 input is 9,000 samples (30 s at 300 Hz), single channel. Memory scales with input length; at batch=8 float32 with 9,000 samples, estimated VRAM ~1.5-2.0 GB (linear scaling from the P-3 measurement). Feasible.
 
-**ResNet-1D (xresnet1d50 or equivalent, ~1.4 M parameters):**
-At batch=32, 12 leads × 1,000 samples, float32: approximately 0.8 GB
-VRAM peak during training. Float16 mixed precision reduces to ~0.4 GB.
-Feasible with margin.
+**Temperature scaling + MaxSoftmax abstainer:** post-hoc calibration. No additional VRAM (runs on logits in CPU after inference). Trivially feasible.
 
-**Temperature scaling (post-hoc calibration):** CPU-only scalar
-parameter fit. Trivially feasible.
+**Conformal prediction (RAPS / APS):** post-hoc, no additional VRAM. Feasible.
 
-**MC-Dropout at inference:** adds a second forward pass per sample in
-inference mode with dropout enabled. VRAM usage identical to a single
-inference pass. Feasible.
-
-No FM pre-training. No end-to-end transformer training.
+Kill criterion: if xresnet1d50 at batch=8 float32 exceeds 3.2 GB VRAM on CinC 2017 input, reduce to batch=4 or switch to float16. If neither fits, cancel deep model and fall back to logistic regression on hand-crafted features (LR-HCF). LR-HCF is the kill-criterion fallback, not a planned baseline (see risk register R-3).
 
 ### Model A — Primary
 
-**xresnet1d50 (1D ResNet, 12-lead input) + temperature scaling +
-selective-classification threshold**
+**xresnet1d50 (1D ResNet variant, Strodthoff et al. 2021 implementation)**
 
-Architecture: 1D convolutional ResNet adapted for ECG (Strodthoff
-et al. 2020 baseline architecture; implementation available at
-https://github.com/helme/ecg_ptbxl_benchmarking). ~1.4 M parameters.
+- Architecture: 1D ResNet-50 variant adapted for ECG (xresnet1d50 from the PTB-XL benchmark codebase, https://github.com/helme/ecg_ptbxl_benchmarking).
+- Input: (batch, 1, 9000) — one channel, 9,000 samples.
+- Output: 4-class softmax logits (Normal / AF / Other / Noisy). Noisy class is excluded from test evaluation (see preprocessing §6), but retaining it in training prevents the model from being forced to classify noisy inputs as one of the three meaningful classes.
+- Training: cross-entropy loss, Adam optimizer (lr=1e-3, cosine decay), batch=8, 50 epochs with early stopping (patience=10, monitored on dev-split AUROC for the AF class). Epochs that change the held-out split are not allowed.
+- Calibration: temperature scaling (Guo et al. 2017) fitted on dev split AF-vs-rest binary calibration.
 
-Training: supervised on PTB-XL strat_fold 1–8, binary label
-(AFIB vs. not-AFIB, likelihood threshold 100.0 for definite AFIB).
-Loss: binary cross-entropy. Optimizer: Adam, lr=1e-3, cosine decay.
-Batch=32, max 50 epochs, early stopping on fold 9 F1 (patience=10).
+Rationale: xresnet1d50 is the leading architecture in the PTB-XL multi-label benchmark (Strodthoff 2021). It is the standard 1D ECG CNN baseline in the community. Using it is disciplined; it provides a credible model for the abstention study without requiring novel architecture work.
 
-Post-hoc calibration: Temperature scaling. A single scalar T fitted
-on strat_fold 9 by minimizing Brier score via L-BFGS-B. No re-training.
-Rationale: temperature scaling preserves rank order of predictions
-while improving calibration. Simplest calibration method; if it fails,
-that is a finding.
+### Model B — Baseline
 
-Abstention mechanism: threshold on calibrated probability. Abstain if
-max(P_afib, P_not_afib) < tau, where tau is swept over [0.5, 1.0]
-in 100 steps to generate the coverage-vs-PPV curve. Primary operating
-point: coverage = ~0.80 (abstaining on ~20% of records, matching the
-BASEL inconclusive rate of 17–21%).
+**Logistic regression on hand-crafted ECG features (LR-HCF)**
 
-Rationale for temperature scaling over MC-Dropout or conformal: it
-is the simplest, most transparent calibration method. If temperature
-scaling fails to improve PPV at the target coverage, that is a stronger
-null result than a null from a more complex method — it means even
-the basic mechanism does not help.
+- Features: HRV-derived features from RR intervals (mean RR, SDNN, RMSSD, pNN50), plus frequency-domain features (LF/HF ratio, spectral entropy), plus morphological features (P-wave presence proxy via autocorrelation peak in expected P-wave window, QRS duration estimated via WFDB XQRS). Total ~20 features per 30-second window.
+- Classifier: scikit-learn LogisticRegression with L2 regularization (C tuned on dev split via 5-fold CV).
+- Calibration: Platt scaling (logistic calibration) on dev split.
+- Rationale: strong interpretable baseline. If xresnet1d50 abstainer does not outperform a calibrated LR-HCF abstainer, the deep model adds no value beyond feature engineering for this use case. HCF baseline is also compute-trivial and runs fully on CPU.
 
-### Model B — Primary alternative (if xresnet1d50 underperforms on dev)
+### Model C — Abstention mechanism variants (within primary model)
 
-**MC-Dropout on xresnet1d50**
+Three abstention mechanisms applied to xresnet1d50 outputs:
 
-Same architecture. Dropout rate=0.1 added after each residual block.
-At inference: 30 stochastic forward passes, estimate uncertainty as
-predictive entropy. Abstain if entropy > tau.
+1. **MaxSoftmax threshold:** abstain if max(softmax(logits)) < threshold. Threshold tuned on dev split to achieve the target coverage rate (17-21 % abstention budget matching BASEL inconclusive rate).
+2. **Temperature-scaled MaxSoftmax:** same as above but softmax applied to logits / T where T is the temperature-scaling parameter fitted on dev split. Calibration improves threshold stability.
+3. **Conformal prediction (RAPS):** Regularized Adaptive Prediction Sets (Angelopoulos et al. 2021). Calibrated on dev split; abstain if |prediction set| > 1 (multi-class uncertainty). Coverage guarantee: empirical miscoverage <= alpha (alpha tuned to achieve 17-21 % abstention budget).
 
-This is an alternative abstention mechanism, not a different classifier.
-It answers: does an uncertainty-aware abstention (MC-Dropout) outperform
-a simple confidence-threshold abstention (temperature scaling)?
-Comparison is an ablation (Ablation 3 below), not a headline comparison.
-
-### Model C — Baseline (strong classical)
-
-**Logistic regression on 12-feature RR-interval + morphology vector**
-
-Features: extracted by NeuroKit2 as described in Preprocessing §7.
-Classifier: sklearn LogisticRegression (L2, C tuned on strat_fold 9
-log-loss, 5 values: 0.001, 0.01, 0.1, 1.0, 10.0).
-Abstention: same confidence-threshold sweep as Model A.
-
-Rationale: a classical feature-based baseline with abstention tells us
-whether the PPV improvement (if any) requires deep learning or is
-achievable with interpretable features. If logistic regression + abstention
-matches ResNet-1D + abstention, that is also a finding.
-
-### Summary
-
-| Model | GPU? | VRAM (est.) | Role |
-|---|---|---|---|
-| xresnet1d50 + temperature scaling | optional | < 1 GB | Primary |
-| xresnet1d50 + MC-Dropout | optional | < 1 GB | Ablation arm B |
-| Logistic regression on hand-crafted features | no | 0 | Baseline |
+These three mechanisms are compared within the same base model. The comparison is an ablation, not a three-way primary metric competition. The primary metric is computed for each mechanism; the comparison answers "does calibration or conformal coverage improve PPV over naive MaxSoftmax?"
 
 ---
 
 ## Evaluation protocol
 
-### Patient-disjoint structure
+### Primary framing
 
-All evaluation is patient-disjoint. No patient in the held-out test
-partition (strat_fold 10) appears in the training or validation partition.
-Verified by `partition.py:validate_partition()` before the headline run.
+**AF vs non-AF binary classification.** The four-class model is evaluated in binary mode: AF positive vs (Normal + Other) negative. The "Too noisy" class is excluded from evaluation (see preprocessing §6). This binary framing directly addresses the consumer-wearable use case (alert / no-alert).
 
-### Primary metric
+### Selective classification (abstention) evaluation
 
-**PPV at fixed alert rate (coverage)**
+For each abstention mechanism:
 
-Operationally: among the records the model chooses to predict as AFIB
-(i.e., does not abstain on), what fraction are true AFIB?
-
-Primary operating point: coverage = 0.80 (model predicts on 80% of
-records, abstains on 20%). Rationale: 20% abstention rate matches the
-BASEL Wearable Study's 17–21% inconclusive rate, which is the clinically
-observed rate at which human review is required.
-
-**Two-denominator clarification (M-1 fix per methodology-critic):**
-Coverage and PPV use *different denominators*. Coverage = fraction of all
-strat_fold 10 records on which the model renders any prediction (high-
-confidence AFIB-predicted + high-confidence not-AFIB-predicted together);
-the abstention criterion is `max(P_afib, 1 - P_afib)` thresholded to
-retain the top 80%. PPV is computed only over the predicted-AFIB subset
-of those retained records: PPV = TP / (TP + FP). High-confidence
-not-AFIB predictions are retained (counted toward coverage) but
-contribute neither TP nor FP.
-
-Formally:
-  PPV(coverage=0.80) = TP / (TP + FP)
-where TP, FP are counted among the predicted-AFIB records inside the 80%
-retained set; the 20% abstained records (lowest max-confidence)
-contribute nothing.
-
-Secondary operating points: PPV at coverage = {0.70, 0.75, 0.85, 0.90, 1.00}.
-Coverage = 1.00 is the no-abstention baseline (every record predicted).
-
-### Secondary metrics
-
-- **Coverage-vs-PPV curve:** Full sweep from coverage 0.50 to 1.00 in
-  100 steps. Area under this curve (AUC-PPV-coverage) is a summary
-  statistic of the abstention mechanism's effectiveness.
-- **Brier score:** Overall probabilistic calibration quality.
-- **Expected Calibration Error (ECE, 15 bins):** Reliability.
-- **Reliability diagram:** Visual calibration check.
-- **AUROC:** Standard discrimination metric. Not the primary metric
-  because it does not capture PPV at low prevalence.
-- **Abstention rate:** Fraction of records abstained on at the primary
-  operating point.
-- **Confusion matrix at coverage=0.80:** To see which class benefits
-  from abstention.
+1. Compute the abstention threshold on the dev split that achieves the target coverage rate (1 - target_abstention_rate). Target abstention rates: 0 % (baseline, no abstention), 10 %, 17 %, 21 %. The 17 % and 21 % thresholds match the lower and upper bounds of the BASEL inconclusive rate.
+2. On the held-out test split, apply the threshold fitted on the dev split (no further threshold adjustment). Report:
+   - PPV on committed predictions (the primary metric).
+   - Sensitivity on committed predictions.
+   - Abstention rate (fraction of test records on which the model abstains).
+   - Coverage (1 - abstention_rate).
+   - F1 on committed predictions.
+3. **PPV-at-coverage curve:** for both xresnet1d50 and LR-HCF, compute PPV at coverage values {1.0, 0.95, 0.90, 0.85, 0.83, 0.79} (corresponding to abstention rates 0, 5, 10, 15, 17, 21 %). Plot curve with 95 % bootstrap CI at each coverage point.
 
 ### Held-out partition discipline
 
-The test partition (strat_fold 10) is touched exactly once, in the
-single authorized headline run. The pre-run checklist (see protocol-lock.md)
-must be complete before this run. After the run, no further experiments
-touch strat_fold 10.
+The held-out 20 % test split is touched exactly once, for the single authorized headline run. All threshold tuning, calibration fitting, temperature scaling, conformal calibration set construction — all of these use the dev split only.
 
-Dev partition (strat_fold 1–8) is used freely for pilots, ablations,
-and model selection. Validation partition (strat_fold 9) is used for **calibration fitting, seed selection by Brier score, and threshold selection** (M-2 fix per methodology-critic — fully documented permitted uses):
-temperature scaling fit and threshold selection only.
+**What "touching the held-out split" means:**
+- Loading test-split raw data into memory.
+- Computing predictions or probabilities on test-split records.
+- Reading any test-split statistic.
+
+Checking file existence does not count. The single authorized run is preceded by the pre-run checklist defined in `protocol-lock.md` §5.
+
+### Metrics
+
+**Primary metric:** PPV of the AF class at 17 % abstention (the lower BASEL bound), on the held-out test split, for the temperature-scaled MaxSoftmax abstainer applied to xresnet1d50.
+
+Reported as: "XX.X % (95 % CI: YY.Y–ZZ.Z %, N_committed = N)"
+
+**Secondary metrics (reported, not primary):**
+- PPV at 0 % abstention (baseline — model commits on all inputs).
+- PPV at 21 % abstention (upper BASEL bound).
+- Sensitivity at 17 % abstention.
+- Area under the PPV-coverage curve (AUPC) for xresnet1d50 and LR-HCF.
+- Brier score on full test set (calibration quality).
+- Expected calibration error (ECE) before and after temperature scaling.
+- AUROC for AF detection (standard discrimination metric, reported for comparability with published CinC 2017 results).
+
+**Reporting format:** "XX.X % (95 % CI: YY.Y–ZZ.Z %, N=N)" on every number. Never a point estimate without CI.
+
+### Cross-subject structure
+
+CinC 2017 does not provide patient IDs in the public release. All splits are record-level stratified. "Cross-subject" cannot be tested strictly. This is documented as a limitation in `risk-register.md` R-4 and in `limitations.md` post-headline. The record-level held-out split is not equivalent to a patient-disjoint held-out; if multiple records from the same patient appear in both splits, there is potential label leakage (same patient's rhythm in both train and test). Mitigation: record-level random split at fixed seed is standard for CinC 2017; this limitation is inherited from the dataset, not introduced by this protocol.
 
 ### Statistical test
 
-Bootstrap confidence intervals (n=2,000, stratified by label, seed=42)
-for all reported metrics. Report as "XX.X (95% CI: YY.Y–ZZ.Z)".
+One-sided test for primary hypothesis: PPV at 17 % abstention > PPV at 0 % abstention.
 
-For the headline comparison (PPV with abstention vs PPV without abstention
-at coverage=0.80): paired bootstrap test (same held-out records, two
-conditions). p-value computed as fraction of bootstrap resamples where
-the difference is <= 0. Significance threshold: p < 0.05 (one-sided,
-H1: PPV with abstention > PPV without abstention).
+**Test:** McNemar's test on the paired committed-prediction confusion matrices (comparing the classifier-with-abstention vs classifier-without-abstention on the same test records that both make a prediction). One-sided, H1: abstention improves PPV.
 
-Effect size: absolute PPV difference in percentage points at coverage=0.80,
-with 95% CI.
+**Significance threshold:** p < 0.05 (single test on primary metric; no correction needed).
 
-### Cross-subject note
+**Effect size:** absolute PPV improvement in percentage points.
 
-PTB-XL contains 18,869 patients. The fold construction is patient-disjoint.
-No cross-subject (same patient, different recording) analysis is planned.
-This is an IID (within-distribution) evaluation on PTB-XL. Cross-dataset
-evaluation (PTB-XL train, CinC 2017 test) is exploratory only.
+**Interpretation rule:**
+- p < 0.05 AND PPV improvement >= 5 pp: "statistically significant and clinically meaningful improvement from abstention."
+- p < 0.05 AND PPV improvement < 5 pp: "statistically significant but small improvement."
+- p >= 0.05: "no statistically significant PPV improvement from abstention at 17 % coverage rate."
+
+A null result is informative: it means calibrated abstention does not reliably improve PPV for wearable-grade AFib detection at this coverage budget, which is itself a contribution given the clinical motivation.
 
 ---
 
 ## Ablations
 
-All ablations run on the dev/validation split only (strat_fold 1–9).
-They do not touch strat_fold 10.
+All ablations run on the dev split only. None touch the held-out test partition.
 
-**Ablation 1 — No abstention vs. abstention (load-bearing design choice)**
+**Ablation 1: Abstention mechanism comparison**
 
-Procedure: evaluate xresnet1d50 on strat_fold 9 at coverage=1.00
-(no abstention) and at coverage=0.80 (temperature-scaled abstention).
-Report PPV, AUROC, F1 at both operating points.
+Procedure: compare MaxSoftmax (uncalibrated), temperature-scaled MaxSoftmax, and conformal RAPS at identical coverage targets on the dev split. Report PPV-at-coverage curve for all three.
+Hypothesis: temperature scaling improves the PPV-coverage curve relative to uncalibrated MaxSoftmax; conformal RAPS achieves similar or better PPV but with a coverage guarantee. If MaxSoftmax already achieves near-optimal PPV, calibration adds no value.
 
-Hypothesis: calibrated abstention raises PPV at coverage=0.80 relative
-to coverage=1.00 on the same model. If the difference is < 2 pp, the
-abstention mechanism provides negligible PPV benefit on the validation
-set — do not proceed to headline with this mechanism.
+**Ablation 2: Model depth (xresnet1d50 vs xresnet1d18)**
 
-Kill trigger for the abstention arm: if Ablation 1 shows < 2 pp PPV
-improvement at coverage=0.80 on strat_fold 9, investigate whether the
-model's confidence ordering (ranking records by confidence) is informative
-(i.e., does abstaining on the lowest-confidence records actually remove
-more false positives than true positives?). If the ranking is uninformative
-(AUC of confidence vs. correctness < 0.55), the abstention mechanism is
-broken and the track should be reviewed before headline.
+Procedure: repeat primary training with xresnet1d18 (smaller architecture, ~6 M params vs ~25 M params). Compare PPV-at-coverage curves.
+Hypothesis: the smaller model performs comparably or better on this relatively simple binary classification task with moderate data size (6,822 dev records). If xresnet1d18 matches xresnet1d50, the lighter model is preferred for deployment.
 
-**Ablation 2 — Temperature scaling vs. no calibration (load-bearing calibration step)**
+**Ablation 3: Window length sensitivity**
 
-Procedure: compare Brier score and ECE of xresnet1d50 before and after
-temperature scaling on strat_fold 9.
+Procedure: repeat primary evaluation with 10-second windows (3,000 samples) and 60-second windows (padded/truncated). Compare PPV-at-coverage curves.
+Hypothesis: longer windows improve AFib detection confidence (more RR-interval variation captured), leading to better calibration and higher PPV at a given abstention rate. If 10-second windows perform comparably, shorter windows (closer to Apple Watch Episode recording length) are sufficient.
 
-Hypothesis: temperature scaling meaningfully reduces ECE (expected
-improvement >= 0.02 in ECE). If temperature scaling does not improve
-calibration, the model is already well-calibrated (or not calibratable
-by this method) and the calibration step should be characterized honestly
-in findings.md.
+**Ablation 4: Feature-engineered abstainer vs deep abstainer**
 
-**Ablation 3 — MC-Dropout vs. temperature scaling (abstention mechanism choice)**
-
-Procedure: compare coverage-vs-PPV curves of the temperature-scaling
-abstention and the MC-Dropout abstention on strat_fold 9.
-
-Hypothesis: MC-Dropout provides a better coverage-vs-PPV curve than
-temperature scaling (higher PPV at the same coverage). If they are
-equivalent, report this — it means the simpler method is sufficient.
-
-**Ablation 4 — Classical vs. deep (feature baseline comparison)**
-
-Procedure: compare the coverage-vs-PPV curve of logistic regression on
-12 features vs. xresnet1d50 on strat_fold 9.
-
-Hypothesis: xresnet1d50 provides higher PPV at the same coverage than
-the classical baseline, because deep morphology features capture
-atrial activity patterns that hand-crafted RR-interval features miss.
-If the classical baseline matches or exceeds ResNet-1D, the contribution
-does not require deep learning.
-
-**Ablation 5 — AFIB likelihood threshold sensitivity**
-
-Procedure: extract AFIB labels at three likelihood thresholds:
-50.0 (probable AFIB), 75.0 (likely AFIB), 100.0 (definite AFIB, primary).
-Evaluate xresnet1d50 PPV-at-coverage=0.80 on strat_fold 9 at each.
-
-Hypothesis: the primary threshold (100.0 = definite AFIB only) gives
-cleaner labels and higher PPV at coverage=0.80 than lower thresholds.
-If lower thresholds produce comparable or better PPV, the label-definition
-choice affects results materially and must be reported.
+Procedure: apply all three abstention mechanisms to LR-HCF (logistic regression baseline) and compare PPV-at-coverage curves with xresnet1d50 + same abstention mechanisms.
+Hypothesis: if the deep model's better discrimination also produces better-calibrated confidence scores, xresnet1d50 + temperature-scaled MaxSoftmax achieves higher PPV at the 17 % abstention budget than LR-HCF + any abstention mechanism. If not, the deep model's calibration advantage is spurious.
 
 ---
 
 ## Uncertainty reporting
 
-- **Bootstrap CI:** All metrics reported with 95% bootstrap CI (n=2,000
-  resamples, stratified by AFIB label, fixed seed=42). Reported as
-  "XX.X (95% CI: YY.Y–ZZ.Z)".
-- **Multi-seed model training:** xresnet1d50 trained with 3 independent
-  random seeds (seed ∈ {42, 7, 123}). Report mean and standard deviation
-  of val-set metrics across seeds to quantify training variance.
-  Headline: use the seed with lowest strat_fold 9 Brier score (seed chosen
-  before touching strat_fold 10). The three-seed spread is reported as a
-  secondary uncertainty indicator.
-- **Temperature scaling stability:** temperature parameter T fitted on
-  strat_fold 9 is reported. A T value far from 1.0 (e.g., T > 2.0)
-  indicates substantial miscalibration pre-scaling, reported and interpreted.
-- **Reporting format:** "XX.X% (95% CI: YY.Y%–ZZ.Z%, N=N_records)" for all
-  headline numbers. Point estimates without CI are not reported.
+- **Bootstrap CI:** All PPV, sensitivity, and F1 values reported with 95 % bootstrap CI (n=2000 resamples, stratified by class, random_state=42).
+- **PPV-coverage curve:** CI at each coverage point computed independently via bootstrap.
+- **Reporting format:** "XX.X % (95 % CI: YY.Y–ZZ.Z %, N=N)" on all primary and secondary metrics.
+- **Multi-seed training:** three independent training runs with random seeds {42, 1337, 2025}; report mean and std of primary metric across seeds. If std > 2 pp, investigate instability.
 
 ---
 
@@ -611,80 +269,45 @@ choice affects results materially and must be reported.
 
 | Task | Hardware | Estimated time |
 |---|---|---|
-| PTB-XL download (~1.7 GB) | local | 30 min |
-| Preprocessing all records (100 Hz) | CPU | 30–60 min |
-| Feature extraction (NeuroKit2, baseline) | CPU | 1–2 hr |
-| xresnet1d50 training (3 seeds, strat_fold 1–8, 50 epochs max) | GTX 1650 | 3–6 hr |
-| Temperature scaling fit (strat_fold 9) | CPU | < 5 min |
-| Coverage-vs-PPV curve generation (ablations, dev set) | CPU | < 30 min |
-| MC-Dropout inference (30 passes, strat_fold 9) | GTX 1650 | 1 hr |
-| Bootstrap CI computation (n=2000) | CPU | < 1 hr |
-| Headline run (strat_fold 10, once) | CPU + GPU | 1–2 hr |
-| **Total** | CPU + GTX 1650 | **~8–12 hr** |
+| CinC 2017 data download (~150 MB) | local | 5 min |
+| Preprocessing (bandpass, windowing, split) | CPU | 15 min |
+| LR-HCF feature extraction (dev set) | CPU | 30 min |
+| LR-HCF cross-validation + calibration (dev) | CPU | 30 min |
+| xresnet1d50 training, 50 epochs, batch=8 | GTX 1650 | 2-3 hr per seed |
+| Temperature scaling calibration (dev) | CPU | < 5 min |
+| Conformal RAPS calibration (dev) | CPU | < 5 min |
+| Ablations 1-4 (dev split only) | CPU + GPU | 4-6 hr |
+| Headline run (test split, one-time) | CPU + GPU | < 1 hr |
+| Bootstrap CI computation (n=2000) | CPU | 30 min |
+| **Total (3 training seeds + ablations + headline)** | CPU + GPU | **~14-18 GPU-hours** |
 
-Total GPU budget: approximately 6–10 GPU-hours on GTX 1650.
-Well within the local envelope; no fallback compute required.
+Total GPU budget: approximately 15 GPU-hours (GTX 1650). Feasible locally; no external compute required.
 
-No Kaggle fallback needed for this track. The largest computation
-(model training) is well within 4 GB VRAM.
+**Fits 4 GB envelope:** yes. xresnet1d50 at batch=8 float32, input=(8,1,9000) estimated ~1.5-2.0 GB VRAM (based on cross-subject-eeg P-3 scaling from batch=32, shorter input, 0.62 GB). If batch=8 exceeds 3.2 GB, reduce to batch=4 (estimated ~1.0 GB VRAM, 2x training time).
 
 ### Time to first honest result
 
-- Week 1: environment setup, PTB-XL download, preprocessing,
-  classical baseline trained and evaluated on dev (strat_fold 1–8
-  cross-validation). First PPV-at-coverage number on dev, labeled
-  "preliminary, dev only."
-- Week 2: xresnet1d50 training (3 seeds), temperature scaling,
-  Ablations 1–4 on strat_fold 9. Pilots P-1 through P-4.
-- Week 3: finalize design choices from ablations, run Pilot P-5
-  (site-disjoint probe, if motivated by ablation results). Write
-  protocol-lock.md. Critic gate.
-- Week 4: headline run on strat_fold 10 (once). Statistical tests.
-  Write results.md.
+- Week 1: data download, preprocessing, LR-HCF baseline, pilot VRAM probe for xresnet1d50 on CinC 2017 input. First dev-split PPV-at-0%-abstention from LR-HCF.
+- Week 2: xresnet1d50 training (3 seeds), temperature scaling. Dev-split PPV-at-coverage curve for primary model. Ablations 1 and 2.
+- Week 3: Ablations 3 and 4. Conformal RAPS. Cross-dataset pilot probe (CinC 2020). Finalize threshold from dev split. Write pre-run checklist.
+- Week 4: single authorized headline run on test split. Statistical test. Results to `30-implement/ecg-ppg-realworld/results.md`.
 
-**First honest result: week 4.** Dev results in weeks 1–2 are
-labeled preliminary and do not constitute headline results.
+**First honest result: week 4.**
 
 ---
 
-## Novelty and exploration notes
+## Novelty
 
-### What is genuinely novel
+**What is genuinely novel:**
 
-**PPV-at-fixed-alert-rate as primary metric, calibrated to the
-BASEL inconclusive rate:** The existing abstention literature
-(Smole 2023, NCA 2024, Barandas 2024) reports accuracy-under-rejection
-or AUROC-under-rejection curves. None of these papers uses PPV at a
-fixed clinically anchored coverage level as the primary metric. The
-BASEL Wearable Study's 17–21% inconclusive rate provides a concrete
-clinical anchor that none of the prior abstention papers references.
-This framing connects the ML abstention decision directly to the
-real-world alert management workflow.
+The specific combination of (a) wearable-grade single-lead ECG (CinC 2017 AliveCor recordings), (b) PPV-at-fixed-alert-rate as the primary metric (calibrated to the BASEL 17-21 % inconclusive-rate budget), and (c) comparative evaluation of calibration methods (uncalibrated MaxSoftmax vs temperature scaling vs conformal RAPS) under a held-out design that touches the test split exactly once.
 
-**Explicit comparison across abstention mechanisms under this metric:**
-No paper found that compares temperature scaling vs. MC-Dropout
-abstention specifically under the PPV-at-coverage metric.
+Prior work (Smole 2023, NCA 2024, Barandas 2024) evaluates abstention on ECG as accuracy-under-rejection. None uses PPV-at-coverage as the primary metric, and none is scoped to the consumer-wearable AFib false-positive problem. The BASEL 17-21 % inconclusive-rate anchor for the coverage budget is this track's specific clinical grounding.
 
-### What is standard and intentionally so
+**What is standard and intentionally so:**
 
-- xresnet1d50 on PTB-XL: a standard well-characterized baseline
-  (Strodthoff et al. 2020). Using it is appropriate — the contribution
-  is the evaluation protocol, not a new architecture.
-- Temperature scaling: the standard post-hoc calibration method.
-- Bootstrap CI: standard uncertainty quantification.
-- Binary AFIB classification on PTB-XL strat_fold 10: the standard
-  evaluation setup from the PTB-XL benchmark paper.
+xresnet1d50: the PTB-XL benchmark standard architecture. Using it is disciplined. Temperature scaling: the canonical post-hoc calibration method. CinC 2017: a well-characterized public dataset. AUROC: reported for comparability with published results.
 
-### What is exploratory (not pre-registered)
+**What is exploratory (pilot only, not pre-registered):**
 
-- Cross-dataset probe on CinC 2017 (abstention mechanism trained on
-  PTB-XL, evaluated on CinC 2017 single-lead ECG).
-- Conformal prediction coverage guarantee as an alternative abstention
-  mechanism (RAPS or LAC on top of xresnet1d50 softmax).
-- Per-subgroup PPV analysis by age band and sex (if strat_fold 10
-  provides sufficient subgroup size for meaningful stratification).
-- Extension of the CinC 2017 arm to include Lead I only (simulating
-  a wearable single-lead signal).
-
-These are captured in pilots-README.md and do not touch the
-pre-registered headline protocol.
+Cross-dataset abstention probe (CinC 2020 single-lead subset). Longer fine-tuning schedules. ECG-FM frozen encoder as an alternative feature extractor (if a suitable wearable-grade pre-trained model exists and fits in 4 GB).

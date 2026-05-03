@@ -3,9 +3,9 @@
 # Risk register — cross-subject-eeg
 
 **Track:** cross-subject-eeg
-**Date:** 2026-05-02
+**Date:** 2026-05-02 (updated 2026-05-03)
 **Author:** methodologist agent
-**Status:** draft — pending critic gate before layer 30
+**Status:** draft — R-2 updated to reflect confirmed contamination + split-arm design; pending critic gate before layer 30
 
 Each risk has: description, probability estimate (H/M/L), impact
 (H/M/L), mitigation, and a concrete kill criterion (numeric or yes/no).
@@ -44,47 +44,47 @@ evaluation contributions (b), (c), (e) of the five-part program.
 
 ## R-2 — LaBraM pre-training corpus overlaps held-out test split
 
-**Description:** The leakage audit (leakage_audit.py) finds that
-PhysionetMI or HBN Releases 9–11 were included in LaBraM's
-pre-training corpus (published in arXiv:2405.18765 §3.1). This would
-invalidate the FM probe's cross-subject generalization claim for those
-datasets.
+**Status (2026-05-03): TRIGGERED AND RESOLVED.** PhysionetMI confirmed
+in LaBraM corpus. Substitution to Cho2017 (FM arm test set) executed.
+Protocol-lock v2 reflects the split-arm design. See
+unlock-note-2026-05-03.md for full record.
 
-**Probability:** M (LaBraM pre-training corpus includes BCICIV_2a and
-BCICIV_2b, which are MOABB dev datasets; PhysionetMI is not listed in
-the published corpus but the list may be incomplete).
+**Description:** The leakage audit confirmed that PhysionetMI ("EEG
+Motor Movement/Imagery Dataset") is in LaBraM's pre-training corpus
+(arXiv:2405.18765 §3.1). PhysionetMI may not serve as the FM arm test
+set. HBN Releases 9-11 status: no explicit HBN entry found in the
+published corpus list; treated as clean pending any corpus errata.
 
-**Impact:** M (affects interpretation, not the methodology; the
-Riemannian arm is unaffected).
+**Prior probability:** M → CONFIRMED hit for PhysionetMI.
+**Impact:** M (Riemannian arm unaffected; FM arm test set substituted).
 
-**Mitigation:**
-1. Run leakage_audit.py before touching the test split, using the
-   published pre-training corpus list from arXiv:2405.18765 §3.1.
-2. If PhysionetMI overlaps: remove PhysionetMI from the FM arm's
-   headline evaluation. Substitute Lee2019 or Cho2017 as the test
-   dataset for the FM arm, if those are not in the pre-training corpus.
-3. Report the audit result explicitly in the headline results table.
-   The audit finding itself is a contribution regardless of direction.
+**Mitigation (executed):**
+1. Leakage audit run prior to re-lock (2026-05-03).
+   Result: PhysionetMI contaminated; Cho2017 clean; Lee2019 clean.
+2. PhysionetMI removed from FM arm. Cho2017 substituted as FM test.
+   Lee2019 assigned as secondary dev (frozen). PhysionetMI retained
+   for Riemannian/classical arm (MDM has no pre-training corpus).
+3. Audit result is a headline contribution and will appear in the
+   results.md audit column.
 
-**Kill criterion:** If the leakage audit finds that ALL candidate
-held-out test datasets are in the FM pre-training corpus, and no
-alternative dataset can be confirmed clean, cancel the FM cross-subject
-generalization claim entirely. The headline becomes:
-(1) Riemannian LOSO numbers, and
+**Residual risk:** If Cho2017 is later discovered to be in the LaBraM
+corpus (corpus update or paper errata), re-run the audit and substitute
+Lee2019 (confirmed clean as of this date). If both are contaminated,
+fall to the kill criterion.
+
+**Kill criterion:** If ALL MOABB MI candidate test datasets
+(PhysionetMI, Cho2017, Lee2019, and any further candidates audited)
+are confirmed in the FM pre-training corpus, cancel the FM arm.
+The headline becomes: (1) Riemannian LOSO on PhysionetMI, and
 (2) leakage audit documenting that LaBraM cannot be honestly evaluated
-    cross-subject at this time.
-This is a publishable finding per the defensibility-critic verdict
-(Null B: overlap found is itself informative).
+cross-subject on any available MOABB MI dataset at this time.
+This is a publishable finding per the defensibility-critic verdict.
 
 ---
 
 ## R-3 — LaBraM-Base exceeds 4 GB VRAM at inference time
 
-**Status (post-pilot 2026-05-02):** **CLEARED with massive margin.** Pilot P-1 measured peak VRAM = **0.097 GB** at fp32 batch=1, single 22×200 epoch on GTX 1650 (3 % of the 3 GB threshold; LaBraM-Base = 6.02 M params). See `30-implement/cross-subject-eeg/runs/pilot_p1_*.json`. Forward time 6.97 s (cold start; will warm up).
-
-The Kaggle T4 fallback is no longer load-bearing for the FM probe arm at this configuration. Track-specific opt-in note in `30-implement/compute.md` updated accordingly. The mitigation steps below are kept for historical reference and would re-activate only if a future probe (longer sequences, larger batches) approaches the threshold.
-
-**Description (original):** LaBraM-Base, when loaded into PyTorch on the GTX 1650
+**Description:** LaBraM-Base, when loaded into PyTorch on the GTX 1650
 in inference mode (batch=1, float32, sequence length corresponding to
 a 2-second 22-channel epoch), consumes more than 3 GB VRAM. (3 GB
 rather than 4 GB to leave headroom for OS, Python, and CUDA overhead.)
@@ -92,19 +92,25 @@ rather than 4 GB to leave headroom for OS, Python, and CUDA overhead.)
 **Probability:** L (LaBraM-Base has ~5 M parameters; at float32,
 weights alone are ~20 MB; input activations for a 22×200 epoch are
 negligible). However, if LaBraM expects a large token sequence (e.g.,
-whole-session context), this could spike. **Confirmed L empirically** by P-1.
+whole-session context), this could spike.
 
 **Impact:** H (would require moving to cloud or cancelling FM arm).
 
-**Mitigation (no longer triggered; kept for reference):**
-1. ~~As first pilot probe (week 1), run a single-epoch inference and log peak VRAM.~~ DONE — P-1 result above.
+**Mitigation:**
+1. As first pilot probe (week 1), run a single-epoch inference and
+   log `torch.cuda.max_memory_allocated()`. Record in
+   `pilots/README.md`.
 2. If 3 GB < VRAM usage <= 4 GB: switch to float16 (half precision)
-   for inference. Retest. *(Not needed at current config.)*
+   for inference. Retest.
 3. If still > 3 GB in float16: move FM feature extraction to
    Kaggle GPU notebook (T4 16 GB, 9 hr/week, sufficient for
-   PhysionetMI 109 subjects). *(Not needed at current config.)*
+   PhysionetMI 109 subjects). Store extracted features locally.
+   This is not a compute-infeasible path.
 
-**Kill criterion (would re-activate if future probe spikes VRAM):** If LaBraM-Base at batch=1, float16, on Kaggle T4 fails to run (environment conflict, quota exhausted, or sequence-length error not fixable within 2 days of debugging), cancel the FM probe arm. Headline becomes Riemannian-only.
+**Kill criterion:** If LaBraM-Base at batch=1, float16, on Kaggle T4
+fails to run (environment conflict, quota exhausted, or sequence-length
+error not fixable within 2 days of debugging), cancel the FM probe arm.
+Headline becomes Riemannian-only. Document the failure mode.
 
 ---
 
@@ -128,21 +134,23 @@ minor versions is common).
    source (BCI Competition IV, PhysioNet). MOABB datasets are all
    independently downloadable.
 
-**Kill criterion:** If preprocessing fails for PhysionetMI specifically
-(the primary test dataset) and cannot be fixed within 3 days, substitute
-Lee2019 or Cho2017 as the test dataset (subject to leakage audit passing
-for that dataset). If no alternative test dataset can be preprocessed,
-retire-cancel with a documented environment-failure reason.
+**Kill criterion (updated 2026-05-03):** If preprocessing fails for
+PhysionetMI (Riemannian arm test) and cannot be fixed within 3 days,
+the Riemannian arm may fall back to Cho2017 as its test set (shared
+with FM arm; acceptable under the split-arm design). If preprocessing
+also fails for Cho2017, retire-cancel with a documented failure reason.
+Failure in only one arm does not retire-cancel the other arm.
 
 ---
 
 ## R-5 — PhysionetMI subject count is insufficient for planned statistical test
 
-**Description:** PhysionetMI nominally has 109 subjects. After
-artifact rejection and epoch filtering, the usable subject count may
-drop below the N=62 threshold required to detect a 30 % vs 10 %
-BCI illiteracy rate at 80 % power (per defensibility-critic power
-analysis, §5 cross-subject-eeg).
+**Description (updated 2026-05-03 — split-arm design):**
+Riemannian arm: PhysionetMI nominally has 109 subjects; the N=62
+threshold for the illiteracy-rate power analysis is met with headroom.
+FM arm: Cho2017 has 52 subjects — below the N=62 threshold. The FM
+arm illiteracy-rate characterization is reported with a reduced-
+precision caveat and stated as a limitation in results.md.
 
 **Probability:** L–M (artifact rejection on a well-curated publicly
 available dataset typically retains > 80 % of subjects).
@@ -152,10 +160,7 @@ not affect the FM-vs-MDM comparison which only needs paired samples).
 **Mitigation:**
 1. Compute post-rejection subject count during week 1 preprocessing.
    Report it explicitly.
-2. If N < 62: add Cho2017 (52 subjects) to the MOABB dev set and
-   expand the dev-to-test ratio so the combined test set clears N=62.
-   (This change must be flagged as a pre-experiment design adjustment,
-   documented before touching any test data.)
+2. **(M-1 fix per methodology-critic-v2 — corrected path):** If FM arm effective N falls below 62 after artifact rejection, add **Lee2019 test subjects** (or another audited-clean MOABB MI dataset NOT already in any frozen role) to the FM arm test set. Cho2017 may NOT be added to the dev set — it is the FM arm test set per protocol-lock §3 and would violate the touched-once partition. Any such addition must be flagged as a pre-experiment design adjustment, documented before touching any test data, and the new dataset audited via leakage_audit before inclusion.
 
 **Kill criterion:** If the combined usable subject count across all
 available MOABB test datasets falls below N=30 after artifact rejection,
@@ -253,9 +258,10 @@ It triggers a different framing of the results section.
 
 ## R-9 — Held-out partition touched prematurely (protocol violation)
 
-**Description:** Any analysis, even "just a look," is performed on the
-held-out test split (PhysionetMI, HBN Releases 9–11) before the single
-authorized evaluation run.
+**Description:** Any analysis, even "just a look," is performed on any
+held-out test split (PhysionetMI for Riemannian arm, Cho2017 for FM arm,
+or HBN Releases 9-11 for HBN arm) before the single authorized
+evaluation run for that arm.
 
 **Probability:** L–M (inadvertent; easy to do when debugging code on
 "the full dataset").
@@ -317,8 +323,8 @@ cross-dataset generalization claim and document the exclusion.
 | ID | Risk | P | I | Kill criterion |
 |---|---|---|---|---|
 | R-1 | FM checkpoint unavailable | L | H | No open-weight FM loadable by end of week 1 → FM arm cancelled |
-| R-2 | LaBraM pre-training overlaps test split | M | M | All test datasets in pre-training corpus → FM headline cancelled; leakage audit IS the result |
-| R-3 | LaBraM-Base > 3 GB VRAM at inference | L | H | **CLEARED 2026-05-02:** P-1 measured 0.097 GB / 3 GB threshold (3 % of envelope). Kaggle fallback no longer load-bearing. |
+| R-2 | LaBraM pre-training overlaps test split | TRIGGERED+RESOLVED | M | RESOLVED: Cho2017 substituted for FM arm; kill only if ALL candidates contaminated |
+| R-3 | LaBraM-Base > 3 GB VRAM at inference | L | H | Fails on Kaggle T4 float16 → FM arm cancelled |
 | R-4 | MOABB API / download breaks | M | M | PhysionetMI preprocessing fails, no substitute cleanable in 3 days → retire-cancel |
 | R-5 | PhysionetMI N < 62 usable subjects | L–M | M | Combined test N < 30 after artifact rejection → drop illiteracy-rate claim from headline |
 | R-6 | HBN data download impractical | M | M | Inaccessible locally and via Kaggle by week 3 → drop HBN arm |
@@ -333,9 +339,10 @@ cross-dataset generalization claim and document the exclusion.
 
 The track retires-cancelled (not just an arm) if:
 
-1. **Preprocessing blocker:** MOABB preprocessing fails for all
-   test-set candidates and cannot be fixed within 3 days (R-4
-   extended to all datasets).
+1. **Preprocessing blocker:** MOABB preprocessing fails for BOTH
+   PhysionetMI AND Cho2017 (both arm test sets) and cannot be fixed
+   within 3 days (R-4 extended to both). Single-arm failure cancels
+   that arm only; the other arm continues.
 
 2. **Protocol violation:** The held-out partition was used for
    model selection before the single authorized evaluation run (R-9

@@ -3,9 +3,9 @@
 # Approach — cross-subject-eeg
 
 **Track:** cross-subject-eeg
-**Date:** 2026-05-02
+**Date:** 2026-05-02 (revised 2026-05-03)
 **Author:** methodologist agent
-**Status:** draft — pending critic gate before layer 30
+**Status:** draft — revised after leakage_audit pilot; pending critic gate before layer 30
 
 ---
 
@@ -231,10 +231,17 @@ DEAP/WESAD, if an EEG-arm is included).
     testing). Use dev split only.
   - PhysionetMI (GigaDB / PhysioNet): 109 subjects, 4-class MI,
     CC0. Largest single-dataset subject pool available via MOABB.
-    Primary source of statistical power for per-subject distributions.
-  - At least one additional MOABB MI dataset to be selected from
-    Cho2017 (52 subjects) or Lee2019 (54 subjects) for dataset-
-    disjoint held-out arm. Selection frozen at protocol-lock.
+    Primary test set for the Riemannian/classical arm (MDM, FBCSP+LDA).
+    CONFIRMED IN LaBraM pretrain corpus ("EEG Motor Movement/Imagery
+    Dataset", arXiv:2405.18765 §3.1). LaBraM may NOT be evaluated
+    on PhysionetMI. See unlock-note-2026-05-03.md.
+  - Cho2017 (52 subjects, 2-class MI): test set for the FM arm.
+    Confirmed CLEAN per leakage_audit (not in LaBraM corpus).
+    Available via MOABB as Cho2017; Biosemi ActiveTwo 64-channel.
+  - Lee2019 (54 subjects, 2-class MI): secondary dev dataset (frozen).
+    Confirmed CLEAN per leakage_audit. Previously "Cho2017 or Lee2019
+    to be selected in week 1" — now frozen as Lee2019 (Cho2017
+    is the FM arm test set and may not be used for dev).
 
 - Version pin: MOABB 1.1.x. Exact version recorded in
   `30-implement/cross-subject-eeg/code/requirements.txt` at environment setup.
@@ -261,27 +268,38 @@ DEAP/WESAD, if an EEG-arm is included).
 
 Defined precisely in `protocol-lock.md`. Summary here:
 
-- MOABB arm: PhysionetMI (109 subjects) is the held-out test dataset.
-  No subject from PhysionetMI appears in any FM pre-training corpus
-  known at time of locking (to be confirmed by leakage_audit.py).
-  Remaining MOABB datasets (BNCI2014_001 + one additional) used for
-  dev (parameter selection, pilot probes).
+**Split-arm design (revised 2026-05-03):** Riemannian/classical
+and FM arms use different test sets due to pre-training contamination.
+See unlock-note-2026-05-03.md for full justification.
+
+- Riemannian/classical arm: PhysionetMI (109 subjects) is the held-out
+  test dataset for MDM and FBCSP+LDA. PhysionetMI is CONFIRMED in
+  LaBraM corpus; LaBraM is NOT evaluated on PhysionetMI.
+- FM arm: Cho2017 (52 subjects) is the held-out test dataset for
+  LaBraM-Base. MDM and FBCSP+LDA are also evaluated on Cho2017 to
+  provide an in-arm baseline for the FM-vs-Riemannian comparison.
+  Cho2017 is CLEAN per leakage_audit.
+- Dev datasets: BNCI2014_001 (primary) + Lee2019 (secondary, frozen).
+  Both confirmed CLEAN for Lee2019; BNCI2014_001 = BCICIV_2a (in corpus,
+  triggers Ablation 2 when FM evaluated on dev).
 - HBN arm: Releases 9–11 (~300 subjects) are the held-out test arm
   for the cross-task FM probe. Releases 1–8 are the dev pool.
-- Hardware-disjoint rationale: PhysionetMI was recorded with
-  a BCI2000 / 64-channel system; BNCI2014_001 used a g.USBamp
-  system. Different hardware manufacturers, different amplifier
-  characteristics — hardware-disjoint at the dev-vs-test level is
-  satisfied by this split.
+- Hardware-disjoint (Riemannian arm): PhysionetMI BCI2000/64-ch vs
+  BNCI2014_001 g.USBamp/22-ch — different hardware, satisfied.
+- Hardware-disjoint (FM arm): Cho2017 Biosemi ActiveTwo/64-ch vs
+  Lee2019 BrainProducts BrainAmp/32-ch — different amplifier vendors,
+  satisfied (to be confirmed against MOABB docs at week 1 setup;
+  documented in dev_dataset_selection.txt).
 
 ### Splits
 
 - Dev split (parameter selection, pilots, preliminary analysis):
-  BNCI2014_001 + one additional MOABB MI dataset, HBN Releases 1–8.
-- Held-out test split (headline experiment, touched once):
-  PhysionetMI + HBN Releases 9–11.
-- `partition.py:validate_partition()` run before any experiment
-  to confirm no subject-ID overlap across splits.
+  BNCI2014_001 + Lee2019 (frozen), HBN Releases 1–8.
+- Riemannian arm test split (touched once): PhysionetMI.
+- FM arm test split (touched once): Cho2017.
+- HBN arm test split (touched once): HBN Releases 9–11.
+- `partition.py:validate_partition()` run per arm before any
+  experiment to confirm no subject-ID overlap across splits.
 
 ---
 
@@ -478,18 +496,20 @@ Before running the headline:
    metadata is available.
 4. Report the audit result in the headline results table as a column:
    "overlap detected: yes/no; overlapping datasets: [list]".
-5. If overlap is detected for the FM arm's test dataset:
-   - Remove that dataset from the FM headline evaluation.
-   - Keep it for the Riemannian baseline (MDM has no pre-training).
-   - Document the removal in results.
+5. **COMPLETED (2026-05-03):** PhysionetMI confirmed in LaBraM corpus.
+   FM arm test set substituted to Cho2017 (clean). Riemannian arm
+   retains PhysionetMI. See unlock-note-2026-05-03.md for full record.
+   The pre-run audit step is now a verification of the documented result,
+   not a discovery step.
 
 ### Held-out partition discipline
 
-The held-out test split (PhysionetMI, HBN Releases 9–11) is touched
-exactly once, only after all model selection decisions are made on
-the dev split. This is enforced by the protocol-lock.md and tracked
-manually. Any preliminary analysis of the test split prior to the
-single evaluation run invalidates the headline result.
+The held-out test splits (PhysionetMI for Riemannian arm, Cho2017
+for FM arm, HBN Releases 9–11 for HBN arm) are each touched exactly
+once, only after all model selection decisions are made on the dev
+split. This is enforced by the protocol-lock.md (v2) and tracked
+manually. Any preliminary analysis of a test split prior to its
+single evaluation run invalidates the headline result for that arm.
 
 ### Statistical test for FM vs Riemannian comparison
 
@@ -600,7 +620,7 @@ encoder-related.
 | MDM LOSO on BNCI2014_001 (9 subj) | CPU | < 5 min |
 | MDM LOSO on PhysionetMI (109 subj) | CPU | 30–60 min |
 | FBCSP LOSO (PhysionetMI) | CPU | 30–60 min |
-| LaBraM feature extraction (PhysionetMI) | GTX 1650 | 1–2 hr |
+| LaBraM feature extraction (Cho2017, 52 subj — M-2 fix per methodology-critic-v2; PhysionetMI excluded from FM arm per leakage audit) | GTX 1650 | 30–60 min |
 | Linear head fitting (all shot levels, 50 draws) | CPU | < 30 min |
 | Bootstrap CI computation (n=2000) | CPU | < 1 hr |
 | Ablations (dev split only) | CPU + GPU | 2–4 hr |
@@ -621,8 +641,9 @@ at batch=1 uses < 1 GB VRAM. Riemannian baselines are CPU-only.
   ablations 1 and 3 on dev split. Pilot probes (see pilots/).
 - Week 3: HBN data download, preprocessing, leakage audit against
   LaBraM pre-training corpus.
-- Week 4: headline experiment on test split (PhysionetMI + HBN 9–11),
-  run once. Statistical tests. Write results.md.
+- Week 4: headline experiments on test splits (PhysionetMI for
+  Riemannian arm; Cho2017 for FM arm; HBN Releases 9–11 if HBN arm
+  is running), each run once. Statistical tests. Write results.md.
 
 **First honest result: week 4.** The dev-split preliminary result
 (week 2) is labeled as such and not reported as the headline.
