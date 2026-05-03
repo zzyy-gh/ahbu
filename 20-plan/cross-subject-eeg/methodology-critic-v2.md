@@ -1,4 +1,4 @@
-> **Spec:** `10-pain-point/cross-subject-eeg/admission.md`
+> **Spec:** `20-plan/cross-subject-eeg/{approach,risk-register,protocol-lock,unlock-note-2026-05-03}.md` (under review) + `10-pain-point/cross-subject-eeg/admission.md` (the spec layer 20 received)
 
 # Critic pass -- cross-subject-eeg methodology v2 (unlock + revised protocol) -- 2026-05-03
 

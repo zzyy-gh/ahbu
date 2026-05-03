@@ -1,4 +1,6 @@
-> **Spec:** `10-pain-point/affective-state/admission.md`
+> **Spec:** `20-plan/affective-state/{approach,risk-register,protocol-lock}.md` (under review) + `10-pain-point/affective-state/admission.md` (the spec layer 20 received)
+>
+> **Status:** INCOMPLETE STUB — agent `a99daa0321d4dba44` was killed by watchdog mid-run while attempting a Bash-heredoc workaround. Re-run pending. See commit cd372bd notes.
 
 # Critic pass -- affective-state methodology (v2, re-lock review) -- 2026-05-03
 

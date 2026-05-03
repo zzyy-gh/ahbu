@@ -1,4 +1,4 @@
-> **Spec:** `10-pain-point/ecg-ppg-realworld/admission.md` (spec layer 20 received) + `30-implement/ecg-ppg-realworld/runs/pilot_p1_*.json` (three P-1 runs) + `CLAUDE.md` (spec convention + pilot vs headline discipline)
+> **Spec:** `20-plan/ecg-ppg-realworld/{approach,risk-register,protocol-lock,unlock-note-2026-05-03,pilots-README}.md` (under review) + `10-pain-point/ecg-ppg-realworld/admission.md` (the spec layer 20 received) + `30-implement/ecg-ppg-realworld/runs/pilot_p1_*.json` (three P-1 runs)
 
 # Critic pass -- ecg-ppg-realworld methodology (v2, CinC 2017 re-pass) -- 2026-05-03
 
