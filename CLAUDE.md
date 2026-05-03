@@ -168,7 +168,12 @@ Env-var changes take effect on **next session**. Restart before agent-team comma
 
 ## Transcripts
 
-Every sub-agent JSONL transcript is auto-synced from `~/.claude/projects/<project>/<session>/subagents/` into `transcripts/` via the `bin/sync-transcripts.ps1` script, wired as a git pre-commit hook by `bin/install-hooks.ps1`. Manifest at `transcripts/MANIFEST.md` maps agentId → persona/task.
+Two JSONL streams are auto-synced into `transcripts/` by `bin/sync-transcripts.ps1` (wired as a git pre-commit hook via `bin/install-hooks.ps1`):
+
+- **Main-agent orchestration** — `~/.claude/projects/<project>/<session>.jsonl` → `transcripts/session_<session>.jsonl`. The orchestrator's tool calls: Agent spawns, SendMessage between teammates, hooks, result stitching. The active session file is refreshed each sync.
+- **Subagent internals** — `~/.claude/projects/<project>/<session>/subagents/agent-<id>.jsonl` → `transcripts/<session>_agent-<id>.jsonl`. Each spawned subagent's own transcript.
+
+Manifest at `transcripts/MANIFEST.md` maps agentId → persona/task. To understand *how* a subagent was dispatched, read the matching `session_<session>.jsonl`.
 
 ## Kickoff for fresh session
 

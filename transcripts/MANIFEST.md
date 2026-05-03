@@ -1,6 +1,11 @@
 # Manifest — agentId → description
 
-Auto-synced files use the raw `<session>_agent-<agentId>.jsonl` form. Hand-renamed files map back here.
+Two transcript kinds are auto-synced into this dir by `bin/sync-transcripts.ps1`:
+
+- `session_<sessionId>.jsonl` — main-agent **orchestration** transcript: Agent spawns, SendMessage between teammates, hooks, result stitching. The active session's file is refreshed each sync (it grows mid-session).
+- `<sessionId>_agent-<agentId>.jsonl` — each spawned **subagent's** internal transcript.
+
+The table below maps subagent agentIds → persona/task. The orchestration file for the same session is the one to read for *how* those subagents were dispatched and stitched.
 
 ## Session 0db0e24d-08f6-4bde-8559-cb2cdb16c070 — 2026-05-02 — admission gap-closing
 
