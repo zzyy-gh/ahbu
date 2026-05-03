@@ -127,6 +127,12 @@ form approved by pilot time). Dev data only; no per-feature correlation.
 
 ## P-4 — cvxEDA vs high-pass fallback comparison (single dataset)
 
+**Status (2026-05-03):** SUPERSEDED by `unlock-note-2026-05-03.md`.
+cvxEDA is unavailable on the project environment (cvxpy/cvxopt install
+fails per P-2 fail run). The cvxEDA-vs-highpass comparison cannot run.
+Ablation A-2 in approach.md is replaced by A-2′ (highpass NaN-rate
+characterization). This pilot is retired.
+
 **Question:** For WESAD subject s2 (60-second windows), how often does
 cvxEDA fail, and do the EDA features from cvxEDA and the high-pass fallback
 agree in rank order across windows? This informs Ablation A-2 before it
@@ -158,6 +164,11 @@ baseline conditions. Dev data; no arousal correlation.
 ---
 
 ## P-5 — DREAMER access probe (backup dataset)
+
+**Status (2026-05-03):** PENDING — to be run alongside DEAP / MAHNOB-HCI
+access form submissions (R-1). Not gating; backup if a primary dataset
+fails access. No result expected before primary access decisions land.
+
 
 **Question:** Can DREAMER (23 subjects, ECG + EDA + EEG, academic request
 form) be accessed and loaded? This confirms the R-1 fallback path is viable

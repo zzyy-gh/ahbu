@@ -1,4 +1,4 @@
-> **Spec:** `10-pain-point/affective-state/admission.md`
+> **Spec:** `20-plan/affective-state/protocol-lock.md` (document being unlocked) + `10-pain-point/affective-state/admission.md` (original mandate)
 
 # Unlock note — affective-state protocol-lock.md
 **Date:** 2026-05-03
@@ -94,15 +94,16 @@ under-powered 86-feature cardiac sub-analysis separately.
 **Why X is correct:**
 1. The supplementary EDA band-power features (EDA_LF_power, EDA_MF_power,
    EDA_HF_power, LFMF_ratio, LF_percent, HF_percent via scipy.signal.welch)
-   were ALREADY PRE-REGISTERED in protocol-lock.md §2, bullet 3:
+   were described in the original protocol-lock §2 bullet 3:
    "Supplementary EDA band-power features: EDA_LF_power (0.01–0.08 Hz),
    EDA_MF_power (0.08–0.25 Hz), EDA_HF_power (0.25–1.0 Hz), LFMF_ratio,
    LF_percent, HF_percent (computed via scipy.signal.welch on the cleaned
-   EDA signal at 4 Hz)." These 6 features were always part of the locked
-   feature set — they were not being counted in the P-1 smoke test because
-   P-1 tested nk.eda_features output only (a deliberate limitation of the
-   P-1 scope). Adding them is not a protocol change; it is completing the
-   protocol as written.
+   EDA signal at 4 Hz)." The 26 additional SCL/SCR/derived features
+   (point 2 below) were designed pre-lock but not enumerated in the
+   original §2; they are locked here for the first time. **All 40 EDA
+   features are explicitly locked in this re-locked protocol (2026-05-03),
+   before any correlation analysis.** The re-lock — not retrospective
+   pre-registration — is what gives them protocol status.
 
 2. The additional per-window SCR and SCL features (approach.md §EDA features
    lists ~26 SCL + SCR features beyond what nk.eda_features returns) are
@@ -110,12 +111,14 @@ under-powered 86-feature cardiac sub-analysis separately.
    before the lock and are in the approach.md. This unlock note formalizes
    their inclusion in the locked feature set with an explicit enumerated list.
 
-3. Power at the expanded N: the re-locked protocol targets N_total = 126
-   (86 cardiac + 40 EDA). P(X<=2 | n=126, p=0.05) ≈ 0.050 — at the
-   threshold. P(X<=2 | n=128, p=0.05) ≈ 0.046 — adequate. The exact
-   N is locked in feature_schema_v2.yaml before the headline run; if the
-   YAML confirms N>=128, the margin is clear. The CI-led headline remains
-   primary (§5 of revised protocol-lock); the binomial test is confirmatory.
+3. Power at the expanded N (exact binomial via scipy.stats.binom.cdf):
+   the re-locked protocol targets N_total = 126 (86 cardiac + 40 EDA).
+   P(X<=2 | n=126, p=0.05) = **0.04594** — adequate (margin small but
+   under 0.05). P(X<=2 | n=128, p=0.05) = 0.04260. Minimum N satisfying
+   P(X<=2) < 0.05 exactly is **N=124** (P=0.04953). The exact N is locked
+   in feature_schema_v2.yaml before the headline run. The CI-led headline
+   remains primary (§5 of revised protocol-lock); the binomial test is
+   confirmatory.
 
 4. The highpass decomposition actually makes the EDA features SAFER to
    compute than cvxEDA: no numerical failures, no window-level fallbacks,
@@ -140,7 +143,8 @@ under-powered 86-feature cardiac sub-analysis separately.
   derived (4) = 34 supplementary EDA features. Total EDA = 6 (nk) + 34 = 40.
   Total N_features = 86 + 40 = 126.
   (Exact count confirmed in feature_schema_v2.yaml before any headline run.)
-  Power at N=126: P(X<=2 | p=0.05) ≈ 0.050. At N>=128: ≈ 0.046 — adequate.
+  Power at N=126 (exact binomial): P(X<=2 | p=0.05) = 0.04594 — adequate.
+  At N>=128: 0.04260. Min N for P<0.05 exact: 124.
 
 - Schema version bumped from v1 to v2 to signal the EDA expansion.
 

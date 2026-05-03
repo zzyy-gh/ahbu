@@ -27,6 +27,12 @@ the original paper did include HRV features, the cardiac novelty claim
 narrows to "extension to fresh datasets and per-subject Fisher-z aggregation."
 This open item is carried forward to the headline phase.
 
+## Open items (must resolve before results.md is written)
+
+| ID | Item | Trigger | Owner |
+|---|---|---|---|
+| O-1 | Verify arXiv:2508.10561 HRV inclusion. Read paper's Methods section, set YAML `arxiv_2508_10561_includes_hrv_FILL_MANUALLY` to `true` or `false`, and adjust the novelty framing in approach.md §Scope and findings.md/limitations.md accordingly. | Before `results.md` is written (not merely before correlation runs). | Layer-20 analyst at headline write-up. |
+
 **EDA pipeline update (2026-05-03):** cvxEDA is unavailable on the project
 environment (cvxpy/cvxopt fails on Windows 11 + Python 3.11.2; confirmed P-2).
 highpass decomposition is the primary and only EDA decomposition method.

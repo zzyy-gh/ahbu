@@ -16,8 +16,8 @@ This re-lock supersedes the 2026-05-02 version. The unlock note
 decomposition method changed from cvxEDA-primary to highpass-only, and
 (2) EDA feature list expanded from 6 (nk.eda_features output only) to
 ~42 (nk.eda_features + explicitly enumerated SCL, SCR, band-power, and
-derived features). Total N_features revised from 92 to ~128-132, exact
-count locked in feature_schema_v2.yaml at first successful extraction.
+derived features). Total N_features revised from 92 to 126 (pre-committed),
+exact count locked in feature_schema_v2.yaml at first successful extraction.
 
 ---
 
@@ -225,18 +225,23 @@ correlation runs. If the exact count differs from 126 due to library
 version edge cases, the YAML count governs and the discrepancy is
 documented. The binomial test uses the YAML count, not this estimate.
 
-**Power at N=126:**
-P(X<=2 | n=126, p=0.05): lambda approx = 6.3, Poisson approximation
-P(X<=2) = e^{-6.3} * (1 + 6.3 + 6.3^2/2) = 0.00184 * (1 + 6.3 + 19.845)
-= 0.00184 * 27.145 = 0.050. At the boundary.
+**Power at N=126 (exact binomial, scipy.stats.binom.cdf):**
+P(X<=2 | n=126, p=0.05) = **0.04594** — adequate, margin small but real.
 
-At N_features >= 128 (including any edge-case additions from feature_schema_v2):
-P(X<=2 | n=128, p=0.05) ≈ 0.046 — adequate.
+Reference values for nearby N (computed 2026-05-03 with
+scipy.stats.binom.cdf(2, n, 0.05)):
+- N=120: P=0.05751 (under-powered)
+- N=124: P=0.04953 (minimum N at which P<0.05 exactly)
+- N=125: P=0.04770
+- N=126: P=0.04594 (this protocol's pre-committed N)
+- N=128: P=0.04260
+- N=132: P=0.03658
 
-If the final YAML count is < 120: the protocol-lock requires a second
-re-check. Document in the feature_schema_v2 commit whether the power
-threshold is met. The CI-led headline (§5) is the primary presentation
-in any case; the binomial test is confirmatory.
+If the final YAML count is **< 124**: the binomial test is under-powered
+at the exact-binomial threshold; the CI-led headline (§5) becomes the
+sole primary presentation and the binomial test is demoted to
+informational. The CI-led headline is in any case the primary
+presentation; the binomial test is confirmatory.
 
 **EDA decomposition for headline:** highpass only. No cvxEDA.
 All features in §2B and §2C are computable from highpass decomposition.
@@ -317,11 +322,12 @@ datasets AND consistent sign across all three.
 The 95% Clopper-Pearson CI on the rate is the primary presentation.
 The binomial test p-value is a secondary confirmation.
 
-**Power at N_features = 126:**
-P(X<=2 | n=126, p=0.05) ≈ 0.050 — borderline. The test confirms
-near-zero reproducibility if k<=2 is observed, though the margin is slim.
+**Power at N_features = 126 (exact binomial):**
+P(X<=2 | n=126, p=0.05) = **0.04594** — adequate (under 0.05, margin small).
+The test confirms near-zero reproducibility if k<=2 is observed.
+Minimum N at which P(X<=2 | p=0.05) < 0.05 exactly is N=124 (P=0.04953).
 If feature_schema_v2.yaml confirms N_features >= 128, margin improves to
-P(X<=2) ≈ 0.046.
+P(X<=2) = 0.04260.
 
 **EDA-feature-count caveat:** The EDA portion of the feature set
 (40 features, 32% of total) is computed from highpass decomposition.
@@ -364,13 +370,15 @@ alternative="two-sided").
 95% Clopper-Pearson CI: scipy.stats.binom.interval(0.95, N_features,
 N_reproducible/N_features).
 
-**Power claim (revised 2026-05-03):**
-At N_features = 126: P(X<=2 | p=0.05) ≈ 0.050.
-At N_features = 128: P(X<=2 | p=0.05) ≈ 0.046.
-Both are adequate to confirm near-zero reproducibility at alpha=0.05
-if k<=2 is observed. If exact N from feature_schema_v2.yaml is below 120,
-the binomial test is under-powered and the CI-led headline is the sole
-primary presentation; the binomial test is demoted to informational.
+**Power claim (revised 2026-05-03; exact binomial via scipy.stats.binom.cdf):**
+At N_features = 126: P(X<=2 | p=0.05) = **0.04594** (adequate, margin small).
+At N_features = 128: P(X<=2 | p=0.05) = 0.04260.
+Minimum N satisfying P(X<=2) < 0.05 exactly: **N=124** (P=0.04953).
+Both N=126 and N=128 are adequate to confirm near-zero reproducibility at
+alpha=0.05 if k<=2 is observed. If exact N from feature_schema_v2.yaml is
+**below 124**, the binomial test is under-powered and the CI-led headline
+is the sole primary presentation; the binomial test is demoted to
+informational.
 
 **No post-hoc threshold adjustment.** alpha=0.05 FDR threshold and
 p0=0.05 binomial null are locked.
@@ -429,9 +437,12 @@ rationale. Summary:
 - Pilot P-1: N_features = 92 (86 cardiac + 6 EDA from nk.eda_features).
 - Pilot P-2: cvxpy/cvxopt installation fails; highpass is primary EDA
   decomposition (no fallback needed or available).
-- Path chosen: X — expand EDA feature set to N_total ~126-132 using
+- Path chosen: X — expand EDA feature set to N_total = 126 using
   explicitly enumerated SCL/SCR/band-power/derived features computable
   from highpass decomposition.
-- Power restored: P(X<=2 | n=126, p=0.05) ≈ 0.050.
-- DEAP and MAHNOB-HCI access still pending. WESAD confirmed viable (P-3).
+- Power restored (exact binomial): P(X<=2 | n=126, p=0.05) = 0.04594
+  (adequate; min N for P<0.05 exact = 124).
+- DEAP and MAHNOB-HCI access still pending. P-3 PASS covers WESAD only;
+  DEAP and MAHNOB-HCI label-quality / arousal-operationalization checks
+  have NOT run (gated on dataset access).
 - Critic re-pass requested before headline feature extraction runs.
