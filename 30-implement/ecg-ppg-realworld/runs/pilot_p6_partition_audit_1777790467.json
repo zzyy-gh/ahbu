@@ -1,0 +1,29 @@
+{
+  "status": "pass",
+  "seed": 42,
+  "test_fraction": 0.2,
+  "n_dev": 6822,
+  "n_test": 1706,
+  "dev_per_class": {
+    "O": 1932,
+    "N": 4061,
+    "A": 606,
+    "~": 223
+  },
+  "test_per_class": {
+    "N": 1015,
+    "O": 483,
+    "~": 56,
+    "A": 152
+  },
+  "test_af": 152,
+  "dev_in_range": true,
+  "test_in_range": true,
+  "test_af_in_range": true,
+  "no_overlap": true,
+  "overlap_count": 0,
+  "partition_json": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\partition.json",
+  "audit_txt": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\partition_audit.txt",
+  "pilot": "P-6",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-6"
+}

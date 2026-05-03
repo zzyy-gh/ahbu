@@ -10,17 +10,16 @@ Code, environment, run instructions for the ecg-ppg-realworld track.
 
 ```
 code/
-  README.md                # this file
-  requirements.txt         # pinned deps
-  pilots/                  # pilot scripts (dev-only; results in ../runs/)
-    p1_ptbxl_load.py       # CRITICAL — verify PTB-XL loads + AFIB count >= 87
-    p2_classical_baseline.py
-    p3_xresnet_vram.py     # CRITICAL — VRAM probe at GTX 1650
+  README.md                       # this file
+  requirements.txt                # pinned deps
+  pilots/                         # pilot scripts (dev-only; results in ../runs/)
+    p1_cinc2017_load.py           # CRITICAL — CinC 2017 download + class count
+    p2_classical_baseline.py      # NeuroKit2 + LR sanity AUROC
+    p3_xresnet_vram_cinc.py       # CRITICAL — VRAM probe at (1, 1, 9000)
     p4_abstention_sweep.py
     p5_calibration_baseline.py
-    p6_site_overlap.py     # optional
-    p7_cinc2017_compat.py  # exploratory
-  headline/                # post-pilots: locked-protocol scripts
+    p6_partition_audit.py         # builds canonical runs/partition.json
+  headline/                       # post-pilots: locked-protocol scripts
 runs/
 results.md
 ```
@@ -37,21 +36,30 @@ pip install -r requirements.txt
 
 | Dataset | Source | Tier | Notes |
 |---|---|---|---|
-| PTB-XL v1.0.3 | https://physionet.org/content/ptb-xl/1.0.3/ | open | ~21k 12-lead ECGs, AFIB labels via `scp_codes`, strat_folds 1–10 |
-| CinC 2017 (P-7 only) | https://physionet.org/content/challenge-2017/1.0.0/ | open | single-lead AF challenge data; exploratory cross-dataset probe |
+| CinC 2017 v1.0.0 | https://physionet.org/content/challenge-2017/1.0.0/ | ODC-BY (open, no credentialing) | 8,528 single-lead ECGs, 300 Hz, REFERENCE-v3.csv labels (N / A / O / ~). |
+
+PTB-XL was the prior primary; it was retired in v2 unlock (2026-05-03)
+after pilot P-1 found only 8 AFIB records in strat_fold 10 (need >= 87
+for power). See `20-plan/ecg-ppg-realworld/unlock-note-2026-05-03.md`.
 
 ## Running pilots
 
 ```powershell
-python pilots/p1_ptbxl_load.py --ptbxl-dir $HOME/physionet_data/ptb-xl-1.0.3
-python pilots/p3_xresnet_vram.py
+python pilots/p1_cinc2017_load.py --cinc-dir $HOME/physionet_data/challenge-2017-1.0.0
+python pilots/p6_partition_audit.py --cinc-dir $HOME/physionet_data/challenge-2017-1.0.0
+python pilots/p3_xresnet_vram_cinc.py        # synthetic input ok for VRAM portion
 # etc.
 ```
 
 ## Headline run
 
-Only after pilots clear and `protocol-lock.md` unmodified. Touches strat_fold 10 exactly once. Pre-run-checklist required at `runs/pre-run-checklist.txt`.
+Only after pilots clear and `protocol-lock.md` unmodified. Touches the
+20 % held-out test partition (per `runs/partition.json`) exactly once.
+Pre-run-checklist required at `runs/pre-run-checklist.txt`.
 
 ## Cancel-back
 
-Per risk-register triggers — most likely failures are R-3 (xresnet VRAM > envelope) and R-7 (protocol violation). Both retire-cancel.
+Per risk-register triggers — most likely failures are R-2 (xresnet
+VRAM > envelope at 9 k seq_len, P-3 substitution path xresnet1d50 →
+xresnet1d18 pre-authorised) and R-7 (protocol violation). Both
+retire-cancel.

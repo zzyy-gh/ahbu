@@ -1,0 +1,110 @@
+{
+  "status": "pass",
+  "cinc_dir": "C:\\Users\\zzyy\\physionet_data\\challenge-2017-1.0.0",
+  "license_present": true,
+  "license_odcby_confirmed": true,
+  "reference_csv": "training2017\\REFERENCE-v3.csv",
+  "n_total": 8528,
+  "n_total_target": 8528,
+  "n_total_ok": true,
+  "per_class": {
+    "N": 5076,
+    "A": 758,
+    "O": 2415,
+    "~": 279
+  },
+  "n_af": 758,
+  "n_af_min": 700,
+  "af_ok": true,
+  "n_sample_reads": 10,
+  "sample_read_results": [
+    {
+      "record_id": "A00001",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 9000,
+      "ok": true
+    },
+    {
+      "record_id": "A00002",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 9000,
+      "ok": true
+    },
+    {
+      "record_id": "A00003",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 18000,
+      "ok": true
+    },
+    {
+      "record_id": "A00004",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 9000,
+      "ok": true
+    },
+    {
+      "record_id": "A00005",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 18000,
+      "ok": true
+    },
+    {
+      "record_id": "A00006",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 9000,
+      "ok": true
+    },
+    {
+      "record_id": "A00007",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 9000,
+      "ok": true
+    },
+    {
+      "record_id": "A00008",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 18000,
+      "ok": true
+    },
+    {
+      "record_id": "A00009",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 9000,
+      "ok": true
+    },
+    {
+      "record_id": "A00010",
+      "fs_hz": 300.0,
+      "n_sig": 1,
+      "sig_len": 18000,
+      "ok": true
+    }
+  ],
+  "parse_errors": 0,
+  "fs_300hz_uniform": true,
+  "single_lead_uniform": true,
+  "sample_read_ok": true,
+  "first_ten_record_ids": [
+    "A00001",
+    "A00002",
+    "A00003",
+    "A00004",
+    "A00005",
+    "A00006",
+    "A00007",
+    "A00008",
+    "A00009",
+    "A00010"
+  ],
+  "pilot": "P-1",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-1"
+}

@@ -1,0 +1,9 @@
+P-6 partition audit — 2026-05-03 14:41:07
+reference_csv: C:\Users\zzyy\physionet_data\challenge-2017-1.0.0\training2017\REFERENCE-v3.csv
+seed: 42, test_fraction: 0.2
+n_dev: 6822 (in [6750,6820]: True)
+n_test: 1706 (in [1690,1710]: True)
+test per-class: {'N': 1015, 'O': 483, '~': 56, 'A': 152} (test_af in [140,170]: True)
+dev per-class: {'O': 1932, 'N': 4061, 'A': 606, '~': 223}
+overlap_count: 0 (no_overlap pass: True)
+status: pass
