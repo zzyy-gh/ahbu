@@ -1,0 +1,13 @@
+{
+  "status": "fail",
+  "reason": "token validation failed",
+  "token_validation": {
+    "http_status": 404,
+    "endpoint": "https://sleepdata.org/api/v1/me.json",
+    "authenticated": false,
+    "error": "HTTP 404 from token-validation endpoint"
+  },
+  "remediation": "Re-login to sleepdata.org and renew the token. Trigger R-1a mitigation (risk-register.md). Do NOT log the token.",
+  "pilot": "P-7",
+  "spec": "20-plan/sleep-staging/pilots-README.md#P-7"
+}

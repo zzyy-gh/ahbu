@@ -16,17 +16,46 @@ The track has two arms — (b) HRV-only primary and (a) pretrained-stager (now c
 
 ## R-1 — NSRR DUA not submitted or not received in time (scope a)
 
-**Status: RESOLVED — 2026-05-03**
+**Status: RE-OPENED — 2026-05-03 (afternoon)**
 
-**Resolution:** NSRR API token is available in the project environment as `NSRR_TOKEN`
-in `.env` (gitignored). Token issuance by NSRR confirms that the DUA has been approved.
-SHHS and MESA are immediately accessible. The 4-week kill criterion no longer applies.
+**Original resolution (now superseded):** NSRR API token issued — assumed sufficient for
+bulk download. P-7 pilot (run 2026-05-03 ~15:45) found this assumption wrong: token
+authenticates at `https://sleepdata.org/api/v1/account/profile.json` (HTTP 200,
+`authenticated: true`), but covariate-CSV downloads at
+`https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.X.0.csv`
+return HTML (sign-in / DAR-prompt page), not CSV bytes. **Token tier is read-only
+metadata; bulk MESA dataset access requires a separately approved Data Access Request
+(DAR) signed via the per-dataset DAR portal.** Run logs:
+- `30-implement/sleep-staging/runs/pilot_p7_nsrr_mesa_audit_1777794323.json` (failure record)
+- `30-implement/sleep-staging/runs/nsrr_token_validation.txt` (token-only validation)
 
-**What to do at implementation start:** Validate token with a test request (P-7 pilot).
-Log token validity confirmation in `30-implement/sleep-staging/runs/nsrr_token_validation.txt`.
+**What this blocks:**
+- HEADLINE-A (MESA AHI-stratified U-Sleep, N~1850) — cannot start until DAR approved.
+- P-7 pilot (NSRR token + MESA AHI distribution sanity) — currently fails on the
+  download step.
 
-**Kill criterion: REMOVED.** The 4-week clock and scope (a) conditional-cancel are
-no longer in effect. Scope (a) begins in week 1.
+**What this does NOT block:**
+- HEADLINE-B (HMC PSG HRV-vs-EEG paired, N=77) — HMC is CC-BY-4.0 open access via
+  PhysioNet, no NSRR involvement. HMC bulk download is in progress at the time of
+  re-open (`~/physionet_data/hmc-sleep-staging-1.0.0/`).
+- Pilots P-1 (HMC + AHI metadata audit), P-3 (U-Sleep VRAM) — neither requires MESA.
+
+**Mitigation / sequence:**
+1. **Pivot priority to HEADLINE-B path first.** Run P-1 + P-3 against HMC. HEADLINE-B
+   is independently sufficient for the track's primary HRV-vs-EEG paired claim.
+2. **Submit MESA DAR in parallel** at https://sleepdata.org/datasets/mesa (signed DAR
+   typically reviewed in days–weeks). Required: explicit institutional / project
+   description per NSRR DAR template. Once approved, P-7 will pass on the same
+   token; no code change.
+3. **If DAR not approved within 4 weeks of re-open (i.e. by 2026-05-31):** demote
+   HEADLINE-A from co-primary to deferred / future-work. The track ships on
+   HEADLINE-B alone, with HEADLINE-A surfaced as a planned follow-up contingent on
+   DAR approval. Update protocol-lock.md §6 and findings.md accordingly.
+4. **Residual R-1a (token renewal)** still applies once DAR is approved.
+
+**Kill criterion (re-instated, scoped):** If the MESA DAR is not approved within 4
+weeks of 2026-05-03, demote HEADLINE-A. Does NOT retire-cancel the track —
+HEADLINE-B is unaffected.
 
 **Residual risk (R-1a, new): NSRR token expires or is invalidated.**
 Probability: L. Impact: H for scope (a). Mitigation: validate token at start of every
@@ -267,7 +296,7 @@ gap at 80 % power). If N is borderline, report with explicit underpowered caveat
 
 | ID | Risk | Arm | P | I | Status | Kill criterion |
 |---|---|---|---|---|---|---|
-| R-1 | NSRR DUA not received | (a) | — | — | **RESOLVED** | Kill removed; residual R-1a (token renewal) |
+| R-1 | NSRR DUA / MESA DAR not approved | (a) | M | H | **RE-OPENED 2026-05-03 PM** (P-7 found token tier insufficient) | Demote HEADLINE-A if DAR not approved by 2026-05-31 |
 | R-1a | NSRR token expired/invalid | (a) | L | H | Open | Defer scope (a) if unresolvable in 3 days |
 | R-2 | HMC PSG access blocked | (b) primary | L | H | **RESOLVED** (confirmed open); substitute fully specified | Retire-cancel scope (b) if no DUA-free substitute ≥54 subj |
 | R-3 | ECG quality exclusions | (b) | M | M | Open | Downgrade claim; supplement with CAP if < 40 test subj |

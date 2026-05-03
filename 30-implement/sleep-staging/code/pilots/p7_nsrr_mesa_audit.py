@@ -28,15 +28,19 @@ import argparse
 import io
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
 
 
-# Token-validation endpoint (per pilots-README §P-7 procedure step 2):
-# https://sleepdata.org/api/v1/me.json — token-required, returns
-# {"authenticated": true, "username": "..."} on success.
-NSRR_TOKEN_VALIDATION_URL = "https://sleepdata.org/api/v1/me.json"
+# Token-validation endpoint. The pilot spec mentioned `/api/v1/me.json`
+# but that path returns 404 on the live API as of 2026-05-03. The working
+# token-validation endpoint is `/api/v1/account/profile.json`, which
+# returns `{"authenticated": true, "username": "..."}` when the token
+# is valid (and `{"authenticated": false}` anonymous). Verified by
+# data-plumber probe on 2026-05-03.
+NSRR_TOKEN_VALIDATION_URL = "https://sleepdata.org/api/v1/account/profile.json"
 
 # MESA covariates: NSRR distributes a covariates CSV inside the MESA
 # Sleep dataset. The discoverable URL pattern is the dataset-files
@@ -45,11 +49,13 @@ NSRR_TOKEN_VALIDATION_URL = "https://sleepdata.org/api/v1/me.json"
 # of plausible locations (latest first) and fall back to a directory
 # listing via the API.
 MESA_COVARIATES_CANDIDATE_URLS = (
-    # Direct file endpoint (newest pattern observed on NSRR for v0.5.0).
-    "https://sleepdata.org/datasets/mesa/files/m/browser/datasets/mesa-sleep-dataset-0.5.0.csv",
+    # Verified live by data-plumber 2026-05-03 via NSRR API listing
+    # (api/v1/datasets/mesa/files.json). Current version is 0.8.0.
+    "https://sleepdata.org/datasets/mesa/files/m/browser/datasets/mesa-sleep-dataset-0.8.0.csv",
+    "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.8.0.csv",
+    "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.7.0.csv",
+    "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.6.0.csv",
     "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.5.0.csv",
-    "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.4.0.csv",
-    "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.3.0.csv",
 )
 
 # MESA AHI column candidates. NSRR's MESA covariates file historically
@@ -68,10 +74,24 @@ AHI_COLUMN_CANDIDATES = (
 )
 
 
+def _scrub(text: str, token: str) -> str:
+    """Belt-and-braces: strip the token (or its prefix) from any string
+    that might be logged. The pilot pipes this through every error path
+    that touches the network so we never write the token to a result file
+    even if requests/urllib3 echoes the URL on failure."""
+    if not text or not token:
+        return text
+    out = text.replace(token, "<TOKEN_REDACTED>")
+    # also redact the auth_token=... query-param shape just in case
+    out = re.sub(r"auth_token=[^&\s\"\']+", "auth_token=<REDACTED>", out)
+    return out
+
+
 def _validate_token(token: str, timeout_sec: float = 30.0) -> dict:
     """HTTP GET the token-validation endpoint. Returns dict with
     `http_status`, `authenticated` (bool|None), `username_present`.
-    Never logs the token."""
+    Never logs the token. Uses the Authorization header (not URL query)
+    so the token doesn't end up in error strings if the request fails."""
     try:
         import requests  # type: ignore[import-not-found]
     except ImportError:
@@ -81,8 +101,11 @@ def _validate_token(token: str, timeout_sec: float = 30.0) -> dict:
             "error": "`requests` not installed; pip install requests",
         }
 
+    # NSRR's API only honours auth via the `auth_token` query param;
+    # `Authorization: Token token=...` is silently ignored (returns
+    # `authenticated:false`). _scrub() below removes the token from any
+    # error string before it's logged.
     try:
-        # Token passed as auth_token query param per NSRR convention.
         resp = requests.get(
             NSRR_TOKEN_VALIDATION_URL,
             params={"auth_token": token},
@@ -92,7 +115,7 @@ def _validate_token(token: str, timeout_sec: float = 30.0) -> dict:
         return {
             "http_status": None,
             "authenticated": None,
-            "error": f"network error: {e}",
+            "error": _scrub(f"network error: {e}", token),
         }
 
     out: dict = {
@@ -135,15 +158,28 @@ def _download_mesa_covariates(token: str, timeout_sec: float = 120.0) -> dict:
                 allow_redirects=True,
             )
         except Exception as e:  # noqa: BLE001
-            last_err = f"{url}: network error: {e}"
+            last_err = _scrub(f"{url}: network error: {e}", token)
             continue
         if resp.status_code != 200:
             last_err = f"{url}: HTTP {resp.status_code}"
             continue
-        # Some endpoints serve HTML (login redirect) — guard against that.
+        # Some endpoints serve HTML (DAR not approved → server quietly
+        # redirects to the dataset's file-browser HTML page rather than
+        # returning the CSV). Verified empirically 2026-05-03 by
+        # data-plumber: a 596 KB harmonized-CSV and the 7.6 MB main CSV
+        # both return HTML for a token-only account, while same-folder
+        # data-dictionary CSVs and PDFs return as expected. Treat HTML
+        # response → DAR-not-approved.
         text = resp.text
-        if not text or text.lstrip().startswith("<"):
-            last_err = f"{url}: response not CSV (likely login redirect or 404 page)"
+        if not text or text.lstrip().startswith("<") or "text/html" in (resp.headers.get("Content-Type") or ""):
+            last_err = (
+                f"{url}: server returned HTML, not CSV. Most likely cause: "
+                "MESA Data Access Request (DAR) not yet approved for this "
+                "account. Token validates (read-only metadata access works) "
+                "but bulk covariate downloads require an approved DAR signed "
+                "via https://sleepdata.org/datasets/mesa. This is risk-register "
+                "R-1 materializing: token tier insufficient for downloads."
+            )
             continue
         # Light sanity: must have header row with comma + at least 50 lines
         if "," not in text.split("\n", 1)[0] or len(text.splitlines()) < 50:
@@ -313,7 +349,7 @@ def probe(
                         "url": covariates_url_override,
                     }
             except Exception as e:  # noqa: BLE001
-                download_error = {"error": f"override URL network error: {e}"}
+                download_error = {"error": _scrub(f"override URL network error: {e}", token)}
         else:
             dl = _download_mesa_covariates(token)
             if "csv_text" in dl:
@@ -425,6 +461,13 @@ def main() -> int:
     )
     result["pilot"] = "P-7"
     result["spec"] = "20-plan/sleep-staging/pilots-README.md#P-7"
+
+    # Belt-and-braces token scrub of the JSON output (defence-in-depth in
+    # case any nested error string from requests/urllib3 echoed the URL).
+    token_now = os.environ.get("NSRR_TOKEN")
+    if token_now:
+        scrubbed = _scrub(json.dumps(result), token_now)
+        result = json.loads(scrubbed)
 
     runs_dir = Path(__file__).resolve().parents[2] / "runs"
     runs_dir.mkdir(parents=True, exist_ok=True)

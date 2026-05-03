@@ -1,0 +1,23 @@
+{
+  "status": "fail",
+  "reason": "could not load MESA covariates CSV",
+  "token_validation": {
+    "http_status": 200,
+    "endpoint": "https://sleepdata.org/api/v1/account/profile.json",
+    "authenticated": true,
+    "username_present": true
+  },
+  "download_attempt": {
+    "error": "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.5.0.csv: response not CSV (likely login redirect or 404 page)",
+    "candidates_tried": [
+      "https://sleepdata.org/datasets/mesa/files/m/browser/datasets/mesa-sleep-dataset-0.8.0.csv",
+      "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.8.0.csv",
+      "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.7.0.csv",
+      "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.6.0.csv",
+      "https://sleepdata.org/datasets/mesa/files/datasets/mesa-sleep-dataset-0.5.0.csv"
+    ],
+    "remediation": "Find the current covariates URL at https://sleepdata.org/datasets/mesa/files (browse to datasets/ and copy the latest mesa-sleep-dataset-*.csv link). Pass via --covariates-url."
+  },
+  "pilot": "P-7",
+  "spec": "20-plan/sleep-staging/pilots-README.md#P-7"
+}

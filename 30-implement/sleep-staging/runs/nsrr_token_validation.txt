@@ -1,0 +1,5 @@
+timestamp: 1777794323
+endpoint: https://sleepdata.org/api/v1/account/profile.json
+http_status: 200
+authenticated: True
+username_present: True
