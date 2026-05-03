@@ -148,6 +148,24 @@ U-Sleep's training data, scope (a) EEG evaluation on MESA is contaminated (the m
 saw these subjects during training). This check is required in the pre-run checklist
 for scope (a) (protocol-lock.md §6 HEADLINE-A checklist).
 
+**TRIGGERED 2026-05-03 PM (dep conflict):** `utime` PyPI package (1.1.7) installs
+but does not import. Stack trace: `from keras.src.engine import keras_tensor`
+fails — `tensorflow_addons` (deprecated, end-of-life May 2024) is incompatible
+with installed `tensorflow==2.21.0` (current). The `u-sleep` PyPI name is
+unregistered. Three resolution paths (need track-lead choice):
+1. **Pin compatible TF stack** in sleep-staging venv:
+   `tensorflow==2.14`, `tensorflow_addons==0.23`, `keras==2.14`. Confirmed
+   working combination per `tensorflow_addons` README compatibility matrix.
+   Heavy venv reset; isolates from other tracks.
+2. **Switch to a PyTorch U-Sleep port.** Community ports exist
+   (`usleep-api`, `usleep-pytorch` on GitHub). Need to verify weight equivalence
+   to the official Perslev release before any headline use; this risks
+   reproducibility.
+3. **Drop U-Sleep; use 1D-ResNet EEG stager** trained on Sleep-EDF as the
+   EEG arm baseline. This is the kill-criterion fallback below — chosen
+   pre-emptively rather than after a failed install attempt. Loses the
+   "pretrained-FM transfer-to-clinical" framing of the track.
+
 **Kill criterion (unchanged):** If no pretrained EEG stager checkpoint can be obtained,
 cancel the pretrained-stager comparison from scope (a) and fall back to 1D-ResNet for
 scope (b) EEG comparison. If the 1D-ResNet fallback also fails, retire-cancel scope (a)
