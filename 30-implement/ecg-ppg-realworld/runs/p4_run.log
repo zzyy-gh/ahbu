@@ -1,0 +1,82 @@
+[P-4] dev=6599 (excluded 223 noisy '~'); train=5279 holdout=1320
+[P-4] loading + preprocessing waveforms (this is the slow step)...
+  [load] 500/5279 (failed=0)
+  [load] 1000/5279 (failed=0)
+  [load] 1500/5279 (failed=0)
+  [load] 2000/5279 (failed=0)
+  [load] 2500/5279 (failed=0)
+  [load] 3000/5279 (failed=0)
+  [load] 3500/5279 (failed=0)
+  [load] 4000/5279 (failed=0)
+  [load] 4500/5279 (failed=0)
+  [load] 5000/5279 (failed=0)
+  [load] 500/1320 (failed=0)
+  [load] 1000/1320 (failed=0)
+[P-4] load complete in 135.7s (train_failed=0, holdout_failed=0)
+[P-4] training xresnet1d50: epochs=3, batch=8, fp32, Adam lr=0.001
+  [epoch 1/3] step 100/660 running_loss=0.9568 elapsed=54s
+  [epoch 1/3] step 200/660 running_loss=0.9314 elapsed=90s
+  [epoch 1/3] step 300/660 running_loss=0.9234 elapsed=130s
+  [epoch 1/3] step 400/660 running_loss=0.9124 elapsed=171s
+  [epoch 1/3] step 500/660 running_loss=0.9089 elapsed=211s
+  [epoch 1/3] step 600/660 running_loss=0.9026 elapsed=252s
+[P-4] epoch 1/3 done: train_loss=0.9019 elapsed=276.2s
+  [epoch 2/3] step 100/660 running_loss=0.8770 elapsed=40s
+  [epoch 2/3] step 200/660 running_loss=0.8825 elapsed=81s
+  [epoch 2/3] step 300/660 running_loss=0.8714 elapsed=121s
+  [epoch 2/3] step 400/660 running_loss=0.8645 elapsed=162s
+  [epoch 2/3] step 500/660 running_loss=0.8606 elapsed=202s
+  [epoch 2/3] step 600/660 running_loss=0.8560 elapsed=242s
+[P-4] epoch 2/3 done: train_loss=0.8563 elapsed=266.4s
+  [epoch 3/3] step 100/660 running_loss=0.8306 elapsed=41s
+  [epoch 3/3] step 200/660 running_loss=0.8184 elapsed=82s
+  [epoch 3/3] step 300/660 running_loss=0.8133 elapsed=123s
+  [epoch 3/3] step 400/660 running_loss=0.8042 elapsed=166s
+  [epoch 3/3] step 500/660 running_loss=0.8018 elapsed=211s
+  [epoch 3/3] step 600/660 running_loss=0.7925 elapsed=255s
+[P-4] epoch 3/3 done: train_loss=0.7911 elapsed=281.3s
+[P-4] training complete in 823.9s
+[P-4] running inference on validation hold-out...
+[P-4] holdout AF-vs-rest AUROC (uncalibrated) = 0.8639
+[P-4] fitted T=1.033; Brier pre=0.4528 post=0.4527
+[P-4] confidence-correctness AUC = 0.659107734268459
+[P-4] saved model -> C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\p4_xresnet1d50_3ep_1777794874.pt
+[P-4] saved temperature -> C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\p4_temperature_1777794874.json
+{
+  "status": "pass",
+  "n_train": 5279,
+  "n_holdout": 1320,
+  "load_elapsed_s": 135.7,
+  "train_elapsed_s": 823.9,
+  "train_loss_history": [
+    {
+      "epoch": 1,
+      "loss": 0.9019106120774241,
+      "elapsed_s": 276.2060605000006
+    },
+    {
+      "epoch": 2,
+      "loss": 0.8562599940281925,
+      "elapsed_s": 266.38559499999974
+    },
+    {
+      "epoch": 3,
+      "loss": 0.7910727405864181,
+      "elapsed_s": 281.2615301000187
+    }
+  ],
+  "holdout_auroc_af_uncalibrated": 0.8639,
+  "temperature_T": 1.0334,
+  "brier_pre": 0.45278,
+  "brier_post": 0.45269,
+  "confidence_correctness_auc": 0.6591,
+  "confidence_correctness_auc_pass": true,
+  "ppv_at_1_00": 0.5789473684210527,
+  "ppv_at_0_83": 0.6065573770491803,
+  "ppv_improvement_pp_at_0_83": 2.761,
+  "ppv_pass": true,
+  "model_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\p4_xresnet1d50_3ep_1777794874.pt",
+  "temperature_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\p4_temperature_1777794874.json"
+}
+
+Wrote C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\pilot_p4_abstention_sweep_1777794875.json

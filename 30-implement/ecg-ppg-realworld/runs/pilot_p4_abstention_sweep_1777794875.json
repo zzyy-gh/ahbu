@@ -1,0 +1,176 @@
+{
+  "status": "pass",
+  "n_train": 5279,
+  "n_holdout": 1320,
+  "n_excluded_noisy": 223,
+  "load_elapsed_s": 135.7,
+  "train_elapsed_s": 823.9,
+  "epochs": 3,
+  "batch_size": 8,
+  "lr": 0.001,
+  "seed": 42,
+  "input_shape": [
+    1,
+    9000
+  ],
+  "train_loss_history": [
+    {
+      "epoch": 1,
+      "loss": 0.9019106120774241,
+      "elapsed_s": 276.2060605000006
+    },
+    {
+      "epoch": 2,
+      "loss": 0.8562599940281925,
+      "elapsed_s": 266.38559499999974
+    },
+    {
+      "epoch": 3,
+      "loss": 0.7910727405864181,
+      "elapsed_s": 281.2615301000187
+    }
+  ],
+  "holdout_auroc_af_uncalibrated": 0.8639,
+  "holdout_auroc_af_calibrated": 0.8639,
+  "temperature_T": 1.0334,
+  "brier_pre": 0.45278,
+  "brier_post": 0.45269,
+  "confidence_correctness_auc": 0.6591,
+  "confidence_correctness_auc_threshold": 0.55,
+  "confidence_correctness_auc_pass": true,
+  "ppv_at_coverage": {
+    "n_total": 1320,
+    "n_positive_true": 121,
+    "points": [
+      {
+        "target_coverage": 1.0,
+        "achieved_coverage": 1.0,
+        "threshold": 0.3444579541683197,
+        "n_committed": 1320,
+        "n_predicted_positive": 95,
+        "ppv": 0.5789473684210527,
+        "ppv_ci95_lo": 0.5,
+        "ppv_ci95_hi": 0.6705882352941176,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.95,
+        "achieved_coverage": 0.95,
+        "threshold": 0.43378540873527527,
+        "n_committed": 1254,
+        "n_predicted_positive": 85,
+        "ppv": 0.5882352941176471,
+        "ppv_ci95_lo": 0.4945054945054945,
+        "ppv_ci95_hi": 0.6818458980044344,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.9,
+        "achieved_coverage": 0.9,
+        "threshold": 0.46930399537086487,
+        "n_committed": 1188,
+        "n_predicted_positive": 74,
+        "ppv": 0.5945945945945946,
+        "ppv_ci95_lo": 0.5063291139240507,
+        "ppv_ci95_hi": 0.6988253012048191,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.85,
+        "achieved_coverage": 0.85,
+        "threshold": 0.5006424188613892,
+        "n_committed": 1122,
+        "n_predicted_positive": 67,
+        "ppv": 0.5671641791044776,
+        "ppv_ci95_lo": 0.4657475200755786,
+        "ppv_ci95_hi": 0.6724137931034483,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.83,
+        "achieved_coverage": 0.8303030303030303,
+        "threshold": 0.5116697549819946,
+        "n_committed": 1096,
+        "n_predicted_positive": 61,
+        "ppv": 0.6065573770491803,
+        "ppv_ci95_lo": 0.5,
+        "ppv_ci95_hi": 0.72,
+        "bootstrap_n": 2000
+      },
+      {
+        "target_coverage": 0.79,
+        "achieved_coverage": 0.7901515151515152,
+        "threshold": 0.5426883101463318,
+        "n_committed": 1043,
+        "n_predicted_positive": 51,
+        "ppv": 0.6470588235294118,
+        "ppv_ci95_lo": 0.5370370370370371,
+        "ppv_ci95_hi": 0.7692307692307693,
+        "bootstrap_n": 2000
+      }
+    ]
+  },
+  "ppv_at_1_00": 0.5789473684210527,
+  "ppv_at_0_83": 0.6065573770491803,
+  "ppv_improvement_pp_at_0_83": 2.761,
+  "ppv_pass": true,
+  "selective_classification_curve": {
+    "n_total": 1320,
+    "auc_correctness": 0.659107734268459,
+    "points": [
+      {
+        "target_coverage": 1.0,
+        "achieved_coverage": 1.0,
+        "threshold": 0.3444579541683197,
+        "n_committed": 1320,
+        "accuracy_on_committed": 0.6704545454545454
+      },
+      {
+        "target_coverage": 0.95,
+        "achieved_coverage": 0.95,
+        "threshold": 0.43378540873527527,
+        "n_committed": 1254,
+        "accuracy_on_committed": 0.6866028708133971
+      },
+      {
+        "target_coverage": 0.9,
+        "achieved_coverage": 0.9,
+        "threshold": 0.46930399537086487,
+        "n_committed": 1188,
+        "accuracy_on_committed": 0.7011784511784511
+      },
+      {
+        "target_coverage": 0.85,
+        "achieved_coverage": 0.85,
+        "threshold": 0.5006424188613892,
+        "n_committed": 1122,
+        "accuracy_on_committed": 0.7049910873440285
+      },
+      {
+        "target_coverage": 0.83,
+        "achieved_coverage": 0.8303030303030303,
+        "threshold": 0.5116697549819946,
+        "n_committed": 1096,
+        "accuracy_on_committed": 0.708029197080292
+      },
+      {
+        "target_coverage": 0.79,
+        "achieved_coverage": 0.7901515151515152,
+        "threshold": 0.5426883101463318,
+        "n_committed": 1043,
+        "accuracy_on_committed": 0.7209971236816874
+      }
+    ],
+    "coverage_full": {
+      "target_coverage": 1.0,
+      "achieved_coverage": 1.0,
+      "threshold": 0.3444579541683197,
+      "n_committed": 1320,
+      "accuracy_on_committed": 0.6704545454545454
+    }
+  },
+  "model_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\p4_xresnet1d50_3ep_1777794874.pt",
+  "temperature_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\p4_temperature_1777794874.json",
+  "pilot": "P-4",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-4"
+}

@@ -192,7 +192,15 @@ the headline test split.
 
 **Estimated time:** 2–3 hr (includes 3-epoch training).
 
-**Result field:** [FILL AFTER RUN]
+**Result field:** PASS — run 2026-05-03.
+- Train: 5,279 records (dev minus 223 noisy `~`); hold-out: 1,320.
+- 3-epoch xresnet1d50, batch=8, fp32, Adam lr=1e-3. Train time 824 s.
+- Hold-out AUROC (AF, uncalibrated): 0.864.
+- Confidence-correctness AUC: **0.659 ≥ 0.55** (PASS).
+- PPV at coverage=1.00: 0.579; PPV at coverage=0.83: 0.607 (**+2.76 pp**, PASS).
+- Artifacts: `runs/p4_xresnet1d50_3ep_1777794874.pt`,
+  `runs/p4_temperature_1777794874.json`,
+  `runs/pilot_p4_abstention_sweep_1777794875.json`.
 
 A 3-epoch model is intentionally weaker than the 50-epoch headline.
 A weak signal here is acceptable; a *reversed* signal (abstention
@@ -227,10 +235,34 @@ improve calibration in the right direction?
 
 **Estimated time:** 30–45 min (reuses P-4 model).
 
-**Result field:** [FILL AFTER RUN]
+**Result field:** FAIL on stated criteria — informative finding, run 2026-05-03.
+- Hold-out: 1,320 records (reuse P-4 hold-out exactly).
+- T = **1.033** (within [1.0, 5.0], no overconfidence flag).
+- Brier (uncal): 0.45278; Brier (cal): 0.45269 (negligible Δ ≈ 9e-5).
+- ECE (uncal): 0.0380; ECE (cal): 0.0390 — **ECE not improved** (regression at noise floor).
+- Mean reliability gap (uncal): 0.137; (cal): 0.149 — **diagram not improved**.
+- Artifacts: `runs/p5_reliability_1777795103.png`,
+  `runs/pilot_p5_calibration_1777795105.json`.
 
-If ECE not reduced by temperature scaling: investigate whether the
-model is underconfident (T < 1.0) or whether Platt scaling is needed.
+**Interpretation:** the 3-epoch model is *not* meaningfully overconfident
+(T ≈ 1.03), so temperature scaling has no signal to fit and the small
+calibrated-vs-uncalibrated ECE/gap differences are at bin-sampling
+noise (n=1,320, 15 bins ⇒ ~88 records/bin). This is the "T close to
+1" branch the spec did not pre-specify. **Action items:**
+1. Re-run P-5 against the 50-epoch headline model post-training and
+   check whether overconfidence emerges with longer training (the
+   scenario the spec actually anticipated). Until then, **do not
+   conclude calibration is unnecessary.**
+2. Treat this as a *pilot signal* not a *headline failure*: the P-4
+   abstention curve already passed without temperature scaling, so the
+   primary selective-classification claim does not depend on this
+   outcome.
+3. Risk-register update not required — this is below R-3's kill
+   threshold (R-3 keys on confidence-correctness AUC, which passed).
+
+If ECE not reduced by temperature scaling at headline: investigate
+whether Platt scaling, isotonic regression, or no-calibration is the
+right post-headline choice.
 
 ---
 

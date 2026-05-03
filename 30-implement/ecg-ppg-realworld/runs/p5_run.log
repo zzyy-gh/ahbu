@@ -1,0 +1,33 @@
+[P-5] using model: C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\p4_xresnet1d50_3ep_1777794874.pt
+[P-5] using temperature file: C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\p4_temperature_1777794874.json
+[P-5] hold-out records: 1320 (T=1.033)
+[P-5] loading hold-out + inference...
+  [infer] 200/1320
+  [infer] 400/1320
+  [infer] 600/1320
+  [infer] 800/1320
+  [infer] 1000/1320
+  [infer] 1200/1320
+[P-5] inference complete in 41.0s (failed=0)
+[P-5] saved reliability diagram -> C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\p5_reliability_1777795103.png
+{
+  "status": "fail",
+  "n_holdout": 1320,
+  "n_failed_load": 0,
+  "T": 1.0334,
+  "T_in_range_1_5": true,
+  "T_high_flag_gt_5": false,
+  "brier_uncalibrated": 0.45278,
+  "brier_calibrated": 0.45269,
+  "ece_uncalibrated": 0.03798,
+  "ece_calibrated": 0.039,
+  "ece_improved": false,
+  "mean_reliability_gap_uncalibrated": 0.13705,
+  "mean_reliability_gap_calibrated": 0.14862,
+  "diagram_improved": false,
+  "reliability_png": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\p5_reliability_1777795103.png",
+  "model_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\p4_xresnet1d50_3ep_1777794874.pt",
+  "temperature_path": "C:\\Users\\zzyy\\Desktop\\ahbu\\30-implement\\ecg-ppg-realworld\\runs\\p4_temperature_1777794874.json"
+}
+
+Wrote C:\Users\zzyy\Desktop\ahbu\30-implement\ecg-ppg-realworld\runs\pilot_p5_calibration_1777795105.json
