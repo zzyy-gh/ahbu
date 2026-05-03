@@ -229,6 +229,44 @@ Kill criterion: drop Dreem-DOD OOD probe if format incompatibility unfixable in 
 
 ---
 
+## R-14 — HMC PSG per-subject metadata absent (NEW — 2026-05-03 PM, P-1 finding)
+
+**Description:** HMC PSG distribution is fully de-identified at the per-subject level.
+PatientID is recorded as `SN### X X X` (confirmed in `HMCdatabase_quickcheck.xml`).
+EDF headers carry no AHI / sex / age fields (confirmed by P-1 audit on 10/10 sampled
+subjects). The only metadata file `subjects_info_aggregated.txt` contains only
+population-level aggregates (`Gender 88 M / 66 F`, `Age 53.8 (15.4)`, `AHI_TST 14.6
+(17.0)`). Both branches of protocol-lock.md §3 HMC stratification conditional (AHI,
+or sex+age-decade fallback) are infeasible.
+
+**Probability:** TRIGGERED (P-1 finding 2026-05-03 PM).
+**Impact:** L for the *paired* HEADLINE-B claim (within-subject pairing is
+unaffected by partition stratification); M for any subgroup-stratified secondary
+analysis on HMC.
+
+**Mitigation / decision options:**
+1. **Random unstratified split** (seed=42, 50/50 → N_test = 77). Preserves the
+   primary paired EEG-vs-HRV claim. **Default recommendation.** Update
+   protocol-lock.md §3 to specify "random unstratified" for HMC; record that
+   subgroup stratification is unavailable as a documented limitation.
+2. **Activate CAP Sleep substitute (R-2)** for pathology-category stratification.
+   Trades subjects (108 vs 154) for a stratification variable. Reasonable only
+   if subgroup stratification is judged essential to the claim.
+3. **HMC + post-hoc subgroup probes** using signal-derived covariates (sleep
+   efficiency, REM fraction, scored apnea events from PSG annotations if present).
+   Subgroups become descriptive, not pre-stratified.
+
+**Kill criterion:** None. The primary paired claim is unaffected. If track lead
+deems subgroup stratification mandatory for the headline claim, treat as a
+substitution-decision against R-2 rather than a kill.
+
+**Action items:**
+- Decision required from track lead before HEADLINE-B execution. Default = option 1.
+- Once chosen, update protocol-lock.md §3 + log the decision in
+  `30-implement/sleep-staging/runs/hmc_partition_stratification_decision.txt`.
+
+---
+
 ## R-12 — CAP Sleep R&K-to-AASM label mapping error (NEW — 2026-05-03)
 
 **Description:** CAP Sleep uses R&K staging (W, S1, S2, S3, S4, REM, plus "MT" for
@@ -310,6 +348,7 @@ gap at 80 % power). If N is borderline, report with explicit underpowered caveat
 | R-11 | Dreem-DOD format mismatch | (a) | M | L | Open (lower priority) | Drop Dreem-DOD probe if unfixable in 2 days |
 | R-12 | CAP R&K-to-AASM mapping error | (b) if substitute active | M | M | **NEW** | Halt training if label distribution implausible |
 | R-13 | MESA storage / download bottleneck | (a) | M | M | **NEW** | Delay headline; reduce to N≥500 with caveat if 4 wks elapse |
+| R-14 | HMC PSG per-subject AHI / sex / age absent | (b) | TRIGGERED | L paired / M subgroup | **NEW 2026-05-03 PM** (P-1 finding) | None — primary paired claim unaffected; subgroup analysis becomes descriptive |
 
 ---
 

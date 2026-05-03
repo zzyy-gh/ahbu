@@ -1,0 +1,383 @@
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 6566399  =      0.000 ... 25649.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 6577407  =      0.000 ... 25692.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 7330815  =      0.000 ... 28635.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 7804927  =      0.000 ... 30487.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 7370751  =      0.000 ... 28791.996 secs...
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 6655487  =      0.000 ... 25997.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 7944191  =      0.000 ... 31031.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 6508031  =      0.000 ... 25421.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 6922751  =      0.000 ... 27041.996 secs...
+NOTE: pick_channels() is a legacy function. New code should use inst.pick(...).
+Reading 0 ... 7099647  =      0.000 ... 27732.996 secs...
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\code\.venv\Lib\site-packages\neurokit2\signal\signal_period.py:83: NeuroKitWarning: Too few peaks detected to compute the rate. Returning empty vector.
+  warn(
+{
+  "status": "pass",
+  "n_sampled": 10,
+  "n_passing_sqi_check": 10,
+  "sqi_threshold": 0.5,
+  "frac_threshold": 0.7,
+  "per_subject": [
+    {
+      "subject": "SN001",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 855,
+      "frac_windows_above_sqi": 0.9977,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN002",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 856,
+      "frac_windows_above_sqi": 0.9907,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN003",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 954,
+      "frac_windows_above_sqi": 0.9948,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN004",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 1016,
+      "frac_windows_above_sqi": 0.9941,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN005",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 959,
+      "frac_windows_above_sqi": 0.9604,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN006",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 866,
+      "frac_windows_above_sqi": 1.0,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN007",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 1034,
+      "frac_windows_above_sqi": 0.9826,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN008",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 847,
+      "frac_windows_above_sqi": 0.9941,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN009",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 901,
+      "frac_windows_above_sqi": 0.9956,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    },
+    {
+      "subject": "SN010",
+      "ecg_present": true,
+      "ecg_channel_name": "ECG",
+      "n_windows": 924,
+      "frac_windows_above_sqi": 0.9437,
+      "passes_frac_threshold": true,
+      "sfreq_hz": 256.0,
+      "ahi": null,
+      "sex": null,
+      "age": null
+    }
+  ],
+  "ahi_metadata_present_count": 0,
+  "sex_metadata_present_count": 0,
+  "age_metadata_present_count": 0,
+  "ahi_distribution": null,
+  "metadata_audit_note": "AHI presence informs protocol-lock.md \u00a73 conditional (AHI vs sex+age-decade stratification). Fields recorded for the \u00a73 fallback path. Audit is non-blocking.",
+  "metadata_audit_per_subject": [
+    {
+      "subject": "SN001",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN001.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN001.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN002",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN002.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN002.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN003",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN003.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN003.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN004",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN004.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN004.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN005",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN005.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN005.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN006",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN006.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN006.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN007",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN007.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN007.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN008",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN008.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN008.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN009",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN009.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN009.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN010",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN010.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN010.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    }
+  ],
+  "pilot": "P-1",
+  "spec": "20-plan/sleep-staging/pilots-README.md#P-1"
+}
+
+Wrote C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\runs\pilot_p1_hmc_access_1777802865.json
+Wrote C:\Users\zzyy\Desktop\ahbu\30-implement\sleep-staging\runs\hmc_metadata_audit.json

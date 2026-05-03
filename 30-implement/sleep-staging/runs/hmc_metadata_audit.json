@@ -1,0 +1,132 @@
+{
+  "pilot": "P-1",
+  "spec": "20-plan/sleep-staging/pilots-README.md#P-1",
+  "note": "AHI / sex / age metadata audit. Informs protocol-lock.md \u00a73 stratification conditional. Non-blocking.",
+  "n_sampled": 10,
+  "ahi_metadata_present_count": 0,
+  "sex_metadata_present_count": 0,
+  "age_metadata_present_count": 0,
+  "ahi_distribution": null,
+  "per_subject": [
+    {
+      "subject": "SN001",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN001.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN001.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN002",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN002.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN002.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN003",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN003.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN003.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN004",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN004.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN004.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN005",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN005.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN005.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN006",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN006.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN006.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN007",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN007.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN007.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN008",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN008.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN008.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN009",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN009.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN009.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    },
+    {
+      "subject": "SN010",
+      "edf_path": "C:\\Users\\zzyy\\physionet_data\\hmc-sleep-staging-1.0.0\\recordings\\SN010.edf",
+      "ahi": null,
+      "sex": null,
+      "age": null,
+      "sources_probed": [
+        "mne_header:SN010.edf",
+        "file:RECORDS"
+      ],
+      "hits": []
+    }
+  ]
+}

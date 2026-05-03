@@ -77,7 +77,45 @@ running fallback). Update script to add `--dataset` argument if not already pres
 **Estimated time:** 2 hours (including download of 10-subject sample for primary;
 additional 1 hour for fallback if triggered).
 
-**Result field:** [FILL AFTER RUN]
+**Result field:** PASS on (a) + (b) — run 2026-05-03.
+- HMC bulk download: 10/10 EDFs complete (SN001-SN010, ~100-127 MB each, 1.0 GB total) via
+  open CC-BY-4.0 download. No credential barrier.
+- ECG channel "ECG" present in 10/10 subjects, sfreq 256 Hz uniform.
+- SQI fraction above 0.5: range **0.94–1.00, mean ≈ 0.99** across 10 subjects;
+  windows per subject 847–1034 (~7–8.5 hr PSG). 10/10 pass `>0.7` frac threshold.
+  Far exceeds the `>=8/10` success criterion. Quality is exceptional.
+- Artifacts: `runs/pilot_p1_hmc_access_1777802865.json`,
+  `runs/hmc_metadata_audit.json`, `runs/p1_run.log`.
+
+**FAIL on (c) — material finding requiring §3 unlock-decision:**
+- AHI **NOT** present in EDF headers or any sibling file: 0/10 subjects.
+- Sex **NOT** present per-subject: 0/10. Age **NOT** present per-subject: 0/10.
+- The only metadata file (`subjects_info_aggregated.txt`) contains
+  population-level aggregates only (`Gender 88M/66F`, `Age 53.8 (15.4)`,
+  `AHI_TST 14.6 (17.0)`). HMC distribution is fully de-identified at the
+  per-subject level (`PatientID: SN### X X X` confirms in `HMCdatabase_quickcheck.xml`).
+- **Both branches of protocol-lock.md §3 HMC stratification conditional are infeasible:**
+  the AHI-stratified path needs per-subject AHI; the sex+age-decade fallback path
+  needs per-subject sex+age. Neither is available.
+- The metadata-audit criterion (c) was pre-specified non-blocking, so P-1 status
+  is PASS; but the absent metadata blocks the stratification *as written*.
+- **Material implications for HEADLINE-B:** the *paired* EEG-vs-HRV claim is
+  **unaffected** — pairing is within-subject and does not depend on stratification.
+  What is lost is subgroup stratification of the test partition (AHI / sex / age).
+  Three viable resolutions:
+    1. **Random unstratified split** (seed=42, 50 % dev / 50 % test). Cleanest;
+       test partition is a uniform random sample of 154 subjects (N_test = 77).
+       Stratification was secondary; primary paired claim is preserved.
+    2. **Activate CAP Sleep substitute (R-2)** for stratification by pathology
+       category (healthy / NFLE / RBD / PLM / insomnia / other). 108 subjects total
+       — fewer than HMC's 154; trades subjects for stratification variable.
+    3. **HMC + post-hoc subgroup probes:** keep HMC, do random split, but report
+       within-test subgroup behaviour using whatever signal-derived covariates can be
+       extracted from the PSG itself (apnea events from EDF if scored; sleep
+       efficiency; REM fraction). Stratification becomes descriptive, not pre-stratified.
+- **Decision required from track lead** before HEADLINE-B execution. Default
+  recommendation: option 1 (random unstratified split) — preserves N=77 paired claim.
+  Update protocol-lock.md §3 + risk-register R-2 to record the resolution.
 
 ---
 

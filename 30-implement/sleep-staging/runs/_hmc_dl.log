@@ -1,0 +1,23 @@
+skip (complete): RECORDS (0.0 MB)
+skip (complete): subjects_info_aggregated.txt (0.0 MB)
+skip (complete): LICENSE.txt (0.0 MB)
+skip (complete): HMCdatabase_quickcheck.xml (0.0 MB)
+skip (complete): SN001.edf (105.1 MB)
+skip (complete): SN002.edf (105.2 MB)
+skip (complete): SN003.edf (117.3 MB)
+  re-download (partial 22.3 MB / 124.9 MB): SN004.edf
+GET recordings/SN004.edf
+  -> C:\Users\zzyy\physionet_data\hmc-sleep-staging-1.0.0\recordings\SN004.edf (124.9 MB in 857.3s)
+GET recordings/SN005.edf
+  -> C:\Users\zzyy\physionet_data\hmc-sleep-staging-1.0.0\recordings\SN005.edf (117.9 MB in 784.1s)
+GET recordings/SN006.edf
+  -> C:\Users\zzyy\physionet_data\hmc-sleep-staging-1.0.0\recordings\SN006.edf (106.5 MB in 696.0s)
+GET recordings/SN007.edf
+  -> C:\Users\zzyy\physionet_data\hmc-sleep-staging-1.0.0\recordings\SN007.edf (127.1 MB in 810.2s)
+GET recordings/SN008.edf
+  -> C:\Users\zzyy\physionet_data\hmc-sleep-staging-1.0.0\recordings\SN008.edf (104.1 MB in 656.7s)
+GET recordings/SN009.edf
+  -> C:\Users\zzyy\physionet_data\hmc-sleep-staging-1.0.0\recordings\SN009.edf (110.8 MB in 682.2s)
+GET recordings/SN010.edf
+  -> C:\Users\zzyy\physionet_data\hmc-sleep-staging-1.0.0\recordings\SN010.edf (113.6 MB in 756.7s)
+done
