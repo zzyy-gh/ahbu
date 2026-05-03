@@ -1,0 +1,52 @@
+{
+  "status": "pass",
+  "n_total": 21799,
+  "n_afib_total": 21799,
+  "afib_likelihood_threshold": 0.0,
+  "target_afib_count_strat_fold_10": 87,
+  "fold10_afib_count": 2198,
+  "per_fold": {
+    "1": {
+      "n_records": 2175,
+      "n_afib": 2175
+    },
+    "2": {
+      "n_records": 2181,
+      "n_afib": 2181
+    },
+    "3": {
+      "n_records": 2192,
+      "n_afib": 2192
+    },
+    "4": {
+      "n_records": 2174,
+      "n_afib": 2174
+    },
+    "5": {
+      "n_records": 2174,
+      "n_afib": 2174
+    },
+    "6": {
+      "n_records": 2173,
+      "n_afib": 2173
+    },
+    "7": {
+      "n_records": 2176,
+      "n_afib": 2176
+    },
+    "8": {
+      "n_records": 2173,
+      "n_afib": 2173
+    },
+    "9": {
+      "n_records": 2183,
+      "n_afib": 2183
+    },
+    "10": {
+      "n_records": 2198,
+      "n_afib": 2198
+    }
+  },
+  "pilot": "P-1",
+  "spec": "20-plan/ecg-ppg-realworld/pilots-README.md#P-1"
+}
